@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Arsenica Arabic";
+  src: url("/fonts/Arsenica-Arabic-Demibold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyah-sans/thmanyahsans-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyah-sans/thmanyahsans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyah-sans/thmanyahsans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyah-sans/thmanyahsans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: "Arsenica Arabic", "Thmanyah Sans", sans-serif;
+  --font-sans: "Thmanyah Sans", "Segoe UI", sans-serif;
+
+  --color-bg: #131209;
+  --color-bg-raised: #1f1f1f;
+  --color-bg-card: #272727;
+  --color-bg-card-hover: #313131;
+  --color-border: #313131;
+  --color-border-soft: #272727;
+
+  --color-ink: #f5f2ea;
+  --color-ink-muted: #9b9b9b;
+  --color-ink-faint: #6b6a63;
+
+  --color-sun-50: #fff6e0;
+  --color-sun-100: #ffe9b3;
+  --color-sun-300: #ffcf66;
+  --color-sun-400: #ffb84d;
+  --color-sun-500: #ff9d3d;
+  --color-sun-600: #ff7a3d;
+  --color-sun-700: #ff5f6d;
+
+  --color-boys-300: #7fe0d6;
+  --color-boys-400: #45c9bb;
+  --color-boys-500: #2bab9f;
+  --color-boys-600: #1c8a80;
+
+  --color-girls-300: #ffb0cf;
+  --color-girls-400: #fb7ba2;
+  --color-girls-500: #ea5a8c;
+  --color-girls-600: #c93f6f;
+
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-wrap: pretty;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-sun-500);
+    color: #131209;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-sun-400);
+    outline-offset: 3px;
+  }
+}
