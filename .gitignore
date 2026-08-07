@@ -13,5 +13,6 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# ملفات الوزارة تُنزَّل محليًا ولا تُرفع
-ministry-files/
+# ملفات الوزارة تُنزَّل محليًا ولا تُرفع، ويبقى ملف الشرح فقط
+ministry-files/*
+!ministry-files/README.md
