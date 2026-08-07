@@ -1,18 +1,20 @@
 import { motion } from "framer-motion";
 import { GlassCard } from "../GlassCard";
 import { cn } from "../../lib/utils";
+import type { BreakWeek } from "../../data/breakPeriods";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
 export function WeeklyTargetCard({
+  week,
   completed,
-  total,
   accentText,
 }: {
+  week: BreakWeek;
   completed: number;
-  total: number;
   accentText: string;
 }) {
+  const total = week.corners.length;
   const ratio = total === 0 ? 0 : completed / total;
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
@@ -20,9 +22,22 @@ export function WeeklyTargetCard({
   return (
     <GlassCard className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
       <div className="text-center sm:text-right">
-        <h3 className="text-xl text-ink">المستهدف الأسبوعي</h3>
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+          <span className={cn("rounded-full bg-white/5 px-3 py-1 text-sm font-semibold", accentText)}>
+            الأسبوع {week.week}
+          </span>
+          {week.slogan && (
+            <span className="rounded-full bg-sun-400/10 px-3 py-1 text-sm text-sun-300">{week.slogan}</span>
+          )}
+        </div>
+
+        <h3 className="mt-3 text-xl text-ink">{week.occasion ?? "أنشطة الاستراحة"}</h3>
         <p className="mt-1 text-sm text-ink-muted">
-          أنجزت {completed} من {total} أنشطة هذا الأسبوع.
+          أنجزت {completed} من {total} أركان هذا الأسبوع.
+        </p>
+        <p className="mt-2 text-xs text-ink-faint">
+          المرحلة {week.stage}
+          {week.stageNote ? ` — ${week.stageNote}` : ""}
         </p>
       </div>
 

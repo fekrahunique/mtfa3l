@@ -1,14 +1,16 @@
 import { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { CalendarBlank, Info } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
+import { GlassCard } from "../components/GlassCard";
 import { Sidebar } from "../components/dashboard/Sidebar";
 import { WeeklyTargetCard } from "../components/dashboard/WeeklyTargetCard";
-import { ActivityCard } from "../components/dashboard/ActivityCard";
-import { ToolCard } from "../components/dashboard/ToolCard";
+import { CornerCard } from "../components/dashboard/CornerCard";
+import { CornerDetail } from "../components/dashboard/CornerDetail";
 import { StudentsTable } from "../components/dashboard/StudentsTable";
-import { activities, tools } from "../lib/dashboardData";
+import { breakWeeks } from "../data/breakPeriods";
 import { genderAccent, type RegistrationData } from "../lib/theme";
-import { cn } from "../lib/utils";
 
 const demoData: RegistrationData = {
   teacherName: "سلمى العتيبي",
@@ -25,25 +27,26 @@ const demoData: RegistrationData = {
   username: "الفيصلية-4821",
 };
 
-type Filter = "all" | "classroom" | "extracurricular";
-
 export function Dashboard() {
   const location = useLocation();
   const data = (location.state as RegistrationData | null) ?? demoData;
   const gender = data.gender ?? "girls";
   const accent = genderAccent[gender];
-  const [filter, setFilter] = useState<Filter>("all");
+  const stageLabel = data.stage === "middle" ? "متوسط" : "ابتدائي";
 
-  const filteredActivities = useMemo(
-    () => activities.filter((a) => filter === "all" || a.category === filter),
-    [filter]
-  );
+  const [doneIds, setDoneIds] = useState<string[]>([]);
+  const [openCornerId, setOpenCornerId] = useState<string | null>(null);
 
-  const filters: { id: Filter; label: string }[] = [
-    { id: "all", label: "الكل" },
-    { id: "classroom", label: "صفي" },
-    { id: "extracurricular", label: "لا صفي" },
-  ];
+  // البرامج المتوفرة حاليًا للمرحلة المسجَّلة فقط.
+  const weeks = useMemo(() => breakWeeks.filter((w) => w.stage === stageLabel), [stageLabel]);
+  const week = weeks[0] ?? null;
+
+  const openCorner = week?.corners.find((c) => c.id === openCornerId) ?? null;
+  const completed = week ? week.corners.filter((c) => doneIds.includes(c.id)).length : 0;
+
+  function toggleDone(id: string) {
+    setDoneIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -55,46 +58,68 @@ export function Dashboard() {
           <p className="mt-2 text-ink-muted">هذا أسبوعك في {data.schoolName || "متفاعل"}.</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05} className="mt-8">
-          <WeeklyTargetCard completed={2} total={5} accentText={accent.text} />
-        </ScrollReveal>
+        {week ? (
+          <>
+            <ScrollReveal delay={0.05} className="mt-8">
+              <WeeklyTargetCard week={week} completed={completed} accentText={accent.text} />
+            </ScrollReveal>
 
-        <ScrollReveal delay={0.1} className="mt-12">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="text-2xl text-ink">الأنشطة الأسبوعية</h2>
-            <div className="flex gap-2 rounded-full border border-white/10 p-1">
-              {filters.map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setFilter(f.id)}
-                  aria-pressed={filter === f.id}
-                  className={cn(
-                    "rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-                    filter === f.id ? cn(accent.bg, "text-bg") : "text-ink-muted hover:text-ink"
-                  )}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
-          </div>
+            <ScrollReveal delay={0.1} className="mt-12">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <h2 className="text-2xl text-ink">أركان الاستراحة</h2>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    ركن لكل يوم، جاهز بخطواته وأدواته.
+                  </p>
+                </div>
+                <span className="flex items-center gap-1.5 text-sm text-ink-faint">
+                  <CalendarBlank weight="bold" className="h-4 w-4" />
+                  {week.corners.length} أيام
+                </span>
+              </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredActivities.map((activity) => (
-              <ActivityCard key={activity.id} activity={activity} accentBg={accent.bg} accentText={accent.text} />
-            ))}
-          </div>
-        </ScrollReveal>
+              <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {week.corners.map((corner) => (
+                  <CornerCard
+                    key={corner.id}
+                    corner={corner}
+                    done={doneIds.includes(corner.id)}
+                    accentBg={accent.bg}
+                    accentText={accent.text}
+                    onToggleDone={() => toggleDone(corner.id)}
+                    onOpen={() => setOpenCornerId(corner.id)}
+                  />
+                ))}
+              </div>
+            </ScrollReveal>
 
-        <ScrollReveal delay={0.1} className="mt-12">
-          <h2 className="text-2xl text-ink">أدوات مساعدة</h2>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {tools.map((tool) => (
-              <ToolCard key={tool.id} tool={tool} accentText={accent.text} />
-            ))}
-          </div>
-        </ScrollReveal>
+            <ScrollReveal delay={0.1} className="mt-12">
+              <h2 className="text-2xl text-ink">الروتين اليومي</h2>
+              <p className="mt-1 text-sm text-ink-muted">يعوّد المعلم الطلاب عليه طوال الأسبوع.</p>
+              <GlassCard className="mt-6">
+                <ul className="space-y-3">
+                  {week.dailyRoutine.map((item) => (
+                    <li key={item} className="flex gap-3 text-base leading-relaxed text-ink-muted">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sun-400" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </GlassCard>
+            </ScrollReveal>
+          </>
+        ) : (
+          <ScrollReveal delay={0.05} className="mt-8">
+            <GlassCard className="flex flex-col items-center gap-3 py-14 text-center">
+              <Info weight="duotone" className="h-10 w-10 text-ink-faint" />
+              <h2 className="text-xl text-ink">برامج المرحلة {stageLabel} قيد الإدخال</h2>
+              <p className="max-w-md text-sm text-ink-muted">
+                نعمل على إدخال برامج الأنشطة المعتمدة لهذه المرحلة. المتوفر حاليًا أنشطة
+                الاستراحة للمرحلة الابتدائية.
+              </p>
+            </GlassCard>
+          </ScrollReveal>
+        )}
 
         <ScrollReveal delay={0.1} className="mt-12">
           <h2 className="text-2xl text-ink">طلابك</h2>
@@ -102,7 +127,25 @@ export function Dashboard() {
             <StudentsTable students={data.students} username={data.username} />
           </div>
         </ScrollReveal>
+
+        {week && (
+          <p className="mt-10 text-xs text-ink-faint">
+            المصدر: {week.source.fileName} — برامج الأنشطة الطلابية، نسخة تجريبية ١٤٤٧-٢٠٢٥.
+          </p>
+        )}
       </main>
+
+      <AnimatePresence>
+        {openCorner && week && (
+          <CornerDetail
+            corner={openCorner}
+            routine={week.dailyRoutine}
+            accentText={accent.text}
+            accentBg={accent.bg}
+            onClose={() => setOpenCornerId(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

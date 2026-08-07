@@ -31,7 +31,6 @@
     "oxlint": "^1.75.0",
     "pdfjs-dist": "^6.2.108",
     "postcss": "^8.5.26",
-    "puppeteer-core": "^25.5.0",
     "tailwindcss": "^4.3.3",
     "three": "^0.185.1",
     "typescript": "~6.0.2",
