@@ -1,4 +1,4 @@
-import { Check, Clock, MapPin, CaretLeft, Question } from "@phosphor-icons/react";
+import { Check, Clock, MapPin, CaretLeft, Question, Play } from "@phosphor-icons/react";
 import { GlassCard } from "../GlassCard";
 import { cn } from "../../lib/utils";
 import type { BreakCorner } from "../../data/breakPeriods";
@@ -10,6 +10,7 @@ export function CornerCard({
   accentText,
   onToggleDone,
   onOpen,
+  onPlay,
 }: {
   corner: BreakCorner;
   done: boolean;
@@ -17,6 +18,7 @@ export function CornerCard({
   accentText: string;
   onToggleDone: () => void;
   onOpen: () => void;
+  onPlay: () => void;
 }) {
   return (
     <GlassCard className="flex h-full flex-col">
@@ -59,14 +61,29 @@ export function CornerCard({
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={onOpen}
-        className="group mt-5 flex items-center justify-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-white/30 hover:bg-white/5 active:scale-95"
-      >
-        افتح خطوات التنفيذ
-        <CaretLeft weight="bold" className="h-4 w-4 transition-transform duration-500 group-hover:-translate-x-1" />
-      </button>
+      <div className="mt-5 flex gap-2">
+        {corner.play && (
+          <button
+            type="button"
+            onClick={onPlay}
+            className={cn(
+              "group flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-bg transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-[1.03] active:scale-95",
+              accentBg
+            )}
+          >
+            <Play weight="fill" className="h-4 w-4" />
+            شغّل النشاط
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={onOpen}
+          className="group flex items-center justify-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-white/30 hover:bg-white/5 active:scale-95"
+        >
+          الخطوات
+          <CaretLeft weight="bold" className="h-4 w-4 transition-transform duration-500 group-hover:-translate-x-1" />
+        </button>
+      </div>
     </GlassCard>
   );
 }

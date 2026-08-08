@@ -9,6 +9,9 @@ import { WeeklyTargetCard } from "../components/dashboard/WeeklyTargetCard";
 import { CornerCard } from "../components/dashboard/CornerCard";
 import { CornerDetail } from "../components/dashboard/CornerDetail";
 import { StudentsTable } from "../components/dashboard/StudentsTable";
+import { QuizGame } from "../activities/QuizGame";
+import { ValueTree } from "../activities/ValueTree";
+import { GalleryWall } from "../activities/GalleryWall";
 import { breakWeeks } from "../data/breakPeriods";
 import { genderAccent, type RegistrationData } from "../lib/theme";
 
@@ -36,12 +39,14 @@ export function Dashboard() {
 
   const [doneIds, setDoneIds] = useState<string[]>([]);
   const [openCornerId, setOpenCornerId] = useState<string | null>(null);
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
   // البرامج المتوفرة حاليًا للمرحلة المسجَّلة فقط.
   const weeks = useMemo(() => breakWeeks.filter((w) => w.stage === stageLabel), [stageLabel]);
   const week = weeks[0] ?? null;
 
   const openCorner = week?.corners.find((c) => c.id === openCornerId) ?? null;
+  const playing = week?.corners.find((c) => c.id === playingId) ?? null;
   const completed = week ? week.corners.filter((c) => doneIds.includes(c.id)).length : 0;
 
   function toggleDone(id: string) {
@@ -88,6 +93,7 @@ export function Dashboard() {
                     accentText={accent.text}
                     onToggleDone={() => toggleDone(corner.id)}
                     onOpen={() => setOpenCornerId(corner.id)}
+                    onPlay={() => setPlayingId(corner.id)}
                   />
                 ))}
               </div>
@@ -145,6 +151,14 @@ export function Dashboard() {
             onClose={() => setOpenCornerId(null)}
           />
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {playing?.play === "quiz" && playing.quiz && (
+          <QuizGame items={playing.quiz} onExit={() => setPlayingId(null)} />
+        )}
+        {playing?.play === "tree" && <ValueTree onExit={() => setPlayingId(null)} />}
+        {playing?.play === "gallery" && <GalleryWall onExit={() => setPlayingId(null)} />}
       </AnimatePresence>
     </div>
   );

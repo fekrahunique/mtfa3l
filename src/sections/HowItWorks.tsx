@@ -47,7 +47,7 @@ function StepsList() {
             <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-bg-raised">
               <step.icon weight="duotone" className="h-7 w-7 text-sun-400" />
             </div>
-            <span className="mt-4 font-display text-sm text-ink-faint">{`الخطوة ${i + 1}`}</span>
+            <span className="mt-4 text-sm font-semibold text-ink-faint">{`الخطوة ${i + 1}`}</span>
             <h3 className="mt-1 text-xl text-ink">{step.title}</h3>
             <p className="mt-2 max-w-xs text-base leading-relaxed text-ink-muted">{step.body}</p>
           </ScrollReveal>

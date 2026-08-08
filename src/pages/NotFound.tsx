@@ -11,7 +11,7 @@ export function NotFound() {
         <LazySunScene className="mx-auto h-full max-w-lg" />
       </div>
       <div className="relative">
-        <p className="font-display text-7xl text-sun-400">٤٠٤</p>
+        <p className="text-7xl font-bold text-sun-400">٤٠٤</p>
         <h1 className="mt-4 text-3xl text-ink">هذه الصفحة ما وصلتها الشمس بعد</h1>
         <p className="mx-auto mt-3 max-w-md text-ink-muted">
           الرابط اللي فتحته مو موجود. ارجع للرئيسية وكمّل رحلتك من هناك.

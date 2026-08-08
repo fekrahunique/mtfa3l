@@ -59,7 +59,7 @@ export function WeeklyTargetCard({
             transition={{ duration: 1.2, ease: EASE }}
           />
         </svg>
-        <div className={cn("absolute inset-0 flex items-center justify-center font-display text-2xl", accentText)}>
+        <div className={cn("absolute inset-0 flex items-center justify-center text-2xl font-bold", accentText)}>
           {Math.round(ratio * 100)}٪
         </div>
       </div>

@@ -31,6 +31,8 @@ export interface BreakCorner {
   quiz?: { question: string; answer: string }[];
   /** رابط مرفق يشير إليه رمز استجابة في الصفحة. */
   attachment?: string;
+  /** التجربة التفاعلية التي تُشغَّل لهذا الركن. */
+  play?: "gallery" | "quiz" | "tree";
 }
 
 export interface BreakWeek {
@@ -97,6 +99,7 @@ export const breakWeeks: BreakWeek[] = [
           "في نهاية اليوم، تعرض اللوحة للطلاب والزوار كنتاج جماعي يزين المدرسة.",
         ],
         attachment: "ملف هوية اليوم الوطني السعودي ٩٥",
+        play: "gallery",
       },
       {
         id: "break-primary-w5-d2",
@@ -144,6 +147,7 @@ export const breakWeeks: BreakWeek[] = [
           { question: "أين يقع المسجد الحرام؟", answer: "في مدينة مكة المكرمة." },
           { question: "أين يقع المسجد النبوي؟", answer: "في مدينة المدينة المنورة." },
         ],
+        play: "quiz",
       },
       {
         id: "break-primary-w5-d3",
@@ -165,6 +169,7 @@ export const breakWeeks: BreakWeek[] = [
           "يمكن للمعلم قراءة بعض العبارات أو التعليقات المميزة لمناقشتها أمام الطلاب بإيجابية.",
           "بعد اكتمال اللوحة تعلق في مكان بارز في المدرسة أو يتم تصويرها ونشرها على وسائل التواصل المعتمدة في المدرسة.",
         ],
+        play: "tree",
       },
     ],
   },
