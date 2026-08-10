@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import { UserCirclePlus, FileArrowUp, Confetti } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { STEP_THRESHOLDS } from "../components/three/schoolGateConfig";
+import { noDot } from "../lib/utils";
 
 const SchoolGate = lazy(() =>
   import("../components/three/SchoolGate").then((m) => ({ default: m.SchoolGate }))
@@ -19,7 +20,7 @@ const steps = [
   {
     icon: FileArrowUp,
     title: "ارفع ملف طلابك",
-    body: "إكسل أو وورد، وتتولد حسابات الطلاب تلقائيًا بدون إدخال يدوي.",
+    body: "إكسل أو وورد، وتُقرأ أسماء الطلاب تلقائيًا بدون إدخال يدوي.",
   },
   {
     icon: Confetti,
@@ -37,7 +38,7 @@ function StepsList() {
     <div className="mx-auto max-w-5xl px-4 py-24">
       <ScrollReveal className="mx-auto max-w-[680px] text-center">
         <h2 className="text-3xl text-ink sm:text-4xl">كيف تعمل المنصة</h2>
-        <p className="mt-4 text-lg text-ink-muted">ثلاث خطوات، وتكون رحلة النشاط جاهزة.</p>
+        <p className="mt-4 text-lg text-ink-muted">ثلاث خطوات، وتكون رحلة النشاط جاهزة</p>
       </ScrollReveal>
 
       <div className="relative mt-16 grid grid-cols-1 gap-10 sm:grid-cols-3">
@@ -49,7 +50,7 @@ function StepsList() {
             </div>
             <span className="mt-4 text-sm font-semibold text-ink-faint">{`الخطوة ${i + 1}`}</span>
             <h3 className="mt-1 text-xl text-ink">{step.title}</h3>
-            <p className="mt-2 max-w-xs text-base leading-relaxed text-ink-muted">{step.body}</p>
+            <p className="mt-2 max-w-xs text-base leading-relaxed text-ink-muted">{noDot(step.body)}</p>
           </ScrollReveal>
         ))}
       </div>
@@ -98,7 +99,7 @@ export function HowItWorks() {
       <div className="mx-auto max-w-[680px] px-4 pb-16 pt-24 text-center">
         <h2 className="text-3xl text-ink sm:text-4xl">كيف تعمل المنصة</h2>
         <p className="mt-4 text-lg text-ink-muted">
-          ادخل من بوابة المدرسة، وعند كل عمود تنتظرك خطوة.
+          ادخل من بوابة المدرسة، وعند كل عمود تنتظرك خطوة
         </p>
       </div>
 
@@ -127,7 +128,7 @@ export function HowItWorks() {
                     الخطوة {active + 1} من {steps.length}
                   </div>
                   <h3 className="mt-2 font-display text-2xl text-white sm:text-3xl">{current.title}</h3>
-                  <p className="mt-2 text-base leading-relaxed text-white/85">{current.body}</p>
+                  <p className="mt-2 text-base leading-relaxed text-white/85">{noDot(current.body)}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -136,11 +137,11 @@ export function HowItWorks() {
       </div>
 
       <div className="sr-only">
-        <h3>خطوات العمل على منصة متفاعل</h3>
+        <h3>خطوات العمل على منصة نشاط</h3>
         <ol>
           {steps.map((step) => (
             <li key={step.title}>
-              {step.title}: {step.body}
+              {step.title}: {noDot(step.body)}
             </li>
           ))}
         </ol>

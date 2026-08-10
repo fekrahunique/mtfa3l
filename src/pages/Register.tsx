@@ -3,17 +3,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { IslandNav } from "../components/IslandNav";
+import { LivelyBackdrop } from "../components/LivelyBackdrop";
 import { StepProgress } from "../components/StepProgress";
 import { StepSchool } from "./register/StepSchool";
 import { StepTeacher } from "./register/StepTeacher";
-import { StepStudents } from "./register/StepStudents";
 import { StepReview } from "./register/StepReview";
 import { emptyRegistration, genderAccent, type RegistrationData } from "../lib/theme";
 import { generateUsername } from "../lib/studentFile";
 import { cn } from "../lib/utils";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
-const STEP_LABELS = ["المدرسة", "بياناتك", "الطلاب", "المراجعة"];
+const STEP_LABELS = ["المدرسة", "بياناتك", "المراجعة"];
 
 function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -30,10 +30,10 @@ export function Register() {
   const teacherErrors = useMemo(() => {
     const errors: { teacherName?: string; email?: string; schoolName?: string } = {};
     if (data.teacherName && data.teacherName.trim().length < 2) {
-      errors.teacherName = "اكتب الاسم كاملًا.";
+      errors.teacherName = "اكتب الاسم كاملًا";
     }
     if (data.email && !validateEmail(data.email)) {
-      errors.email = "البريد الإلكتروني غير صحيح.";
+      errors.email = "البريد الإلكتروني غير صحيح";
     }
     return errors;
   }, [data.teacherName, data.email]);
@@ -49,7 +49,6 @@ export function Register() {
         validateEmail(data.email) &&
         data.schoolName.trim().length >= 2
     ),
-    data.students.length > 0,
     true,
   ][step];
 
@@ -58,17 +57,26 @@ export function Register() {
       setStep((s) => s + 1);
     } else {
       const username = generateUsername(data.schoolName);
-      navigate("/لوحة-التحكم", { state: { ...data, username } });
+      navigate("/الأسابيع", { state: { ...data, username } });
     }
   }
 
   return (
     <div className="relative min-h-screen overflow-x-clip pb-24">
+      <LivelyBackdrop />
       <IslandNav />
-      <main id="main-content" className="mx-auto max-w-2xl px-4 pt-40">
+      <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-40">
         <div className="mb-12 text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="mb-3 inline-block rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-sm"
+          >
+            ✨ رحلة تسجيلك تبدأ هنا
+          </motion.span>
           <h1 className="text-3xl text-ink sm:text-4xl">سجّل كمعلم أو معلمة نشاط</h1>
-          <p className="mt-3 text-ink-muted">أربع خطوات بسيطة، وتوصل للوحة التحكم.</p>
+          <p className="mt-3 text-ink-muted">ثلاث خطوات بسيطة، وتوصل للوحة التحكم — وتضيف فصولك وطلابك من داخل اللوحة</p>
         </div>
 
         <StepProgress steps={STEP_LABELS} current={step} accentClass={accentBg} />
@@ -99,10 +107,7 @@ export function Register() {
                   onChange={patch}
                 />
               )}
-              {step === 2 && (
-                <StepStudents students={data.students} onChange={(students) => patch({ students })} />
-              )}
-              {step === 3 && <StepReview data={data} />}
+              {step === 2 && <StepReview data={data} />}
             </motion.div>
           </AnimatePresence>
         </div>

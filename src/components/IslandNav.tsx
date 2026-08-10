@@ -19,7 +19,7 @@ export function IslandNav() {
       <div className="fixed inset-x-0 top-6 z-50 mx-auto w-max">
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]">
           <Link to="/" className="flex items-center gap-2 rounded-full px-3 py-1.5">
-            <span className="font-display text-lg text-ink">متفاعل</span>
+            <span className="font-display text-lg text-ink">نشاط</span>
           </Link>
 
           <div className="hidden items-center gap-1 sm:flex">

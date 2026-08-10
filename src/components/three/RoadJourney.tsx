@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { MotionValue } from "framer-motion";
 import { WoodenSign } from "./WoodenSign";
+import { BtsBillboard } from "./BtsSigns";
+import { backToSchoolSeason } from "../../lib/backToSchool";
 
 const ROAD_HALF_WIDTH = 4.5;
 
@@ -222,6 +224,21 @@ function Journey({
     [curve, signs]
   );
 
+  // لوحات «العودة للدراسة» موسمية: على الجانب المقابل للافتات الخشبية بين محطاتها.
+  const btsBillboards = useMemo(() => {
+    if (!backToSchoolSeason()) return [];
+    return [0.21, 0.58, 0.79].map((t, i) => {
+      const point = curve.getPointAt(t);
+      const tangent = curve.getTangentAt(t).normalize();
+      const side = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
+      const dir = i % 2 === 0 ? -1 : 1; // مقابل جهة اللافتات
+      const pos = point.clone().addScaledVector(side, dir * (ROAD_HALF_WIDTH + 3.2));
+      const readFrom = curve.getPointAt(Math.max(t - 0.045, 0));
+      const rotationY = Math.atan2(readFrom.x - pos.x, readFrom.z - pos.z);
+      return { position: [pos.x, 0, pos.z] as [number, number, number], rotationY, variant: i };
+    });
+  }, [curve]);
+
   useEffect(() => {
     const cam = camera as THREE.PerspectiveCamera;
     cam.fov = portrait ? 64 : 58;
@@ -283,6 +300,10 @@ function Journey({
           body={placement.sign.body}
           step={placement.sign.step}
         />
+      ))}
+
+      {btsBillboards.map((b, i) => (
+        <BtsBillboard key={i} position={b.position} rotationY={b.rotationY} variant={b.variant} />
       ))}
     </>
   );

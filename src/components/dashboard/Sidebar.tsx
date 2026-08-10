@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import {
   House,
   Confetti,
-  UsersThree,
   Wrench,
+  UsersThree,
   List,
   X,
 } from "@phosphor-icons/react";
@@ -12,11 +12,12 @@ import { FacelessAvatar } from "../illustrations/FacelessAvatar";
 import type { Gender } from "../../lib/theme";
 import { cn } from "../../lib/utils";
 
+/** كل بند يمرّر إلى قسم حقيقي في الصفحة عبر معرّفه. */
 const navItems = [
-  { icon: House, label: "الرئيسية" },
-  { icon: Confetti, label: "الأنشطة" },
-  { icon: UsersThree, label: "الطلاب" },
-  { icon: Wrench, label: "الأدوات" },
+  { icon: House, label: "الرئيسية", target: "main-content" },
+  { icon: Confetti, label: "الأنشطة", target: "activities" },
+  { icon: Wrench, label: "الأدوات", target: "tools" },
+  { icon: UsersThree, label: "الطلاب", target: "students" },
 ];
 
 export function Sidebar({
@@ -33,13 +34,20 @@ export function Sidebar({
   const [active, setActive] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  function goTo(i: number, target: string) {
+    setActive(i);
+    setMobileOpen(false);
+    const el = document.getElementById(target);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const content = (
     <>
       <div className="flex items-center gap-3 px-2">
         <FacelessAvatar gender={gender} className="h-11 w-11" />
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-ink">{teacherName || "معلم النشاط"}</p>
-          <p className="truncate text-xs text-ink-faint">{schoolName || "متفاعل"}</p>
+          <p className="truncate text-xs text-ink-faint">{schoolName || "نشاط"}</p>
         </div>
       </div>
 
@@ -48,10 +56,7 @@ export function Sidebar({
           <button
             key={item.label}
             type="button"
-            onClick={() => {
-              setActive(i);
-              setMobileOpen(false);
-            }}
+            onClick={() => goTo(i, item.target)}
             aria-current={active === i ? "page" : undefined}
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",

@@ -27,14 +27,14 @@ export function StepStudents({
     try {
       const parsed = await parseStudentFile(file);
       if (parsed.length === 0) {
-        setError("ما لقينا أي أسماء في الملف. تأكد إن الأسماء موجودة في العمود الأول.");
+        setError("ما لقينا أي أسماء في الملف. تأكد إن الأسماء موجودة في العمود الأول");
         setStatus("error");
         return;
       }
       onChange(parsed);
       setStatus("idle");
     } catch {
-      setError("تعذّرت قراءة الملف. تأكد إن الصيغة xlsx أو docx وإن الملف غير تالف.");
+      setError("تعذّرت قراءة الملف. تأكد إن الصيغة xlsx أو docx وإن الملف غير تالف");
       setStatus("error");
     }
   }
@@ -43,7 +43,7 @@ export function StepStudents({
     <ScrollReveal className="space-y-6">
       <div>
         <h2 className="text-2xl text-ink">رفع ملف الطلاب</h2>
-        <p className="mt-1 text-sm text-ink-faint">ملف إكسل (xlsx) أو وورد (docx) فيه أسماء الطلاب.</p>
+        <p className="mt-1 text-sm text-ink-faint">ملف إكسل (xlsx) أو وورد (docx) فيه أسماء الطلاب</p>
       </div>
 
       <div

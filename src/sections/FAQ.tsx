@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { CaretDown } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
+import { noDot } from "../lib/utils";
 
 const Classroom = lazy(() =>
   import("../components/three/Classroom").then((m) => ({ default: m.Classroom }))
@@ -12,15 +13,15 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 const faqs = [
   {
     q: "هل المنصة مناسبة للمدارس الحكومية والأهلية معًا؟",
-    a: "نعم، متفاعل موجهة لرواد ورائدات النشاط في المدارس الحكومية والأهلية معًا، وتشتغل بنفس الكفاءة في الحالتين.",
+    a: "نعم، نشاط موجهة لرواد ورائدات النشاط في المدارس الحكومية والأهلية معًا، وتشتغل بنفس الكفاءة في الحالتين.",
   },
   {
     q: "أي مراحل دراسية تغطي المنصة؟",
     a: "المرحلتان الابتدائية والمتوسطة حاليًا، بمحتوى وتصميم مختلف يناسب كل مرحلة.",
   },
   {
-    q: "كيف يحصل الطلاب على حساباتهم؟",
-    a: "ترفع ملف إكسل أو وورد فيه أسماء طلابك، وتتولد لكل طالب بيانات دخول تلقائيًا دون إدخال يدوي.",
+    q: "كيف أضيف طلابي إلى المنصة؟",
+    a: "ترفع ملف إكسل أو وورد فيه أسماء طلابك، وتُقرأ القائمة تلقائيًا دون إدخال يدوي، وتظهر لك في لوحة التحكم.",
   },
   {
     q: "هل يوجد فرق بين تجربة البنين والبنات؟",
@@ -36,11 +37,11 @@ const faqs = [
   },
   {
     q: "هل أحتاج تدريب لاستخدام المنصة؟",
-    a: "لا، الأدوات مبسطة والتفاعل بديهي، ويمكنك البدء من أول دخول بدون تدريب مسبق.",
+    a: "لا، الأدوات مبسطة والتفاعل بديهي، ويمكنك البدء من أول استخدام بدون تدريب مسبق.",
   },
   {
     q: "ماذا لو واجهت مشكلة أثناء رفع ملف الطلاب؟",
-    a: "لوحة التحكم توضح لك أي سطر فيه خطأ قبل إنشاء الحسابات، وتقدر تصححه وترفع الملف من جديد.",
+    a: "لوحة التحكم توضح لك أي سطر فيه خطأ قبل اعتماد القائمة، وتقدر تصححه وترفع الملف من جديد.",
   },
 ];
 
@@ -74,7 +75,7 @@ function FaqItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
             transition={{ duration: 0.5, ease: EASE }}
             className="overflow-hidden"
           >
-            <p className="pb-5 text-base leading-relaxed text-ink-muted">{a}</p>
+            <p className="pb-5 text-base leading-relaxed text-ink-muted">{noDot(a)}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -148,12 +149,12 @@ export function FAQ() {
       </div>
 
       <div className="sr-only">
-        <h3>الأسئلة الشائعة عن منصة متفاعل</h3>
+        <h3>الأسئلة الشائعة عن منصة نشاط</h3>
         <dl>
           {faqs.map((item) => (
             <div key={item.q}>
               <dt>{item.q}</dt>
-              <dd>{item.a}</dd>
+              <dd>{noDot(item.a)}</dd>
             </div>
           ))}
         </dl>

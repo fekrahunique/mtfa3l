@@ -16,3 +16,6 @@ npm-debug.log*
 # ملفات الوزارة تُنزَّل محليًا ولا تُرفع، ويبقى ملف الشرح فقط
 ministry-files/*
 !ministry-files/README.md
+
+# صور صفحات PDF المرندَرة محليًا (أداة الاستخراج) — لا تُرفع
+tools/rendered/

@@ -8,6 +8,18 @@
   font-display: swap;
 }
 
+/* خط العرض (Arsenica) بلا أرقام سليمة (يظهر علامة مائية)، فنوجّه نطاق الأرقام
+   والنقطتين والفواصل إلى Thmanyah — فتُصلَح كل الأرقام (العدّاد/المؤقّت/النقاط)
+   في المنصة تلقائيًا دون تعديل المكوّنات. */
+@font-face {
+  font-family: "Arsenica Arabic";
+  src: url("/fonts/thmanyah-sans/thmanyahsans-Bold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+0660-0669, U+06F0-06F9, U+002E, U+002C, U+003A, U+0025, U+002F;
+}
+
 @font-face {
   font-family: "Thmanyah Sans";
   src: url("/fonts/thmanyah-sans/thmanyahsans-Light.woff2") format("woff2");

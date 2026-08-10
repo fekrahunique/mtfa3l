@@ -5,9 +5,9 @@ export function Footer() {
     <footer className="border-t border-white/10 px-4 py-12">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-right">
         <div>
-          <span className="font-display text-xl text-ink">متفاعل</span>
+          <span className="font-display text-xl text-ink">نشاط</span>
           <p className="mt-2 max-w-xs text-sm text-ink-faint">
-            منصة الأنشطة المدرسية لرواد النشاط في المدارس الحكومية والأهلية.
+            منصة الأنشطة المدرسية لرواد النشاط في المدارس الحكومية والأهلية
           </p>
         </div>
 
@@ -20,7 +20,7 @@ export function Footer() {
         </nav>
       </div>
       <p className="mt-8 text-center text-xs text-ink-faint">
-        © {new Date().getFullYear()} متفاعل. جميع الحقوق محفوظة.
+        © {new Date().getFullYear()} نشاط. جميع الحقوق محفوظة
       </p>
     </footer>
   );

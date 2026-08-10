@@ -7,7 +7,9 @@ import { Road, OUR_LANE_X, ONCOMING_LANE_X } from "./Road";
 import { Car } from "./Car";
 import { TrafficLight } from "./TrafficLight";
 import { Scenery } from "./Scenery";
+import { Billboards } from "./Billboards";
 import { CarInterior } from "./CarInterior";
+import { backToSchoolSeason } from "../../lib/backToSchool";
 
 const traffic = [
   // Ahead of us, same direction: we close on them slowly and stay well back.
@@ -60,6 +62,7 @@ export function DrivingScene({ className }: { className?: string }) {
         <Rig />
         <Road />
         <Scenery />
+        {backToSchoolSeason() && <Billboards />}
         <TrafficLight position={[2.9, 0, -58]} />
         <TrafficLight position={[2.9, 0, -196]} />
         {traffic.map((car) => (

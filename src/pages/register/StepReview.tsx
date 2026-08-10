@@ -29,7 +29,7 @@ export function StepReview({ data }: { data: RegistrationData }) {
     <ScrollReveal className="space-y-6">
       <div>
         <h2 className="text-2xl text-ink">مراجعة قبل الإرسال</h2>
-        <p className="mt-1 text-sm text-ink-faint">تأكد من بياناتك قبل إنشاء حسابك وحسابات طلابك.</p>
+        <p className="mt-1 text-sm text-ink-faint">تأكد من بياناتك قبل إنشاء حسابك وإضافة قائمة طلابك</p>
       </div>
 
       <GlassCard>

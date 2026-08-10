@@ -5,6 +5,7 @@ import { CaretLeft, GraduationCap, FileArrowUp, SquaresFour } from "@phosphor-ic
 import { ScrollReveal } from "../components/ScrollReveal";
 import { GlassCard } from "../components/GlassCard";
 import { STATION_THRESHOLDS } from "../components/three/runTrackConfig";
+import { noDot } from "../lib/utils";
 
 const RunTrack = lazy(() =>
   import("../components/three/RunTrack").then((m) => ({ default: m.RunTrack }))
@@ -21,7 +22,7 @@ const stations = [
   {
     icon: FileArrowUp,
     title: "ارفع ملف الطلاب",
-    body: "إكسل أو وورد من جهازك، وتتولد لكل طالب بيانات دخول جاهزة خلال ثوانٍ.",
+    body: "إكسل أو وورد من جهازك، وتُجهَّز قائمة طلابك خلال ثوانٍ.",
   },
   {
     icon: SquaresFour,
@@ -40,7 +41,7 @@ function JourneyCards() {
       <ScrollReveal className="mx-auto max-w-[680px] text-center">
         <h2 className="text-3xl text-ink sm:text-4xl">رحلتك من التسجيل إلى أول نشاط</h2>
         <p className="mt-4 text-lg text-ink-muted">
-          تجربة واحدة متصلة، من أول تعريف بالمنصة إلى لوحة التحكم اليومية.
+          تجربة واحدة متصلة، من أول تعريف بالمنصة إلى لوحة التحكم اليومية
         </p>
       </ScrollReveal>
 
@@ -50,7 +51,7 @@ function JourneyCards() {
             <GlassCard className="h-full">
               <station.icon weight="duotone" className="h-9 w-9 text-sun-400" />
               <h3 className="mt-5 text-xl text-ink">{station.title}</h3>
-              <p className="mt-2 text-base leading-relaxed text-ink-muted">{station.body}</p>
+              <p className="mt-2 text-base leading-relaxed text-ink-muted">{noDot(station.body)}</p>
             </GlassCard>
           </ScrollReveal>
         ))}
@@ -110,7 +111,7 @@ export function JourneyPreview() {
       <div className="mx-auto max-w-[680px] px-4 pb-16 pt-24 text-center">
         <h2 className="text-3xl text-ink sm:text-4xl">رحلتك من التسجيل إلى أول نشاط</h2>
         <p className="mt-4 text-lg text-ink-muted">
-          ثلاث محطات على المضمار، وتوصل لأول نشاط.
+          ثلاث محطات على المضمار، وتوصل لأول نشاط
         </p>
       </div>
 
@@ -139,7 +140,7 @@ export function JourneyPreview() {
                     المحطة {active + 1} من {stations.length}
                   </div>
                   <h3 className="mt-2 font-display text-2xl text-white sm:text-3xl">{current.title}</h3>
-                  <p className="mt-2 text-base leading-relaxed text-white/85">{current.body}</p>
+                  <p className="mt-2 text-base leading-relaxed text-white/85">{noDot(current.body)}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -162,7 +163,7 @@ export function JourneyPreview() {
         <ol>
           {stations.map((station) => (
             <li key={station.title}>
-              {station.title}: {station.body}
+              {station.title}: {noDot(station.body)}
             </li>
           ))}
         </ol>

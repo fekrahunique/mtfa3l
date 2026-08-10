@@ -9,6 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { GlassCard } from "../components/GlassCard";
+import { noDot } from "../lib/utils";
 
 const RoadJourney = lazy(() =>
   import("../components/three/RoadJourney").then((m) => ({ default: m.RoadJourney }))
@@ -22,8 +23,8 @@ const benefits = [
   },
   {
     icon: FileArrowUp,
-    title: "حسابات الطلاب بضغطة واحدة",
-    body: "ارفع ملف الإكسل أو الوورد اللي عندك، ويطلع لكل طالب حساب يدخل فيه ويتفاعل.",
+    title: "قائمة طلابك بضغطة واحدة",
+    body: "ارفع ملف الإكسل أو الوورد اللي عندك، وتنقرأ أسماء طلابك تلقائيًا وتجهز أنشطتهم.",
   },
   {
     icon: PuzzlePiece,
@@ -66,7 +67,7 @@ function BenefitsGrid() {
       <ScrollReveal className="mx-auto max-w-[680px] text-center">
         <h2 className="text-3xl text-ink sm:text-4xl">كل ما يحتاجه رائد النشاط، في مكان واحد</h2>
         <p className="mt-4 text-lg text-ink-muted">
-          من التحضير إلى التنفيذ إلى المتابعة، متفاعل تختصر عليك الوقت وتحافظ على الجودة.
+          من التحضير إلى التنفيذ إلى المتابعة، نشاط تختصر عليك الوقت وتحافظ على الجودة
         </p>
       </ScrollReveal>
 
@@ -76,7 +77,7 @@ function BenefitsGrid() {
             <GlassCard className="h-full">
               <item.icon weight="duotone" className="h-9 w-9 text-sun-400" />
               <h3 className="mt-5 text-xl text-ink">{item.title}</h3>
-              <p className="mt-2 text-base leading-relaxed text-ink-muted">{item.body}</p>
+              <p className="mt-2 text-base leading-relaxed text-ink-muted">{noDot(item.body)}</p>
             </GlassCard>
           </ScrollReveal>
         ))}
@@ -103,7 +104,7 @@ export function Benefits() {
 
   const signs = benefits.map((item, i) => ({
     title: item.title,
-    body: item.body,
+    body: noDot(item.body),
     step: `المحطة ${i + 1} من ${benefits.length}`,
   }));
 
@@ -122,17 +123,17 @@ export function Benefits() {
             كل ما يحتاجه رائد النشاط، في مكان واحد
           </h2>
           <p className="mx-auto mt-3 max-w-[680px] px-4 text-white/80 [text-shadow:0_1px_14px_rgba(0,0,0,0.6)]">
-            كمّل الطريق، وكل لوحة توقفك عند فائدة جديدة.
+            كمّل الطريق، وكل لوحة توقفك عند فائدة جديدة
           </p>
         </div>
       </div>
 
       <div className="sr-only">
-        <h3>مزايا منصة متفاعل</h3>
+        <h3>مزايا منصة نشاط</h3>
         <ul>
           {benefits.map((item) => (
             <li key={item.title}>
-              {item.title}: {item.body}
+              {item.title}: {noDot(item.body)}
             </li>
           ))}
         </ul>

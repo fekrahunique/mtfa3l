@@ -88,7 +88,7 @@ export function StepSchool({
 
       <ScrollReveal delay={0.1}>
         <h2 className="text-2xl text-ink">الطلاب</h2>
-        <p className="mt-1 text-sm text-ink-faint">يحدد هذا الاختيار ألوان لوحة التحكم الخاصة بك.</p>
+        <p className="mt-1 text-sm text-ink-faint">يحدد هذا الاختيار ألوان لوحة التحكم الخاصة بك</p>
         <div className="mt-4 flex gap-4">
           <OptionCard
             active={gender === "boys"}

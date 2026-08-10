@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { MotionValue } from "framer-motion";
 import { CAM_START, CAM_TRAVEL, MARKER_Z } from "./schoolGateConfig";
+import { BtsWordmark, BtsBunting } from "./BtsSigns";
+import { backToSchoolSeason } from "../../lib/backToSchool";
 
 const WALL = "#e3d6bd";
 const WALL_DARK = "#cdbb9c";
@@ -213,6 +215,19 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
 
       <SchoolBuilding />
       <Courtyard />
+
+      {/* الشعار اللفظي «العودة للدراسة» فوق مدخل الفناء — تعبره الكاميرا مباشرة */}
+      {backToSchoolSeason() && (
+        <>
+          <BtsWordmark position={[0, 6.4, -16]} width={9} height={3.6} />
+          <BtsBunting position={[0, 4.6, -10]} count={14} spacing={1.5} />
+          {/* رايتان بلون الهوية على جانبي الممر */}
+          <mesh position={[-4.6, 6.2, -12]}><cylinderGeometry args={[0.08, 0.09, 5, 8]} /><meshStandardMaterial color="#c9c9cf" metalness={0.4} roughness={0.5} /></mesh>
+          <mesh position={[-3.7, 7.6, -12]}><planeGeometry args={[1.7, 1.1]} /><meshStandardMaterial color="#7BD84A" side={THREE.DoubleSide} roughness={0.8} /></mesh>
+          <mesh position={[4.6, 6.2, -12]}><cylinderGeometry args={[0.08, 0.09, 5, 8]} /><meshStandardMaterial color="#c9c9cf" metalness={0.4} roughness={0.5} /></mesh>
+          <mesh position={[3.7, 7.6, -12]}><planeGeometry args={[1.7, 1.1]} /><meshStandardMaterial color="#61BBFF" side={THREE.DoubleSide} roughness={0.8} /></mesh>
+        </>
+      )}
 
       {MARKER_Z.map((z, i) => (
         <StepMarker key={z} index={i} x={i % 2 === 0 ? 3.6 : -3.6} z={z} />

@@ -4,6 +4,8 @@ import * as THREE from "three";
 import type { MotionValue } from "framer-motion";
 import { wrapText } from "./panelTexture";
 import { useFontsReady } from "../../lib/useFontsReady";
+import { backToSchoolSeason } from "../../lib/backToSchool";
+import { makeBackToSchoolTexture } from "./backToSchoolTexture";
 
 export interface Faq {
   q: string;
@@ -181,6 +183,15 @@ function Scene({ progress, faqs }: { progress: MotionValue<number>; faqs: Faq[] 
     [textures]
   );
 
+  // بوستر «العودة للدراسة» الموسمي على جدار الفصل
+  const btsSeason = backToSchoolSeason();
+  const btsTexture = useMemo(
+    () => (btsSeason ? makeBackToSchoolTexture(1) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [btsSeason, fontsReady]
+  );
+  useEffect(() => () => btsTexture?.dispose(), [btsTexture]);
+
   useFrame((state) => {
     const t = Math.min(Math.max(progress.get(), 0), 0.999);
     const index = Math.min(Math.floor(t * faqs.length), faqs.length - 1);
@@ -221,6 +232,14 @@ function Scene({ progress, faqs }: { progress: MotionValue<number>; faqs: Faq[] 
           <meshStandardMaterial color={BOARD_FRAME} roughness={0.9} />
         </mesh>
       </group>
+
+      {/* بوستر العودة للدراسة الموسمي — معلّق على الجدار الأمامي بجانب السبورة */}
+      {btsTexture && (
+        <group position={[6.4, 2.5, -4.9]}>
+          <mesh><boxGeometry args={[2.9, 1.95, 0.1]} /><meshStandardMaterial color="#2f2153" roughness={0.8} /></mesh>
+          <mesh position={[0, 0, 0.07]}><planeGeometry args={[2.6, 1.65]} /><meshStandardMaterial map={btsTexture} roughness={0.6} /></mesh>
+        </group>
+      )}
     </>
   );
 }

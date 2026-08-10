@@ -10,7 +10,7 @@ export function FinalCTA() {
           جاهز تخطّط أنشطة أسبوعك في دقائق؟
         </h2>
         <p className="mx-auto mt-4 max-w-[680px] text-lg text-ink-muted">
-          سجّل الآن وابدأ رحلة أنشطة مدرستك مع متفاعل، مجانًا خلال فترة التجربة المبكرة.
+          سجّل الآن وابدأ رحلة أنشطة مدرستك مع نشاط، مجانًا خلال فترة التجربة المبكرة
         </p>
         <div className="mt-8 flex justify-center">
           <Link

@@ -61,5 +61,5 @@ export function generateUsername(schoolName: string) {
     .join("-")
     .replace(/[^ء-يa-zA-Z0-9-]/g, "");
   const suffix = Math.floor(1000 + Math.random() * 9000);
-  return `${base || "متفاعل"}-${suffix}`;
+  return `${base || "نشاط"}-${suffix}`;
 }

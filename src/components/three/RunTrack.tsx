@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { MotionValue } from "framer-motion";
 import { STATION_Z, TRACK_START, TRACK_END } from "./runTrackConfig";
+import { BtsWordmark, BtsBunting } from "./BtsSigns";
+import { backToSchoolSeason } from "../../lib/backToSchool";
 
 
 const LANE_COUNT = 6;
@@ -156,7 +158,7 @@ function makeNumberTexture(n: number) {
  * A numbered gate across the lanes. It carries no wording, so nothing in the
  * scene can collide with or obscure the copy, which lives in the DOM.
  */
-function StationGate({ z, index }: { z: number; index: number }) {
+function StationGate({ z, index, season }: { z: number; index: number; season: boolean }) {
   const texture = useMemo(() => makeNumberTexture(index + 1), [index]);
   useEffect(() => () => texture.dispose(), [texture]);
 
@@ -182,6 +184,14 @@ function StationGate({ z, index }: { z: number; index: number }) {
         <planeGeometry args={[1, 1]} />
         <meshStandardMaterial map={texture} roughness={0.85} side={THREE.DoubleSide} />
       </mesh>
+
+      {/* الشعار اللفظي «العودة للدراسة» معلّق تحت العارضة، يعبره العدّاء */}
+      {season && (
+        <>
+          <BtsWordmark position={[0, 3.05, 0.16]} width={span} height={2.4} />
+          <BtsBunting position={[0, 4.75, 0.15]} count={LANE_COUNT + 2} spacing={1.4} />
+        </>
+      )}
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
         <planeGeometry args={[span, 0.5]} />
@@ -255,7 +265,7 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
       <Track />
       <Runner z={runnerZ} />
       {STATION_Z.map((z, i) => (
-        <StationGate key={z} z={z} index={i} />
+        <StationGate key={z} z={z} index={i} season={backToSchoolSeason()} />
       ))}
     </>
   );
