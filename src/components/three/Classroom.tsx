@@ -73,7 +73,7 @@ function makeBoardTexture(index: number, total: number, faq: Faq) {
   return texture;
 }
 
-function Desks() {
+export function Desks() {
   const rows = 4;
   const cols = 4;
   const desks = useMemo(() => {
@@ -119,7 +119,7 @@ function Desks() {
   );
 }
 
-function Room() {
+export function Room() {
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 6]}>

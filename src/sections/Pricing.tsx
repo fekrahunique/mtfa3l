@@ -1,10 +1,14 @@
-import { useState, type ReactNode } from "react";
+import { lazy, Suspense, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Sparkle, RocketLaunch, Crown, Check, Star, CaretLeft } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { noDot } from "../lib/utils";
 import { PLANS, planPrice, arDigits, type PlanIcon } from "../data/plans";
+
+const ClassroomBackdrop = lazy(() =>
+  import("../components/three/ClassroomBackdrop").then((m) => ({ default: m.ClassroomBackdrop }))
+);
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -51,7 +55,15 @@ export function Pricing() {
   const [annual, setAnnual] = useState(false);
 
   return (
-    <section id="pricing" className="relative px-4 py-24">
+    <section id="pricing" className="relative overflow-hidden px-4 py-24">
+      {/* خلفية الفصل الحيّة: طلاب متفاعلون وشاشة عرض تُظهر تحديات نشاط */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <Suspense fallback={<div className="h-full w-full bg-[#171019]" />}>
+          <ClassroomBackdrop className="h-full w-full" />
+        </Suspense>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#131209] via-[#131209]/45 to-[#131209]" />
+      </div>
+
       <ScrollReveal className="mx-auto max-w-[680px] text-center">
         <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-sm">
           <Sparkle weight="fill" className="h-4 w-4" />
