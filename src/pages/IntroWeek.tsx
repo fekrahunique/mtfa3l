@@ -671,7 +671,9 @@ function MapScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
 }
 
 /** سحابة المواهب — كل مهارة تُضاف تطفو ككلمة بحجم ولون. */
-function WordCloudScreen({ pal }: { pal: Pal }) {
+function WordCloudScreen({ screen, pal }: { screen?: IntroScreen; pal: Pal }) {
+  const inputHint = screen?.data?.prompts?.[0] ?? "مهارة طالب... (رسم، برمجة، قيادة)";
+  const emptyHint = noDot(screen?.headline ?? "أضف مهارات الفصل لتتشكّل سحابة الهوية");
   const [words, setWords] = useState<{ w: string; size: number; hue: number; x: number; y: number }[]>([]);
   const [draft, setDraft] = useState("");
   function add() {
@@ -691,14 +693,14 @@ function WordCloudScreen({ pal }: { pal: Pal }) {
               {it.w}
             </motion.span>
           ))}
-          {words.length === 0 && <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm" style={{ color: pal.sub }}>أضف مهارات الفصل لتتشكّل سحابة الهوية</span>}
+          {words.length === 0 && <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-md px-4 text-center text-sm" style={{ color: pal.sub }}>{emptyHint}</span>}
         </AnimatePresence>
       </div>
       <div className="flex gap-2">
-        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="مهارة طالب... (رسم، برمجة، قيادة)" className="w-64 rounded-full border bg-transparent px-4 py-2 outline-none" style={{ borderColor: `${pal.accent}66`, color: pal.ink }} />
+        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder={inputHint} className="w-64 rounded-full border bg-transparent px-4 py-2 outline-none" style={{ borderColor: `${pal.accent}66`, color: pal.ink }} />
         <button onClick={add} className="rounded-full px-6 py-2 font-bold text-black" style={{ background: pal.accent }}>أضف ✦</button>
       </div>
-      <p className="text-sm" style={{ color: pal.sub }}>{words.length} موهبة في سحابة فصلنا</p>
+      <p className="text-sm" style={{ color: pal.sub }}>{words.length} كلمة في سحابة فصلنا</p>
     </div>
   );
 }
@@ -1075,6 +1077,81 @@ function BingoScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
   );
 }
 
+/** وميض الأبطال — سباق رد فعل: انتظر التحوّل الأخضر ثم الأسرع لمسًا يفوز، والتسرّع يخسر. */
+function ReactionScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
+  const names = screen.data?.questions ?? ["الفريق الأول", "الفريق الثاني"];
+  const GOAL = 3;
+  const [phase, setPhase] = useState<"idle" | "waiting" | "go" | "result">("idle");
+  const [scores, setScores] = useState<[number, number]>([0, 0]);
+  const [msg, setMsg] = useState("");
+  const timer = useRef<number | null>(null);
+  const colors = ["#3b82f6", "#ef4444"];
+  const champion = scores[0] >= GOAL ? 0 : scores[1] >= GOAL ? 1 : null;
+
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+
+  function award(i: number) { setScores((s) => (i === 0 ? [s[0] + 1, s[1]] : [s[0], s[1] + 1])); }
+  function startRound() {
+    if (champion !== null) return;
+    setMsg(""); setPhase("waiting");
+    const delay = 1200 + Math.random() * 2600;
+    timer.current = window.setTimeout(() => { setPhase("go"); playTick(); }, delay);
+  }
+  function tap(i: number) {
+    if (phase === "waiting") {
+      if (timer.current) clearTimeout(timer.current);
+      setMsg(`${noDot(names[i])} تسرّع قبل الإشارة! النقطة للخصم`); award(1 - i); setPhase("result"); playAlarm();
+    } else if (phase === "go") {
+      setMsg(`${noDot(names[i])} أسرع ⚡`); award(i); setPhase("result"); playWin();
+    }
+  }
+  function reset() { setScores([0, 0]); setMsg(""); setPhase("idle"); }
+
+  const bright = phase === "go";
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-5 px-6 py-4 text-center">
+      <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>{noDot(screen.headline ?? "")}</p>
+      <div className="flex gap-8 text-sm">
+        <span style={{ color: colors[0] }}>{noDot(names[0])}: <b className="font-display text-xl">{scores[0]}</b></span>
+        <span style={{ color: colors[1] }}>{noDot(names[1])}: <b className="font-display text-xl">{scores[1]}</b></span>
+        <span style={{ color: pal.sub }}>الفوز عند {GOAL}</span>
+      </div>
+
+      <div className="flex w-full max-w-3xl gap-4" style={{ height: "34vh" }}>
+        {[0, 1].map((i) => (
+          <motion.button key={i} onClick={() => tap(i)} disabled={phase === "idle" || phase === "result" || champion !== null}
+            animate={bright ? { scale: [1, 1.03, 1] } : { scale: 1 }} transition={{ duration: 0.4, repeat: bright ? Infinity : 0 }}
+            className="flex flex-1 flex-col items-center justify-center rounded-3xl border-2 font-display text-2xl text-white disabled:cursor-default"
+            style={{
+              borderColor: bright ? "#22c55e" : `${colors[i]}66`,
+              background: bright ? "#16a34a" : phase === "waiting" ? `${colors[i]}22` : `${colors[i]}44`,
+              boxShadow: bright ? "0 0 40px #22c55e" : "none",
+            }}>
+            <span className="text-5xl">{bright ? "⚡" : phase === "waiting" ? "✋" : "🏁"}</span>
+            {noDot(names[i])}
+          </motion.button>
+        ))}
+      </div>
+
+      {champion !== null ? (
+        <div className="flex flex-col items-center gap-3">
+          <motion.p initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="font-display text-3xl" style={{ color: pal.accent }}>🏆 {noDot(names[champion])} بطل رد الفعل!</motion.p>
+          <button onClick={reset} className="rounded-full px-6 py-2.5 font-bold text-black" style={{ background: pal.accent }}>جولة جديدة من الصفر</button>
+        </div>
+      ) : (
+        <div className="flex min-h-[3rem] flex-col items-center gap-2">
+          {phase === "waiting" && <p className="font-display text-xl" style={{ color: "#eab308" }}>استعدّوا... لا تلمسوا الآن!</p>}
+          {phase === "go" && <p className="font-display text-2xl" style={{ color: "#22c55e" }}>الآن! المسوا جهتكم ⚡</p>}
+          {msg && <p className="text-lg font-bold" style={{ color: pal.ink }}>{msg}</p>}
+          {(phase === "idle" || phase === "result") && (
+            <button onClick={startRound} className="rounded-full px-8 py-3 font-bold text-black" style={{ background: pal.accent }}>▶ ابدأ الجولة</button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ————————————————————————— قاذف الشاشة ————————————————————————— */
 
 function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; track: IntroTrack }) {
@@ -1089,7 +1166,7 @@ function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; tra
     case "crown": return <CrownScreen screen={screen} pal={pal} />;
     case "growth": return <GrowthScreen screen={screen} pal={pal} track={track} />;
     case "map": return <MapScreen screen={screen} pal={pal} />;
-    case "wordcloud": return <WordCloudScreen pal={pal} />;
+    case "wordcloud": return <WordCloudScreen screen={screen} pal={pal} />;
     case "vote": return <VoteScreen screen={screen} pal={pal} />;
     case "tower": return <TowerScreen screen={screen} pal={pal} />;
     case "buzzer": return <BuzzerScreen screen={screen} pal={pal} />;
@@ -1097,6 +1174,7 @@ function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; tra
     case "rhythm": return <RhythmScreen screen={screen} pal={pal} />;
     case "memory": return <MemoryScreen screen={screen} pal={pal} />;
     case "bingo": return <BingoScreen screen={screen} pal={pal} />;
+    case "reaction": return <ReactionScreen screen={screen} pal={pal} />;
     default: return null;
   }
 }

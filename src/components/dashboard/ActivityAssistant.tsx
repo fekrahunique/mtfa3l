@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkle, Robot, Play, FloppyDisk, ArrowsClockwise, UploadSimple, CheckCircle } from "@phosphor-icons/react";
 import { cn } from "../../lib/utils";
 import { buildChallenge, AGENT_EXAMPLES, type BuiltChallenge } from "../../lib/agentBuilder";
+import { extractFileText } from "../../lib/fileText";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -45,15 +46,17 @@ export function ActivityAssistant({
     };
   }, [onClose]);
 
-  function readFile(file: File) {
-    if (file.size > 512 * 1024) { setFileName("الملف كبير — الصق نصّه مباشرة"); return; }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = String(reader.result || "");
+  async function readFile(file: File) {
+    if (file.size > 10 * 1024 * 1024) { setFileName("الملف كبير جدًّا (أكثر من ١٠ ميغا) — الصق نصّه مباشرة"); return; }
+    setFileName(`${file.name} — يُقرأ…`);
+    try {
+      const { text: content, note } = await extractFileText(file);
+      if (!content.trim()) { setFileName(note || "لم أعثر على نصّ في الملف — الصقه مباشرة"); return; }
       setText((prev) => (prev ? prev + "\n" : "") + content);
-      setFileName(file.name);
-    };
-    reader.readAsText(file);
+      setFileName(note ? `${file.name} — ${note}` : file.name);
+    } catch {
+      setFileName("تعذّرت قراءة الملف — جرّب نصًّا أو CSV أو Word/PDF أوضح");
+    }
   }
 
   function run(value: string) {
@@ -119,14 +122,14 @@ export function ActivityAssistant({
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={5}
-                    placeholder={"اكتب فكرتك بحرّية، مثال: «مسابقة عن الأمن السيبراني»\nأو الصق أسئلة: «س: عاصمة السعودية؟ ج: الرياض»\nأو أفلِت ملف مسابقة هنا (نصّي / CSV)"}
+                    placeholder={"اكتب فكرتك بحرّية، مثال: «مسابقة عن الأمن السيبراني»\nأو الصق أسئلة: «س: عاصمة السعودية؟ ج: الرياض»\nأو أفلِت ملف مسابقة هنا (Word أو PDF أو Excel أو نصّي)"}
                     className="w-full resize-none rounded-2xl bg-transparent px-5 py-3.5 text-base text-ink outline-none placeholder:text-ink-muted/70"
                   />
                   <div className="flex items-center justify-between gap-3 border-t border-white/10 px-4 py-2.5">
                     <label className="flex cursor-pointer items-center gap-1.5 text-sm text-ink-muted transition-colors hover:text-ink">
                       <UploadSimple weight="bold" className="h-4 w-4" />
-                      أرفِق ملفًا
-                      <input type="file" accept=".txt,.csv,.md,.text,text/plain" className="hidden"
+                      أرفِق ملفًا (Word · PDF · Excel · نصّي)
+                      <input type="file" accept=".txt,.csv,.md,.text,.docx,.pdf,.xlsx,.xls,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden"
                         onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f); }} />
                     </label>
                     {fileName && <span className={cn("truncate text-xs", accentText)}>📎 {fileName}</span>}
