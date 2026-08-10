@@ -1,4 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useInView } from "../../lib/useInView";
 import { Sky } from "@react-three/drei";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -318,11 +319,13 @@ export function RoadJourney({
   signs: SignContent[];
   className?: string;
 }) {
+  const { ref, inView } = useInView<HTMLDivElement>();
   return (
-    <div className={className} aria-hidden="true">
+    <div ref={ref} className={className} aria-hidden="true">
       <Canvas
         camera={{ position: [0, 3.1, 10], fov: 58 }}
         dpr={[1, 1.25]}
+        frameloop={inView ? "always" : "never"}
         gl={{ antialias: true, toneMappingExposure: 1.25 }}
         style={{ width: "100%", height: "100%" }}
         resize={{ debounce: 0 }}

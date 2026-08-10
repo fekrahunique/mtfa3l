@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Sparkle, RocketLaunch, Crown, Check, Star, CaretLeft } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
@@ -13,6 +13,39 @@ const ICONS: Record<PlanIcon, typeof Sparkle> = {
   rocket: RocketLaunch,
   crown: Crown,
 };
+
+/** بطاقة بإمالة ثلاثية الأبعاد تتبع المؤشّر (تحويلات GPU خفيفة، بلا WebGL). */
+function TiltCard({ children }: { children: ReactNode }) {
+  const reduce = useReducedMotion();
+  const mvX = useMotionValue(0);
+  const mvY = useMotionValue(0);
+  const rotateX = useSpring(mvX, { stiffness: 200, damping: 18 });
+  const rotateY = useSpring(mvY, { stiffness: 200, damping: 18 });
+
+  if (reduce) return <div className="h-full">{children}</div>;
+
+  function onMove(e: React.MouseEvent<HTMLDivElement>) {
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    mvY.set(px * 8);
+    mvX.set(-py * 8);
+  }
+  function onLeave() { mvX.set(0); mvY.set(0); }
+
+  return (
+    <motion.div
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      whileHover={{ scale: 1.015 }}
+      transition={{ scale: { duration: 0.3, ease: EASE } }}
+      className="h-full"
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export function Pricing() {
   const [annual, setAnnual] = useState(false);
@@ -77,21 +110,20 @@ export function Pricing() {
           const featured = plan.featured;
           return (
             <ScrollReveal key={plan.id} delay={i * 0.1} className={featured ? "lg:-my-3" : ""}>
-              <div className="relative h-full">
-                {/* هالة نابضة خلف الباقة المميّزة */}
+              <div className={`relative h-full ${featured ? "lg:scale-[1.03]" : ""}`} style={{ perspective: "1000px" }}>
+                {/* هالة ثابتة خلف الباقة المميّزة (بلا حركة مستمرة حفاظًا على الأداء) */}
                 {featured && (
-                  <motion.div
+                  <div
                     aria-hidden
-                    animate={{ opacity: [0.35, 0.6, 0.35], scale: [0.98, 1.02, 0.98] }}
-                    transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-                    className="pointer-events-none absolute -inset-[2px] -z-10 rounded-[26px] bg-[radial-gradient(ellipse_at_top,theme(colors.sun.400),transparent_70%)] blur-lg"
+                    className="pointer-events-none absolute -inset-[2px] -z-10 rounded-[26px] bg-[radial-gradient(ellipse_at_top,theme(colors.sun.400),transparent_70%)] opacity-40 blur-lg"
                   />
                 )}
+                <TiltCard>
                 <div
-                  className={`flex h-full flex-col rounded-3xl border p-7 backdrop-blur-xl transition-transform duration-500 ${
+                  className={`flex h-full flex-col rounded-3xl border p-7 backdrop-blur-xl ${
                     featured
-                      ? "border-sun-400/50 bg-white/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.45)] lg:scale-[1.03]"
-                      : "border-white/10 bg-white/[0.03] hover:-translate-y-1"
+                      ? "border-sun-400/50 bg-white/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                      : "border-white/10 bg-white/[0.03]"
                   }`}
                 >
                   {plan.badge && (
@@ -175,17 +207,13 @@ export function Pricing() {
                     )}
                   </div>
                 </div>
+                </TiltCard>
               </div>
             </ScrollReveal>
           );
         })}
       </div>
 
-      <ScrollReveal delay={0.15} className="mx-auto mt-12 max-w-[680px] text-center">
-        <p className="text-sm text-ink-muted">
-          🚀 تبدأ بأسبوع مجاني كامل — بلا بطاقة الآن، وتلغي متى شئت
-        </p>
-      </ScrollReveal>
     </section>
   );
 }

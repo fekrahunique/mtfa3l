@@ -1,4 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useInView } from "../../lib/useInView";
 import { Sky } from "@react-three/drei";
 import { useEffect } from "react";
 import type { PerspectiveCamera } from "three";
@@ -43,11 +44,13 @@ function Rig() {
 }
 
 export function DrivingScene({ className }: { className?: string }) {
+  const { ref, inView } = useInView<HTMLDivElement>();
   return (
-    <div className={className} aria-hidden="true">
+    <div ref={ref} className={className} aria-hidden="true">
       <Canvas
         camera={{ position: [0, EYE_HEIGHT, 2.2], fov: 62 }}
         dpr={[1, 1.25]}
+        frameloop={inView ? "always" : "never"}
         gl={{ antialias: true, toneMappingExposure: 1.25 }}
         style={{ width: "100%", height: "100%" }}
         resize={{ debounce: 0 }}
