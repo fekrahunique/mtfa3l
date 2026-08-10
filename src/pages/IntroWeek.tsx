@@ -563,35 +563,109 @@ function GrowthScreen({ screen, pal, track }: { screen: IntroScreen; pal: Pal; t
   );
 }
 
-/** خريطة الكنز — مرافق المدرسة بنقاط ساخنة، النقر يكشف مهمة. */
+/** خريطة الكنز — كل نقطة لغزٌ يُخمَّن ثم مهمّة، وإنجازها يمنح قطعة تُجمّع كلمة الكنز. */
 function MapScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
   const spots = screen.data?.boxes ?? [];
+  const treasure = screen.data?.treasure ?? "";
+  const reveal = screen.data?.reveal ?? "وجدتم الكنز!";
   const [open, setOpen] = useState<number | null>(null);
+  const [phase, setPhase] = useState<"riddle" | "mission">("riddle");
   const [found, setFound] = useState<boolean[]>(spots.map(() => false));
-  const allFound = found.every(Boolean);
+  const allFound = spots.length > 0 && found.every(Boolean);
+
+  useEffect(() => { if (allFound) playWin(); }, [allFound]);
+
+  function openSpot(i: number) { setOpen(i); setPhase(found[i] ? "mission" : "riddle"); }
+  function complete(i: number) {
+    setFound((v) => v.map((x, j) => (j === i ? true : x)));
+    setOpen(null);
+    playUnlock();
+  }
+
   return (
-    <div className="flex min-h-full flex-col items-center justify-center gap-6 px-6 text-center">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+    <div className="flex min-h-full flex-col items-center justify-center gap-5 px-6 py-4 text-center">
+      {!allFound && (
+        <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>
+          {noDot(screen.headline ?? "")}
+        </p>
+      )}
+
+      {/* شبكة النقاط الغامضة */}
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
         {spots.map((s, i) => (
-          <motion.button key={s.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            onClick={() => { setOpen(i); }}
-            className="flex h-28 w-28 flex-col items-center justify-center gap-1 rounded-2xl border-2 sm:h-36 sm:w-36"
+          <motion.button key={s.label} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.94 }}
+            animate={found[i] ? { rotate: [0, -4, 4, 0] } : {}}
+            onClick={() => openSpot(i)}
+            className="relative flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-2xl border-2 sm:h-32 sm:w-32"
             style={{ borderColor: found[i] ? "#22c55e" : `${pal.accent}55`, background: found[i] ? "#22c55e22" : pal.panel }}>
-            <span className="text-4xl">{s.emoji}</span>
-            <span className="text-xs font-semibold" style={{ color: pal.ink }}>{s.label}</span>
+            <span className="text-4xl">{found[i] ? s.emoji : "❓"}</span>
+            <span className="text-[11px] font-semibold sm:text-xs" style={{ color: found[i] ? pal.ink : pal.sub }}>
+              {found[i] ? s.label : "نقطة غامضة"}
+            </span>
+            {found[i] && s.piece && (
+              <span className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full text-sm font-black text-black shadow" style={{ background: pal.accent }}>{s.piece}</span>
+            )}
           </motion.button>
         ))}
       </div>
+
+      {/* شريط قطع الخريطة — الكلمة السرّية تتجمّع */}
+      {treasure && !allFound && (
+        <div className="flex items-center gap-2" dir="rtl">
+          <span className="text-sm font-semibold" style={{ color: pal.sub }}>قطع الخريطة:</span>
+          {spots.map((s, i) => (
+            <span key={i} className="flex h-9 w-9 items-center justify-center rounded-lg border-2 text-lg font-black"
+              style={{ borderColor: found[i] ? pal.accent : `${pal.sub}44`, color: found[i] ? pal.ink : "transparent", background: found[i] ? `${pal.accent}22` : "transparent" }}>
+              {found[i] ? s.piece : "•"}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* بطاقة اللغز ← المهمة */}
       <AnimatePresence mode="wait">
         {open !== null && (
-          <motion.div key={open} initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }} className="max-w-lg rounded-2xl border-2 px-6 py-4" style={{ borderColor: pal.accent, background: pal.panel }}>
-            <p className="text-sm" style={{ color: pal.sub }}>{spots[open].label}</p>
-            <p className="mt-1 text-xl font-bold" style={{ color: pal.ink }}>{noDot(spots[open].challenge)}</p>
-            <button onClick={() => { setFound((v) => v.map((x, j) => (j === open ? true : x))); setOpen(null); playCorrect(); }} className="mt-3 rounded-full px-5 py-2 text-sm font-bold text-black" style={{ background: pal.accent }}>أنجزناها ✓</button>
+          <motion.div key={`${open}-${phase}`} initial={{ scale: 0.7, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }}
+            className="max-w-xl rounded-3xl border-2 px-7 py-5" style={{ borderColor: pal.accent, background: pal.panel }}>
+            {phase === "riddle" ? (
+              <>
+                <p className="text-sm font-bold" style={{ color: pal.accent }}>🧭 لغز النقطة الغامضة</p>
+                <p className="mt-2 text-xl font-bold leading-relaxed" style={{ color: pal.ink }}>{noDot(spots[open].riddle ?? spots[open].label)}</p>
+                <p className="mt-2 text-sm" style={{ color: pal.sub }}>خمّنوا المرفق... ثم اكشفوه!</p>
+                <div className="mt-4 flex justify-center gap-3">
+                  <button onClick={() => setOpen(null)} className="rounded-full px-5 py-2 text-sm font-bold" style={{ color: pal.sub, background: `${pal.sub}22` }}>لاحقًا</button>
+                  <button onClick={() => { setPhase("mission"); playCorrect(); }} className="rounded-full px-6 py-2 text-sm font-bold text-black" style={{ background: pal.accent }}>اكشفوا المكان! ✦</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-3xl">{spots[open].emoji}</p>
+                <p className="text-lg font-black" style={{ color: pal.ink }}>{spots[open].label}</p>
+                <div className="my-3 h-px" style={{ background: `${pal.sub}33` }} />
+                <p className="text-sm font-bold" style={{ color: pal.accent }}>🎯 مهمّة الفريق</p>
+                <p className="mt-1 text-lg font-bold leading-relaxed" style={{ color: pal.ink }}>{noDot(spots[open].challenge)}</p>
+                <button onClick={() => complete(open)} className="mt-4 rounded-full px-6 py-2 text-sm font-bold text-black" style={{ background: "#22c55e" }}>
+                  {found[open] ? "تمام ✓" : `أنجزناها — خذوا القطعة «${spots[open].piece ?? "✓"}» ✓`}
+                </button>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
-      {allFound && <p className="font-display text-2xl" style={{ color: "#22c55e" }}>وجدتم الكنز! 🗺️🎉</p>}
+
+      {/* كشف الكنز النهائي */}
+      {allFound && (
+        <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center gap-3">
+          <div className="flex gap-2" dir="rtl">
+            {treasure.split("").map((ch, i) => (
+              <motion.span key={i} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.12 }}
+                className="flex h-14 w-14 items-center justify-center rounded-xl text-3xl font-black text-black shadow-lg" style={{ background: pal.accent }}>{ch}</motion.span>
+            ))}
+          </div>
+          <p className="font-display text-2xl" style={{ color: "#22c55e" }}>🗺️ الكنز: «{treasure}»</p>
+          <p className="max-w-xl text-lg font-bold" style={{ color: pal.ink }}>{noDot(reveal)}</p>
+        </motion.div>
+      )}
     </div>
   );
 }

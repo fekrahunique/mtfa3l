@@ -42,7 +42,9 @@ import {
   saveBadges,
   type CornerOverrides,
 } from "../lib/cornerStore";
-import type { GeneratedActivity } from "../lib/activityGenerator";
+import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../activities/ChallengePlayer";
+import type { BuiltChallenge } from "../lib/agentBuilder";
+import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -86,6 +88,8 @@ export function Dashboard() {
   const [editMode, setEditMode] = useState(false);
   const [editing, setEditing] = useState<{ corner: BreakCorner; isNew: boolean } | null>(null);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [games, setGames] = useState<SavedGame[]>(() => loadGames());
+  const [playingGame, setPlayingGame] = useState<{ title: string; type: ChallengeType; content: ChallengeContent } | null>(null);
   const [badges, setBadges] = useState<string[]>(() => loadBadges());
   const [weekIndex, setWeekIndex] = useState(0);
   const { scrollYProgress } = useScroll();
@@ -148,28 +152,26 @@ export function Dashboard() {
     setEditing(null);
   }
 
-  function cornerFromGenerated(gen: GeneratedActivity): BreakCorner {
-    return {
-      ...blankCorner(corners.length + 1),
-      title: gen.title,
-      outcomes: gen.outcomes,
-      values: gen.values,
-      tools: ["اللاقط (المايكروفون)."],
-      steps: gen.steps,
-      quiz: gen.quiz,
-      play: "quiz",
-      edited: true,
-    };
+  // وكيل الأنشطة: يشغّل اللعبة المبنيّة فورًا، أو يحفظها في لوحة الرائد
+  function playBuilt(built: BuiltChallenge) {
+    setAssistantOpen(false);
+    setPlayingGame({ title: built.title, type: built.type, content: built.content });
   }
 
-  function saveGenerated(gen: GeneratedActivity) {
-    persistCorners([...corners, cornerFromGenerated(gen)]);
-    setAssistantOpen(false);
+  function saveBuilt(built: BuiltChallenge) {
+    setGames((prev) => {
+      const next: SavedGame[] = [...prev, { ...built, id: makeGameId(prev), createdLabel: "لعبة الوكيل" }];
+      saveGames(next);
+      return next;
+    });
   }
 
-  function editGenerated(gen: GeneratedActivity) {
-    setEditing({ corner: cornerFromGenerated(gen), isNew: true });
-    setAssistantOpen(false);
+  function deleteGame(id: string) {
+    setGames((prev) => {
+      const next = prev.filter((g) => g.id !== id);
+      saveGames(next);
+      return next;
+    });
   }
 
   // وسام يُضاف مرة واحدة عند اكتمال الأسبوع، ويُحفظ ليتجمّع عبر الأسابيع.
@@ -369,6 +371,32 @@ export function Dashboard() {
           </div>
         </ScrollReveal>
 
+        {games.length > 0 && (
+          <ScrollReveal delay={0.1} className="mt-12">
+            <h2 id="agent-games" className="scroll-mt-24 text-2xl text-ink">ألعاب بناها لك الوكيل</h2>
+            <p className="mt-1 text-sm text-ink-muted">تحديات جاهزة على صفحتك — اضغط ▶ لتلعبها أمام طلابك</p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {games.map((g) => (
+                <GlassCard key={g.id} className="flex flex-col gap-3 p-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-display text-lg text-ink">{g.title}</h3>
+                    <button onClick={() => deleteGame(g.id)} aria-label="حذف اللعبة"
+                      className="shrink-0 rounded-full border border-white/15 px-2 py-1 text-xs text-ink-muted transition-colors hover:border-white/30 hover:text-ink">حذف</button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className={cn("rounded-full px-3 py-1 text-xs font-bold text-bg", accent.bg)}>{g.engineLabel}</span>
+                    <span className="rounded-full border border-white/15 px-3 py-1 text-xs text-ink-muted">{g.summary}</span>
+                  </div>
+                  <button onClick={() => setPlayingGame({ title: g.title, type: g.type, content: g.content })}
+                    className={cn("mt-auto flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-bg transition-transform duration-300 hover:scale-[1.02] active:scale-95", accent.bg)}>
+                    ▶ شغّل اللعبة
+                  </button>
+                </GlassCard>
+              ))}
+            </div>
+          </ScrollReveal>
+        )}
+
         <ScrollReveal delay={0.1} className="mt-12">
           <h2 id="students" className="scroll-mt-24 text-2xl text-ink">فصولك وطلابك</h2>
           <p className="mt-1 text-sm text-ink-muted">أضف فصولك وأسماء طلابك، وزّع المجموعات، وامنح النقاط — وفي نهاية الأسبوع يظهر الفائزون</p>
@@ -414,9 +442,23 @@ export function Dashboard() {
           <ActivityAssistant
             accentBg={accent.bg}
             accentText={accent.text}
-            onSave={saveGenerated}
-            onEdit={editGenerated}
+            onPlay={playBuilt}
+            onSaveGame={saveBuilt}
             onClose={() => setAssistantOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {playingGame && (
+          <ChallengePlayer
+            title={playingGame.title}
+            type={playingGame.type}
+            content={playingGame.content}
+            pal={gender === "boys"
+              ? { accent: "#4aa8ff", accentSoft: "#bfe0ff", deep: "#04162a" }
+              : { accent: "#ff6fb5", accentSoft: "#ffd3e8", deep: "#2a0a1c" }}
+            onClose={() => setPlayingGame(null)}
           />
         )}
       </AnimatePresence>
