@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { IslandNav } from "../components/IslandNav";
 import { LivelyBackdrop } from "../components/LivelyBackdrop";
@@ -10,6 +10,7 @@ import { StepTeacher } from "./register/StepTeacher";
 import { StepReview } from "./register/StepReview";
 import { emptyRegistration, genderAccent, type RegistrationData } from "../lib/theme";
 import { generateUsername } from "../lib/studentFile";
+import { getPlan, arDigits, type PlanId } from "../data/plans";
 import { cn } from "../lib/utils";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
@@ -20,9 +21,15 @@ function validateEmail(email: string) {
 }
 
 export function Register() {
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState<RegistrationData>(emptyRegistration);
   const navigate = useNavigate();
+  const location = useLocation();
+  const incomingPlan = (location.state as { plan?: PlanId } | null)?.plan;
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState<RegistrationData>(() => ({
+    ...emptyRegistration,
+    plan: incomingPlan ?? emptyRegistration.plan,
+  }));
+  const plan = getPlan(data.plan);
 
   const accent = data.gender ? genderAccent[data.gender] : null;
   const accentBg = accent?.bg ?? "bg-sun-400";
@@ -77,6 +84,12 @@ export function Register() {
           </motion.span>
           <h1 className="text-3xl text-ink sm:text-4xl">سجّل كمعلم أو معلمة نشاط</h1>
           <p className="mt-3 text-ink-muted">ثلاث خطوات بسيطة، وتوصل للوحة التحكم — وتضيف فصولك وطلابك من داخل اللوحة</p>
+
+          <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-sun-400/30 bg-sun-400/10 px-4 py-2 text-sm">
+            <span className="font-semibold text-sun-300">باقتك: {plan.name}</span>
+            <span className="text-ink-muted">· {arDigits(plan.monthly)}﷼ شهريًا</span>
+            <Link to="/#pricing" className="rounded-full px-2 text-xs font-semibold text-sun-400 hover:underline">غيّر الباقة</Link>
+          </div>
         </div>
 
         <StepProgress steps={STEP_LABELS} current={step} accentClass={accentBg} />
@@ -131,7 +144,7 @@ export function Register() {
               canProceed ? cn(accentBg, "hover:scale-105 active:scale-95") : "cursor-not-allowed bg-white/10 text-ink-faint"
             )}
           >
-            {step === STEP_LABELS.length - 1 ? "أنشئ حسابي وابدأ" : "التالي"}
+            {step === STEP_LABELS.length - 1 ? `ابدأ باقة ${plan.name}` : "التالي"}
             <CaretLeft weight="bold" className="h-4 w-4" />
           </button>
         </div>

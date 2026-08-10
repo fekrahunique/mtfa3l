@@ -184,6 +184,52 @@ export function Dashboard() {
   function removeGoal(id: string) { setCapsule(removeCapsuleGoal(id)); }
   function emptyCapsule() { setCapsule(clearCapsule()); setCapsuleOpen(false); }
 
+  function printCapsule() {
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
+    const pct = capsule.length ? Math.round((capsuleDone / capsule.length) * 100) : 0;
+    const rows = capsule
+      .map((g, i) => `<tr class="${g.achieved ? "done" : ""}"><td class="n">${i + 1}</td><td class="goal">${esc(g.text)}</td><td class="who">${g.who ? esc(g.who) : "—"}</td><td class="st">${g.achieved ? "✓ تحقّق" : "لم يتحقّق بعد"}</td></tr>`)
+      .join("");
+    const html = `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8">
+<title>كبسولة المستقبل — حصاد الأهداف</title>
+<style>
+  *{box-sizing:border-box} body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#1a1636;margin:0;padding:32px;background:#fff}
+  .head{border-bottom:3px solid #6b4de6;padding-bottom:16px;margin-bottom:20px}
+  .head h1{margin:0 0 4px;font-size:24px;color:#4d1c9b}
+  .head .sub{color:#555;font-size:14px}
+  .meta{display:flex;gap:24px;flex-wrap:wrap;margin:14px 0 22px;font-size:14px;color:#333}
+  .meta b{color:#4d1c9b}
+  .summary{display:flex;align-items:center;gap:14px;background:#f3efff;border:1px solid #e0d7ff;border-radius:14px;padding:14px 18px;margin-bottom:20px}
+  .summary .big{font-size:26px;font-weight:800;color:#4d1c9b}
+  .bar{flex:1;height:12px;background:#e6ddff;border-radius:99px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:${pct}%;background:#6b4de6}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:right;padding:10px 12px;border-bottom:1px solid #eee}
+  th{background:#faf8ff;color:#4d1c9b;font-weight:700}
+  td.n{color:#999;width:36px}
+  tr.done td.goal{text-decoration:line-through;color:#7a7a7a}
+  td.st{white-space:nowrap;font-weight:700;color:#b06a00}
+  tr.done td.st{color:#18794e}
+  footer{margin-top:26px;color:#999;font-size:12px;text-align:center}
+  @media print{body{padding:0}}
+</style></head>
+<body>
+  <div class="head">
+    <h1>كبسولة المستقبل — حصاد الأهداف</h1>
+    <div class="sub">ما تمنّاه الطلاب في بداية العام، وما تحقّق منه</div>
+  </div>
+  <div class="meta"><span><b>المدرسة:</b> ${esc(data.schoolName || "—")}</span><span><b>رائد النشاط:</b> ${esc(data.teacherName || "—")}</span><span><b>المرحلة:</b> ${esc(stageLabel)}</span></div>
+  <div class="summary"><span class="big">${capsuleDone} / ${capsule.length}</span><div class="bar"><i></i></div><span>${pct}% تحقّق</span></div>
+  <table><thead><tr><th>#</th><th>الهدف</th><th>الطالب</th><th>الحالة</th></tr></thead><tbody>${rows}</tbody></table>
+  <footer>وُثّق عبر منصة «نشاط» — كبسولة المستقبل</footer>
+  <script>window.onload=function(){window.focus();window.print();}</script>
+</body></html>`;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write(html);
+    w.document.close();
+  }
+
   // وسام يُضاف مرة واحدة عند اكتمال الأسبوع، ويُحفظ ليتجمّع عبر الأسابيع.
   useEffect(() => {
     if (allDone && week && !badges.includes(week.id)) {
@@ -446,7 +492,8 @@ export function Dashboard() {
                         </li>
                       ))}
                     </ul>
-                    <div className="flex justify-end">
+                    <div className="flex items-center justify-between">
+                      <button onClick={printCapsule} className={cn("rounded-full px-5 py-2 text-sm font-bold text-bg transition-transform hover:scale-[1.02] active:scale-95", accent.bg)}>🖨️ اطبع / احفظ PDF</button>
                       <button onClick={emptyCapsule} className="text-xs text-ink-muted transition-colors hover:text-red-400">إفراغ الكبسولة</button>
                     </div>
                   </div>

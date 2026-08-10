@@ -7,6 +7,7 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 const links = [
   { label: "المزايا", href: "/#benefits" },
   { label: "كيف تعمل", href: "/#how-it-works" },
+  { label: "الباقات", href: "/#pricing" },
   { label: "الأسئلة الشائعة", href: "/#faq" },
 ];
 

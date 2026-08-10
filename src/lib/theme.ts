@@ -1,3 +1,5 @@
+import type { PlanId } from "../data/plans";
+
 export type Gender = "boys" | "girls";
 export type Stage = "primary" | "middle";
 export type SchoolType = "government" | "private";
@@ -16,6 +18,7 @@ export interface RegistrationData {
   gender: Gender | null;
   students: Student[];
   username: string;
+  plan?: PlanId;
 }
 
 export const emptyRegistration: RegistrationData = {
@@ -27,6 +30,7 @@ export const emptyRegistration: RegistrationData = {
   gender: null,
   students: [],
   username: "",
+  plan: "pro",
 };
 
 export const genderAccent: Record<Gender, { text: string; bg: string; bgSoft: string; border: string }> = {
