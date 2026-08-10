@@ -45,6 +45,7 @@ import {
 import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../activities/ChallengePlayer";
 import type { BuiltChallenge } from "../lib/agentBuilder";
 import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentStore";
+import { loadCapsule, toggleCapsuleAchieved, removeCapsuleGoal, clearCapsule, type CapsuleGoal } from "../lib/capsuleStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -90,6 +91,8 @@ export function Dashboard() {
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [games, setGames] = useState<SavedGame[]>(() => loadGames());
   const [playingGame, setPlayingGame] = useState<{ title: string; type: ChallengeType; content: ChallengeContent } | null>(null);
+  const [capsule, setCapsule] = useState<CapsuleGoal[]>(() => loadCapsule());
+  const [capsuleOpen, setCapsuleOpen] = useState(false);
   const [badges, setBadges] = useState<string[]>(() => loadBadges());
   const [weekIndex, setWeekIndex] = useState(0);
   const { scrollYProgress } = useScroll();
@@ -173,6 +176,13 @@ export function Dashboard() {
       return next;
     });
   }
+
+  // كبسولة المستقبل: مراجعة الأهداف المختومة وقياس ما تحقّق آخر الفصل
+  const capsuleDone = capsule.filter((g) => g.achieved).length;
+
+  function toggleGoal(id: string) { setCapsule(toggleCapsuleAchieved(id)); }
+  function removeGoal(id: string) { setCapsule(removeCapsuleGoal(id)); }
+  function emptyCapsule() { setCapsule(clearCapsule()); setCapsuleOpen(false); }
 
   // وسام يُضاف مرة واحدة عند اكتمال الأسبوع، ويُحفظ ليتجمّع عبر الأسابيع.
   useEffect(() => {
@@ -393,6 +403,55 @@ export function Dashboard() {
                   </button>
                 </GlassCard>
               ))}
+            </div>
+          </ScrollReveal>
+        )}
+
+        {capsule.length > 0 && (
+          <ScrollReveal delay={0.1} className="mt-12">
+            <h2 id="capsule" className="scroll-mt-24 text-2xl text-ink">كبسولة المستقبل</h2>
+            <p className="mt-1 text-sm text-ink-muted">أهداف ختمها طلابك في الأسبوع التمهيدي — افتحها آخر الفصل وأشّر ما تحقّق ليقيس كل طالب نموّه</p>
+            <div className="mt-6">
+              <GlassCard className="p-6">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">{capsuleOpen ? "🔓" : "🔒"}</span>
+                    <div>
+                      <p className="font-display text-lg text-ink">{capsule.length} هدفًا مختومًا</p>
+                      <p className="text-sm text-ink-muted">تحقّق {capsuleDone} من {capsule.length}</p>
+                    </div>
+                  </div>
+                  {!capsuleOpen ? (
+                    <button onClick={() => setCapsuleOpen(true)} className={cn("rounded-full px-6 py-2.5 text-sm font-bold text-bg", accent.bg)}>🔓 افتح الكبسولة</button>
+                  ) : (
+                    <button onClick={() => setCapsuleOpen(false)} className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-white/30">أغلِق</button>
+                  )}
+                </div>
+
+                {capsuleOpen && (
+                  <div className="mt-5 space-y-4">
+                    <div className="h-3 overflow-hidden rounded-full bg-white/10">
+                      <div className={cn("h-full rounded-full transition-all duration-500", accent.bg)} style={{ width: `${capsule.length ? Math.round((capsuleDone / capsule.length) * 100) : 0}%` }} />
+                    </div>
+                    <ul className="space-y-2">
+                      {capsule.map((g) => (
+                        <li key={g.id} className={cn("flex items-center gap-3 rounded-2xl border px-4 py-3", g.achieved ? "border-emerald-400/40 bg-emerald-400/10" : "border-white/10 bg-white/[0.03]")}>
+                          <button onClick={() => toggleGoal(g.id)} aria-label="تبديل التحقّق"
+                            className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-sm font-bold", g.achieved ? "border-emerald-400 bg-emerald-400 text-black" : "border-white/30 text-transparent")}>✓</button>
+                          <div className="flex-1 text-right">
+                            <p className={cn("text-sm", g.achieved ? "text-ink-muted line-through" : "text-ink")}>{g.text}</p>
+                            {g.who && <p className="text-xs text-ink-muted">{g.who}</p>}
+                          </div>
+                          <button onClick={() => removeGoal(g.id)} className="shrink-0 text-xs text-ink-muted transition-colors hover:text-ink">حذف</button>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex justify-end">
+                      <button onClick={emptyCapsule} className="text-xs text-ink-muted transition-colors hover:text-red-400">إفراغ الكبسولة</button>
+                    </div>
+                  </div>
+                )}
+              </GlassCard>
             </div>
           </ScrollReveal>
         )}

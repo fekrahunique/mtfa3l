@@ -12,6 +12,7 @@ import { noDot } from "../lib/utils";
 import { playCorrect, playWin, playTick, playLaunch, playUnlock, playAlarm, playWheelSpin, playWheelStop, playDuel } from "../lib/sound";
 import { CompetitorBoard } from "../activities/CompetitorBoard";
 import { loadClasses, loadActiveClassId } from "../lib/rosterStore";
+import { loadCapsule, addCapsuleGoal, type CapsuleGoal } from "../lib/capsuleStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -1152,6 +1153,58 @@ function ReactionScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
   );
 }
 
+/** كبسولة المستقبل — الطلاب يختمون أهدافهم فتُحفظ وتُفتح في لوحة التحكم آخر الفصل. */
+function CapsuleScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
+  const hint = screen.data?.prompts?.[0] ?? "هدفي هذا العام...";
+  const [goals, setGoals] = useState<CapsuleGoal[]>(() => loadCapsule());
+  const [text, setText] = useState("");
+  const [who, setWho] = useState("");
+  const [flash, setFlash] = useState<string | null>(null);
+
+  function seal() {
+    if (!text.trim()) return;
+    const next = addCapsuleGoal(text, who);
+    setGoals(next);
+    setFlash(text.trim());
+    setText(""); setWho("");
+    playUnlock();
+    window.setTimeout(() => setFlash(null), 1200);
+  }
+
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-5 px-6 py-4 text-center">
+      <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>{noDot(screen.headline ?? "")}</p>
+      <div className="relative">
+        <motion.div animate={flash ? { scale: [1, 1.15, 1], rotate: [0, -3, 3, 0] } : {}} transition={{ duration: 0.5 }} className="text-7xl">🔒</motion.div>
+        <AnimatePresence>
+          {flash && (
+            <motion.span initial={{ y: -46, opacity: 0 }} animate={{ y: 8, opacity: 1 }} exit={{ y: 34, opacity: 0, scale: 0.3 }}
+              className="absolute left-1/2 top-0 max-w-xs -translate-x-1/2 truncate rounded-full px-3 py-1 text-sm font-bold text-black" style={{ background: pal.accent }}>{noDot(flash)} ✦</motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+      <p className="font-display text-2xl" style={{ color: pal.accent }}>{goals.length} هدفًا مختومًا في الكبسولة</p>
+
+      <div className="flex w-full max-w-xl flex-col items-center gap-2 sm:flex-row">
+        <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && seal()} placeholder={hint}
+          className="flex-1 rounded-full border bg-transparent px-4 py-2.5 text-center outline-none" style={{ borderColor: `${pal.accent}66`, color: pal.ink }} />
+        <input value={who} onChange={(e) => setWho(e.target.value)} onKeyDown={(e) => e.key === "Enter" && seal()} placeholder="الاسم (اختياري)"
+          className="w-full rounded-full border bg-transparent px-4 py-2.5 text-center outline-none sm:w-40" style={{ borderColor: `${pal.accent}44`, color: pal.ink }} />
+        <button onClick={seal} className="rounded-full px-6 py-2.5 font-bold text-black" style={{ background: pal.accent }}>اختِم 🔒</button>
+      </div>
+
+      {goals.length > 0 && (
+        <div className="flex max-w-2xl flex-wrap justify-center gap-2">
+          {goals.slice(-6).map((g) => (
+            <span key={g.id} className="rounded-full border px-3 py-1 text-xs" style={{ borderColor: `${pal.accent}44`, color: pal.sub }}>{g.who ? `${noDot(g.who)}: ` : ""}{noDot(g.text)}</span>
+          ))}
+        </div>
+      )}
+      <p className="max-w-md text-xs" style={{ color: pal.sub }}>تُحفظ الأهداف وتُفتح من «كبسولة المستقبل» في لوحة التحكم آخر الفصل لقياس ما تحقّق</p>
+    </div>
+  );
+}
+
 /* ————————————————————————— قاذف الشاشة ————————————————————————— */
 
 function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; track: IntroTrack }) {
@@ -1175,6 +1228,7 @@ function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; tra
     case "memory": return <MemoryScreen screen={screen} pal={pal} />;
     case "bingo": return <BingoScreen screen={screen} pal={pal} />;
     case "reaction": return <ReactionScreen screen={screen} pal={pal} />;
+    case "capsule": return <CapsuleScreen screen={screen} pal={pal} />;
     default: return null;
   }
 }
