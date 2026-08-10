@@ -921,6 +921,160 @@ function CheerScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
   );
 }
 
+/** صدى الإيقاع — تسلسل حركات يكبر كل جولة، يُعرَض مضيئًا ثم يعيده الفصل. */
+function RhythmScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
+  const moves = screen.data?.moves ?? [];
+  const [seq, setSeq] = useState<number[]>([]);
+  const [active, setActive] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [won, setWon] = useState(false);
+  const timers = useRef<number[]>([]);
+  const GOAL = 8;
+
+  const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+  useEffect(() => () => clearTimers(), []);
+
+  function playSeq(s: number[]) {
+    setPlaying(true);
+    clearTimers();
+    s.forEach((_, i) => {
+      timers.current.push(window.setTimeout(() => { setActive(i); playTick(); }, 720 * i + 300));
+      timers.current.push(window.setTimeout(() => setActive(null), 720 * i + 720));
+    });
+    timers.current.push(window.setTimeout(() => { setActive(null); setPlaying(false); }, 720 * s.length + 400));
+  }
+  function nextRound() {
+    const s = [...seq, Math.floor(Math.random() * Math.max(moves.length, 1))];
+    setSeq(s);
+    playSeq(s);
+  }
+  function success() { if (seq.length >= GOAL) { setWon(true); playWin(); } else nextRound(); }
+  function fail() { clearTimers(); setActive(null); setPlaying(false); setSeq([]); playAlarm(); }
+  function replay() { if (seq.length) playSeq(seq); }
+
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-6 px-6 py-4 text-center">
+      <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>{noDot(screen.headline ?? "")}</p>
+      <p className="font-display text-xl" style={{ color: pal.accent }}>الجولة {seq.length || "—"} / {GOAL}</p>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {seq.length === 0 && <span className="text-sm" style={{ color: pal.sub }}>اضغط «ابدأ» ليظهر أول حركة</span>}
+        {seq.map((mi, i) => (
+          <motion.div key={i} animate={active === i ? { scale: 1.35 } : { scale: 1 }} transition={{ duration: 0.2 }}
+            className="flex h-20 w-20 items-center justify-center rounded-2xl border-2"
+            style={{ borderColor: active === i ? pal.accent : `${pal.accent}44`, background: active === i ? `${pal.accent}33` : pal.panel, boxShadow: active === i ? `0 0 24px ${pal.accent}` : "none" }}>
+            <span className="text-4xl">{moves[mi]?.emoji}</span>
+          </motion.div>
+        ))}
+      </div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {moves.map((m, i) => (
+          <span key={i} className="rounded-full border px-3 py-1 text-xs" style={{ borderColor: `${pal.accent}44`, color: pal.sub }}>{m.emoji} {noDot(m.label)}</span>
+        ))}
+      </div>
+      {won ? (
+        <motion.p initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="font-display text-3xl" style={{ color: pal.accent }}>🏆 أتقنتم إيقاعًا من {GOAL} حركات!</motion.p>
+      ) : (
+        <div className="flex flex-wrap justify-center gap-3">
+          {seq.length === 0 ? (
+            <button onClick={nextRound} disabled={playing} className="rounded-full px-8 py-3 font-bold text-black disabled:opacity-50" style={{ background: pal.accent }}>▶ ابدأ</button>
+          ) : (
+            <>
+              <button onClick={replay} disabled={playing} className="rounded-full border px-5 py-3 text-sm font-bold disabled:opacity-50" style={{ borderColor: `${pal.accent}66`, color: pal.ink }}>🔁 أعد العرض</button>
+              <button onClick={success} disabled={playing} className="rounded-full px-6 py-3 font-bold text-black disabled:opacity-50" style={{ background: "#22c55e" }}>نجحوا ← حركة أصعب</button>
+              <button onClick={fail} disabled={playing} className="rounded-full px-5 py-3 text-sm font-bold text-white disabled:opacity-50" style={{ background: "#ef4444" }}>أخطؤوا ← من البداية</button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** بطاقات الذاكرة — اقلب بطاقتين وطابِق القيمة بسلوكها. */
+function MemoryScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
+  const pairs = screen.data?.pairs ?? [];
+  const deck = useMemo(() => {
+    const cards = pairs.flatMap((p, i) => [
+      { id: i, text: p.term, key: `${i}-t` },
+      { id: i, text: p.match, key: `${i}-m` },
+    ]);
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    return cards;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen.id]);
+  const [flipped, setFlipped] = useState<number[]>([]);
+  const [matched, setMatched] = useState<number[]>([]);
+  const [lock, setLock] = useState(false);
+  const done = pairs.length > 0 && matched.length === pairs.length;
+
+  function click(idx: number) {
+    if (lock || flipped.includes(idx) || matched.includes(deck[idx].id)) return;
+    const nf = [...flipped, idx];
+    setFlipped(nf);
+    if (nf.length === 2) {
+      setLock(true);
+      const [a, b] = nf;
+      if (deck[a].id === deck[b].id) {
+        window.setTimeout(() => {
+          setMatched((m) => { const nm = [...m, deck[a].id]; if (nm.length === pairs.length) playWin(); else playCorrect(); return nm; });
+          setFlipped([]); setLock(false);
+        }, 650);
+      } else {
+        window.setTimeout(() => { setFlipped([]); setLock(false); }, 950);
+      }
+    }
+  }
+
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-6 px-6 py-4 text-center">
+      <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>{noDot(screen.headline ?? "")}</p>
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-3">
+        {deck.map((c, idx) => {
+          const isMatched = matched.includes(c.id);
+          const up = flipped.includes(idx) || isMatched;
+          return (
+            <motion.button key={c.key} onClick={() => click(idx)} whileTap={{ scale: 0.95 }}
+              className="flex h-20 w-20 items-center justify-center rounded-2xl border-2 p-1.5 text-center sm:h-28 sm:w-28"
+              style={{ borderColor: isMatched ? "#22c55e" : up ? pal.accent : `${pal.accent}44`, background: isMatched ? "#22c55e22" : up ? pal.panel : `${pal.accent}11` }}>
+              {up ? <span className="text-[11px] font-bold leading-tight sm:text-sm" style={{ color: pal.ink }}>{noDot(c.text)}</span>
+                  : <span className="text-3xl">❓</span>}
+            </motion.button>
+          );
+        })}
+      </div>
+      {done && <motion.p initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="font-display text-3xl" style={{ color: pal.accent }}>🎉 طابقتم كل البطاقات!</motion.p>}
+    </div>
+  );
+}
+
+/** بينغو التعارف — شبكة ٣×٣، أول خطٍّ مكتمل يفوز. */
+function BingoScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
+  const cells = (screen.data?.cells ?? []).slice(0, 9);
+  const [marked, setMarked] = useState<boolean[]>(cells.map(() => false));
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  const bingo = LINES.some((ln) => ln.every((i) => marked[i]));
+  useEffect(() => { if (bingo) playWin(); }, [bingo]);
+  function toggle(i: number) { if (!marked[i]) playUnlock(); setMarked((m) => m.map((x, j) => (j === i ? !x : x))); }
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-6 px-6 py-4 text-center">
+      <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>{noDot(screen.headline ?? "")}</p>
+      <div className="grid grid-cols-3 gap-2.5">
+        {cells.map((c, i) => (
+          <motion.button key={i} onClick={() => toggle(i)} whileTap={{ scale: 0.96 }}
+            className="flex h-24 w-24 items-center justify-center rounded-2xl border-2 p-2 text-center sm:h-32 sm:w-32"
+            style={{ borderColor: marked[i] ? "#22c55e" : `${pal.accent}44`, background: marked[i] ? "#22c55e22" : pal.panel }}>
+            <span className="text-[11px] font-semibold leading-tight sm:text-sm" style={{ color: marked[i] ? "#22c55e" : pal.ink }}>{marked[i] ? "✓ " : ""}{noDot(c)}</span>
+          </motion.button>
+        ))}
+      </div>
+      {bingo && <motion.p initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="font-display text-3xl" style={{ color: pal.accent }}>🎉 بينغو! خطٌّ مكتمل</motion.p>}
+    </div>
+  );
+}
+
 /* ————————————————————————— قاذف الشاشة ————————————————————————— */
 
 function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; track: IntroTrack }) {
@@ -940,6 +1094,9 @@ function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; tra
     case "tower": return <TowerScreen screen={screen} pal={pal} />;
     case "buzzer": return <BuzzerScreen screen={screen} pal={pal} />;
     case "cheer": return <CheerScreen screen={screen} pal={pal} />;
+    case "rhythm": return <RhythmScreen screen={screen} pal={pal} />;
+    case "memory": return <MemoryScreen screen={screen} pal={pal} />;
+    case "bingo": return <BingoScreen screen={screen} pal={pal} />;
     default: return null;
   }
 }
