@@ -38,6 +38,8 @@ function apiDevServer(env: Record<string, string>): PluginOption {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
+    // مسار فرعي عند النشر على GitHub Pages (fekrahunique.github.io/mtfa3l/)، والجذر محليًا
+    base: mode === 'production' ? '/mtfa3l/' : '/',
     plugins: [react(), tailwindcss(), apiDevServer(env)],
     server: {
       watch: {

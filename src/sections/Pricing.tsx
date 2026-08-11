@@ -96,6 +96,24 @@ function BillingToggle({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
   );
 }
 
+/** مساعد اختيار سريع: «ماذا تحتاج؟» يوجّه الرائد للباقة المناسبة. */
+function DecisionHelper() {
+  return (
+    <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-md">
+      <p className="text-center font-display text-lg text-ink">ماذا تحتاج؟</p>
+      <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
+        {PLANS.map((p) => (
+          <Link key={p.id} to="/تسجيل" state={{ plan: p.id }}
+            className={`group rounded-xl border p-3.5 text-center transition-transform duration-300 hover:scale-[1.03] ${p.featured ? "border-sun-400/50 bg-sun-400/10" : "border-white/12 bg-white/[0.03] hover:border-white/30"}`}>
+            <span className="block text-sm text-ink-muted">«{noDot(p.who)}»</span>
+            <span className="mt-1.5 block font-display text-ink">← {p.name}{p.featured ? " 👑" : p.id === "pro" ? " ⭐" : ""}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** نسخة الجوّال/تقليل الحركة — بطاقات جنبًا إلى جنب فوق الفصل. */
 function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: boolean) => void }) {
   return (
@@ -105,9 +123,11 @@ function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
         <div className="absolute inset-0 bg-gradient-to-b from-[#131209] via-[#131209]/60 to-[#131209]" />
       </div>
       <div className="mx-auto max-w-[680px] text-center">
-        <h2 className="text-3xl text-ink sm:text-4xl">اختر خطة استثمارك في فصلك</h2>
-        <p className="mt-3 text-ink-muted">بأقل من ريالين يوميًا، فصلٌ لا يعرف الملل طوال العام</p>
+        <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-sun-400/30 bg-black/40 px-4 py-1.5 text-sm font-semibold text-sun-300"><Sparkle weight="fill" className="h-4 w-4" /> مساعد رائد النشاط</span>
+        <h2 className="text-3xl text-ink sm:text-4xl">يخطّط لك، ويجهّز لك، وتُنفّذ فقط</h2>
+        <p className="mt-3 text-ink-muted">وفّر ساعات التخطيط والإعداد كل أسبوع، واختر مستوى المساعدة الذي يناسبك</p>
       </div>
+      <DecisionHelper />
       <div id="plans" className="mt-8 scroll-mt-24"><BillingToggle annual={annual} setAnnual={setAnnual} /></div>
       <div className="mx-auto mt-8 grid max-w-6xl items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} annual={annual} />)}
@@ -163,13 +183,13 @@ export function Pricing() {
           <div className="relative flex flex-col items-center">
             <div aria-hidden className="absolute -inset-x-24 -inset-y-10 -z-10 rounded-[50%] bg-[#131209]/60 blur-2xl" />
             <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-sun-400/30 bg-black/45 px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-md">
-              <Sparkle weight="fill" className="h-4 w-4" /> خطط الاستثمار في فصلك
+              <Sparkle weight="fill" className="h-4 w-4" /> مساعد رائد النشاط
             </span>
             <h2 className="max-w-[900px] font-display text-5xl leading-[1.15] text-white [text-shadow:0_2px_30px_rgba(0,0,0,0.85)] sm:text-7xl">
-              حصةٌ ينتظرها طلابك
+              يخطّط لك، ويجهّز لك
             </h2>
             <p className="mt-4 max-w-[560px] text-lg font-medium text-white/85 [text-shadow:0_1px_16px_rgba(0,0,0,0.9)]">
-              حوّل وقت النشاط إلى تجربة يعيشها فصلك، واستثمِر فيها بثقة
+              وفّر ساعات التخطيط والإعداد كل أسبوع، وتُنفّذ حصةً ينتظرها طلابك
             </p>
             <motion.div style={{ opacity: hintOpacity }} className="mt-8 flex flex-col items-center gap-1 text-white/75">
               <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.4, repeat: Infinity }}><CaretDown weight="bold" className="h-5 w-5" /></motion.span>

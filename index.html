@@ -11,6 +11,16 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_SA" />
     <meta name="theme-color" content="#131209" />
+    <!-- استعادة المسار بعد إعادة توجيه 404 على GitHub Pages (نشر ثابت لتطبيق SPA) -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, "", redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

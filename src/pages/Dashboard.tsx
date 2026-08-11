@@ -49,6 +49,7 @@ import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentSt
 import { loadCapsule, toggleCapsuleAchieved, removeCapsuleGoal, clearCapsule, type CapsuleGoal } from "../lib/capsuleStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
+const arN = (n: number | string) => String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
 
 const DashboardScene = lazy(() =>
   import("../components/three/DashboardScene").then((m) => ({ default: m.DashboardScene }))
@@ -360,6 +361,31 @@ export function Dashboard() {
 
             <ScrollReveal delay={0.05} className="mt-8">
               <WeeklyTargetCard week={week} total={corners.length} completed={completed} accentText={accent.text} allDone={allDone} />
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.07} className="mt-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="text-lg">📊</span>
+                  <h3 className="font-display text-lg text-ink">لوحة الإنجاز</h3>
+                  <span className="text-xs text-ink-faint">قياس أثر نشاطك</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {[
+                    { emoji: "🎯", label: "إنجاز الأسبوع", value: `${arN(corners.length ? Math.round((completed / corners.length) * 100) : 0)}٪`, sub: `${arN(completed)}/${arN(corners.length)} ركن` },
+                    { emoji: "🏅", label: "الأوسمة", value: arN(badges.length), sub: "مكتسبة" },
+                    { emoji: "🎮", label: "أنشطة محفوظة", value: arN(games.length), sub: "من الوكيل" },
+                    { emoji: "🔮", label: "الكبسولة", value: `${arN(capsuleDone)}/${arN(capsule.length)}`, sub: "أهداف تحقّقت" },
+                  ].map((s) => (
+                    <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-center">
+                      <span className="text-xl">{s.emoji}</span>
+                      <p className={cn("mt-1 font-display text-2xl", accent.text)}>{s.value}</p>
+                      <p className="text-xs font-semibold text-ink">{s.label}</p>
+                      <p className="text-[11px] text-ink-faint">{s.sub}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </ScrollReveal>
 
             <ScrollReveal delay={0.1} className="mt-12">

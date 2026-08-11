@@ -17,9 +17,11 @@ const BigGame = lazy(() => import("./pages/BigGame").then((m) => ({ default: m.B
 const Shifra = lazy(() => import("./pages/Shifra").then((m) => ({ default: m.Shifra })));
 const LastChance = lazy(() => import("./pages/LastChance").then((m) => ({ default: m.LastChance })));
 
+const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
+
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={BASENAME}>
       <RouteSplash />
       <Suspense fallback={null}>
         <Routes>
