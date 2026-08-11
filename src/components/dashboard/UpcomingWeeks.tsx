@@ -25,7 +25,7 @@ export function UpcomingWeeks({ accentBg, accentText }: { accentBg: string; acce
         <span className={cn("text-sm font-semibold", accentText)}>التجربة الكاملة</span>
         <h3 className="font-display text-2xl text-ink sm:text-3xl">أسابيع كاملة بانتظارك</h3>
         <p className="mt-1 text-sm text-ink-muted">
-          جرّبت أسبوعًا واحدًا مجانًا — كل أسبوع قادم بمناسبته وأنشطته التفاعلية وأدوات صنع أنشطتك
+          جرّبت نشاطًا من الأسبوع التمهيدي — اشترك لتفتح كل الأسابيع بمناسباتها وأنشطتها التفاعلية وأدوات صنع أنشطتك
         </p>
       </div>
 

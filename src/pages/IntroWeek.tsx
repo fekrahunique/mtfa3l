@@ -542,7 +542,7 @@ function GrowthScreen({ screen, pal, track }: { screen: IntroScreen; pal: Pal; t
 
         <div className="mt-4 rounded-xl border p-3" style={{ borderColor: `${pal.accent}44` }}>
           <p className="text-sm font-semibold" style={{ color: pal.ink }}>ادعُ رائد نشاط... ارفع مدرستك</p>
-          <p className="mt-1 text-xs" style={{ color: pal.sub }}>كل زميل ينضم يرفع مدرستك في الحلبة ويفتح لك أسبوعًا إضافيًا مجانًا</p>
+          <p className="mt-1 text-xs" style={{ color: pal.sub }}>كل زميل ينضم يرفع مدرستك في حلبة المدارس ويقرّبك من الصدارة</p>
           {/* شريط التقدّم */}
           <div className="mt-3 h-2 overflow-hidden rounded-full" style={{ background: `${pal.accent}22` }}>
             <motion.div className="h-full rounded-full" style={{ background: pal.accent }} animate={{ width: `${Math.min(100, (invited / goal) * 100)}%` }} />

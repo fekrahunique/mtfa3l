@@ -52,7 +52,7 @@ export function StepReview({ data }: { data: RegistrationData }) {
           </div>
         </div>
         <p className="mt-3 rounded-xl bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-ink-muted">
-          🚀 تبدأ بأسبوع مجاني كامل — لا تُطلب بطاقة الآن، وتُفعّل الباقة بعد التجربة، وتلغي متى شئت
+          🚀 جرّب نشاطًا واحدًا من الأسبوع التمهيدي قبل الاشتراك، ثم تُفعّل باقتك التي اخترتها
         </p>
       </div>
 

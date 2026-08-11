@@ -75,47 +75,6 @@ function makeScreenTexture(item: BoardItem): THREE.CanvasTexture {
   return texture;
 }
 
-/** شاشة «منصة نشاط · خطط الاستثمار» تظهر عند الزوم لتُركَّب فوقها البطاقات. */
-function makePlatformTexture(): THREE.CanvasTexture {
-  const width = 1400, height = 458;
-  const canvas = document.createElement("canvas");
-  canvas.width = width; canvas.height = height;
-  const ctx = canvas.getContext("2d")!;
-
-  const grad = ctx.createLinearGradient(0, 0, 0, height);
-  grad.addColorStop(0, "#fbf3e2"); grad.addColorStop(1, "#efe2cc");
-  ctx.fillStyle = grad; ctx.fillRect(0, 0, width, height);
-
-  ctx.direction = "rtl"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillStyle = "#4d1c9b"; ctx.font = "900 100px 'Thmanyah Sans', sans-serif";
-  ctx.fillText("✦ منصة نشاط", width / 2, 168);
-  ctx.fillStyle = "#b06a00"; ctx.font = "800 52px 'Thmanyah Sans', sans-serif";
-  ctx.fillText("خطط الاستثمار في فصلك", width / 2, 286);
-
-  // ثلاث شرائح باقات
-  const labels = ["المنطلِق", "الرائد", "المتكامل"];
-  const cw = 300, gap = 40, total = cw * 3 + gap * 2;
-  let x = (width - total) / 2;
-  for (let i = 0; i < 3; i++) {
-    ctx.fillStyle = i === 2 ? "#f4b63a" : "#e6d6b8";
-    const y = 350, ch = 66, r = 30;
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + cw, y, x + cw, y + ch, r);
-    ctx.arcTo(x + cw, y + ch, x, y + ch, r);
-    ctx.arcTo(x, y + ch, x, y, r);
-    ctx.arcTo(x, y, x + cw, y, r);
-    ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#23203a"; ctx.font = "800 34px 'Thmanyah Sans', sans-serif";
-    ctx.fillText(labels[i], x + cw / 2, y + ch / 2 + 2);
-    x += cw + gap;
-  }
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.anisotropy = 4; texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
-
 function Student({ position, shirt, phase }: { position: [number, number, number]; shirt: string; phase: number }) {
   const arm = useRef<THREE.Group>(null);
   useFrame((s) => {
@@ -178,26 +137,17 @@ function Scene({ progress }: { progress?: MotionValue<number> }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [fontsReady]
   );
-  const platformTex = useMemo(
-    makePlatformTexture,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fontsReady]
-  );
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     const p = progress ? Math.min(Math.max(progress.get(), 0), 1) : 0.06;
 
-    // محتوى الشاشة: تحديات متبدّلة ثم شاشة المنصة عند الزوم
-    if (p > 0.42) {
-      if (idx.current !== -1 && screen.current) { idx.current = -1; screen.current.map = platformTex; screen.current.needsUpdate = true; }
-    } else {
-      const i = Math.floor(t / 3) % CHALLENGES.length;
-      if (i !== idx.current && screen.current) { idx.current = i; screen.current.map = textures[i]; screen.current.needsUpdate = true; }
-    }
+    // محتوى الشاشة: تحديات متبدّلة (منصة نشاط في زاوية الشاشة)
+    const i = Math.floor(t / 3) % CHALLENGES.length;
+    if (i !== idx.current && screen.current) { idx.current = i; screen.current.map = textures[i]; screen.current.needsUpdate = true; }
 
     // زوم الكاميرا داخل الشاشة مع التمرير
-    const z = smoothstep(0.08, 0.6, p); // 0 (واسع) → 1 (مقرّب على الشاشة)
+    const z = smoothstep(0.1, 0.55, p); // 0 (واسع) → 1 (مقرّب على الشاشة)
     const sway = 1 - z;
     const camX = Math.sin(t * 0.18) * 0.5 * sway;
     const camY = lerp(3.5, 2.32, z) + Math.sin(t * 0.24) * 0.08 * sway;
