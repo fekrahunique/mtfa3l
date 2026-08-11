@@ -425,6 +425,22 @@ export function Dashboard() {
               onOpenAssistant={() => setAssistantOpen(true)}
             />
           </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("/بطولة-نشاط", { state: data })}
+            className="group mt-4 flex w-full items-center justify-between gap-4 rounded-2xl border border-amber-400/30 p-5 text-right transition-transform duration-300 hover:scale-[1.01]"
+            style={{ background: "linear-gradient(150deg, rgba(245,158,11,0.16), rgba(19,18,9,0.9))" }}
+          >
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 px-3 py-0.5 text-[11px] font-bold text-amber-300">🏆 لعبة جماعية · جديد</span>
+              <h3 className="mt-2 font-display text-xl text-ink sm:text-2xl">بطولة نشاط</h3>
+              <p className="mt-1 text-sm text-ink-muted">قسّم فصلك فرقًا وأدِر بطولة تنافسية: تحديات ومخاطرة وأحداث وجولة نهائية</p>
+            </div>
+            <span className="flex shrink-0 items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-base font-bold text-bg shadow-xl transition-transform duration-300 group-hover:scale-105">
+              🎮 ابدأ البطولة
+            </span>
+          </button>
         </ScrollReveal>
 
         {games.length > 0 && (

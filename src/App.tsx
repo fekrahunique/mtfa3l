@@ -13,6 +13,7 @@ const PrivacyPolicy = lazy(() => import("./pages/Legal").then((m) => ({ default:
 const Terms = lazy(() => import("./pages/Legal").then((m) => ({ default: m.Terms })));
 const NotFound = lazy(() => import("./pages/NotFound").then((m) => ({ default: m.NotFound })));
 const AdminHub = lazy(() => import("./pages/AdminHub").then((m) => ({ default: m.AdminHub })));
+const BigGame = lazy(() => import("./pages/BigGame").then((m) => ({ default: m.BigGame })));
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/مستودع-الأفكار" element={<IdeaVault />} />
           <Route path="/خطة-النشاط" element={<Plan1448 />} />
           <Route path="/admin" element={<AdminHub />} />
+          <Route path="/بطولة-نشاط" element={<BigGame />} />
           <Route path="/سياسة-الخصوصية" element={<PrivacyPolicy />} />
           <Route path="/الشروط-والأحكام" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
