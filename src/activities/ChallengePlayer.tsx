@@ -5,7 +5,7 @@ import { noDot } from "../lib/utils";
 import { playCorrect, playWin, playTick, playAlarm, playUnlock } from "../lib/sound";
 import { CompetitorBoard } from "./CompetitorBoard";
 
-export type ChallengeType = "quizRace" | "predict" | "sort" | "order" | "budget" | "timer" | "map";
+export type ChallengeType = "quizRace" | "predict" | "sort" | "order" | "budget" | "timer" | "map" | "xo";
 
 export interface ChallengeContent {
   quiz?: { q: string; a: string }[];
@@ -15,6 +15,7 @@ export interface ChallengeContent {
   budget?: { total: number; unit: string; items: { label: string; cost: number; essential?: boolean }[]; emergencies: string[] };
   timer?: { seconds: number; criteria: string[]; prompts?: string[] };
   map?: { title: string; regions: { label: string; q: string; a: string }[] };
+  xo?: { xName?: string; oName?: string };
 }
 
 interface Pal { accent: string; accentSoft: string; deep: string; }
@@ -278,8 +279,99 @@ function MapGrid({ content, pal }: { content: ChallengeContent; pal: Pal }) {
   );
 }
 
+/* ————— لعبة إكس-أو (XO) تفاعلية بلوحة كاملة ————— */
+const XO_LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+function TicTacToe({ content, pal }: { content: ChallengeContent; pal: Pal }) {
+  const xName = noDot(content.xo?.xName ?? "الفريق ✕");
+  const oName = noDot(content.xo?.oName ?? "الفريق ◯");
+  const [cells, setCells] = useState<("X" | "O" | null)[]>(() => Array(9).fill(null));
+  const [turn, setTurn] = useState<"X" | "O">("X");
+  const [scores, setScores] = useState({ X: 0, O: 0, d: 0 });
+  const [starter, setStarter] = useState<"X" | "O">("X");
+
+  const winLine = XO_LINES.find((l) => cells[l[0]] && cells[l[0]] === cells[l[1]] && cells[l[1]] === cells[l[2]]);
+  const winner = winLine ? cells[winLine[0]] : null;
+  const filled = cells.every(Boolean);
+  const over = !!winner || filled;
+
+  useEffect(() => {
+    if (winner) { setScores((s) => (winner === "X" ? { ...s, X: s.X + 1 } : { ...s, O: s.O + 1 })); playWin(); }
+    else if (filled) { setScores((s) => ({ ...s, d: s.d + 1 })); playAlarm(); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [over]);
+
+  function place(i: number) {
+    if (cells[i] || over) return;
+    setCells((c) => c.map((v, j) => (j === i ? turn : v)));
+    setTurn((t) => (t === "X" ? "O" : "X"));
+    playCorrect();
+  }
+  function newRound() {
+    const next = starter === "X" ? "O" : "X";
+    setStarter(next); setTurn(next); setCells(Array(9).fill(null));
+  }
+  function resetAll() { setScores({ X: 0, O: 0, d: 0 }); setStarter("X"); setTurn("X"); setCells(Array(9).fill(null)); }
+
+  const xColor = "#38bdf8", oColor = "#fb7185";
+
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-5 px-6 py-6 text-center">
+      {/* لوحة النتائج */}
+      <div className="flex items-center gap-6">
+        <div className="flex flex-col items-center" style={{ opacity: turn === "X" && !over ? 1 : 0.55 }}>
+          <span className="font-display text-lg" style={{ color: xColor }}>✕ {xName}</span>
+          <span className="font-display text-3xl" style={{ color: xColor }}>{scores.X}</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-xs" style={{ color: pal.accentSoft }}>تعادل</span>
+          <span className="font-display text-2xl text-white">{scores.d}</span>
+        </div>
+        <div className="flex flex-col items-center" style={{ opacity: turn === "O" && !over ? 1 : 0.55 }}>
+          <span className="font-display text-lg" style={{ color: oColor }}>◯ {oName}</span>
+          <span className="font-display text-3xl" style={{ color: oColor }}>{scores.O}</span>
+        </div>
+      </div>
+
+      {/* حالة الدور/الفوز */}
+      <div className="min-h-[2rem]">
+        {over ? (
+          <motion.p initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="font-display text-2xl" style={{ color: winner ? (winner === "X" ? xColor : oColor) : pal.accent }}>
+            {winner ? `🎉 فاز ${winner === "X" ? xName : oName}` : "🤝 تعادل"}
+          </motion.p>
+        ) : (
+          <p className="font-display text-xl" style={{ color: turn === "X" ? xColor : oColor }}>دور {turn === "X" ? xName : oName} {turn === "X" ? "✕" : "◯"}</p>
+        )}
+      </div>
+
+      {/* اللوحة */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        {cells.map((v, i) => {
+          const inWin = winLine?.includes(i);
+          return (
+            <motion.button key={i} whileTap={{ scale: 0.92 }} onClick={() => place(i)} disabled={!!v || over}
+              className="flex h-24 w-24 items-center justify-center rounded-2xl border-2 font-display text-5xl sm:h-28 sm:w-28 sm:text-6xl"
+              style={{
+                borderColor: inWin ? "#22c55e" : `${pal.accent}44`,
+                background: inWin ? "#22c55e22" : pal.deep,
+                color: v === "X" ? xColor : v === "O" ? oColor : "transparent",
+                boxShadow: inWin ? "0 0 24px #22c55e" : "none",
+              }}>
+              {v === "X" ? "✕" : v === "O" ? "◯" : ""}
+            </motion.button>
+          );
+        })}
+      </div>
+
+      <div className="flex gap-3">
+        <button onClick={newRound} className="rounded-full px-6 py-2.5 font-bold text-black" style={{ background: pal.accent }}>جولة جديدة</button>
+        <button onClick={resetAll} className="rounded-full border px-5 py-2.5 text-sm font-semibold" style={{ borderColor: `${pal.accent}66`, color: "#fff" }}>صفّر النتائج</button>
+      </div>
+    </div>
+  );
+}
+
 const ENGINES: Record<ChallengeType, (p: { content: ChallengeContent; pal: Pal }) => React.ReactElement> = {
-  quizRace: QuizRace, predict: Predict, sort: Sort, order: Order, budget: Budget, timer: TimerJudge, map: MapGrid,
+  quizRace: QuizRace, predict: Predict, sort: Sort, order: Order, budget: Budget, timer: TimerJudge, map: MapGrid, xo: TicTacToe,
 };
 
 export function ChallengePlayer({ title, type, content, pal, onClose }: { title: string; type: ChallengeType; content: ChallengeContent; pal: Pal; onClose: () => void }) {

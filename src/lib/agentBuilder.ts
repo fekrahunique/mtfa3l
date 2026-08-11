@@ -23,11 +23,22 @@ export const ENGINE_LABEL: Record<ChallengeType, string> = {
   budget: "توزيع الميزانية",
   timer: "التحدّي الزمني والتحكيم",
   map: "خريطة المحطّات",
+  xo: "لعبة إكس-أو",
 };
 
 const norm = (s: string) => s.replace(/[.،؛]+\s*$/u, "").trim();
 const lines = (t: string) => t.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
 const has = (t: string, re: RegExp) => re.test(t);
+
+/** يكتشف طلب لعبة إكس-أو (XO / تيك تاك تو) بصيغها المختلفة. */
+function isXO(t: string): boolean {
+  const s = t.toLowerCase();
+  if (/تيك\s*تاك|تكتك|إكس\s*[أا]?و|اكس\s*[أا]?و|tic[\s-]*tac/u.test(s)) return true;
+  if (/\bx\s*(?:و|and|&|-)?\s*o\b/.test(s)) return true;
+  if (/\bxo\b|\boxo\b/.test(s)) return true;
+  if (/لعب/u.test(s) && /\bx\b/.test(s) && /\bo\b/.test(s)) return true;
+  return false;
+}
 
 /* ————— مستخرجات ————— */
 
@@ -142,6 +153,12 @@ export function buildChallenge(input: string): BuiltChallenge {
   const firstShort = ls.find((l) => l.length <= 40 && !/[:؟=]/.test(l));
   const title = norm(firstShort || ls[0] || "تحدٍّ جديد").slice(0, 48);
   log.push(`قرأت ${ls.length} سطرًا (${full.length} حرفًا) وحدّدت العنوان: «${title}»`);
+
+  // ٠) ألعاب حقيقية بمحرّك خاص — إكس أو (XO)
+  if (isXO(full)) {
+    log.push("طلبت لعبة إكس-أو → بنيت لوحة تفاعلية كاملة (٣×٣) بلاعبَين وكشف الفوز والتعادل");
+    return pack(title === "تحدٍّ جديد" ? "إكس أو" : title, "xo", { xo: {} }, log, "لوحة إكس-أو تفاعلية بلاعبَين");
+  }
 
   // ١) الترتيب
   const steps = extractSteps(ls);
