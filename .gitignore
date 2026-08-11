@@ -19,3 +19,8 @@ ministry-files/*
 
 # صور صفحات PDF المرندَرة محليًا (أداة الاستخراج) — لا تُرفع
 tools/rendered/
+
+# متغيرات البيئة (مفتاح Claude) — لا تُرفع أبدًا
+.env
+.env.*
+!.env.example

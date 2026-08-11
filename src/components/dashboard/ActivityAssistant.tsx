@@ -4,6 +4,7 @@ import { X, Sparkle, Robot, Play, FloppyDisk, ArrowsClockwise, UploadSimple, Che
 import { cn } from "../../lib/utils";
 import { buildChallenge, AGENT_EXAMPLES, type BuiltChallenge } from "../../lib/agentBuilder";
 import { extractFileText } from "../../lib/fileText";
+import { generateAiGame, AiUnavailableError, type AiGame } from "../../lib/aiGame";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -18,12 +19,18 @@ export function ActivityAssistant({
   accentText,
   onPlay,
   onSaveGame,
+  onAiGame,
+  stage,
+  gender,
   onClose,
 }: {
   accentBg: string;
   accentText: string;
   onPlay: (built: BuiltChallenge) => void;
   onSaveGame: (built: BuiltChallenge) => void;
+  onAiGame?: (game: AiGame) => void;
+  stage?: string;
+  gender?: string;
   onClose: () => void;
 }) {
   const [text, setText] = useState("");
@@ -33,6 +40,8 @@ export function ActivityAssistant({
   const [result, setResult] = useState<BuiltChallenge | null>(null);
   const [saved, setSaved] = useState(false);
   const [drag, setDrag] = useState(false);
+  const [aiTry, setAiTry] = useState(false); // جارٍ محاولة الوكيل الذكي (الخادم)
+  const [aiNote, setAiNote] = useState<string | null>(null); // سبب الرجوع للمولّد المحلي
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -59,14 +68,7 @@ export function ActivityAssistant({
     }
   }
 
-  function run(value: string) {
-    const v = value.trim();
-    if (!v) return;
-    setText(v);
-    setResult(null);
-    setSaved(false);
-    setLogShown(0);
-    setPhase("building");
+  function localBuild(v: string) {
     const built = buildChallenge(v);
     // كشف خطوات الوكيل تِباعًا ثم عرض النتيجة
     built.buildLog.forEach((_, i) => {
@@ -75,6 +77,38 @@ export function ActivityAssistant({
     timers.current.push(
       window.setTimeout(() => { setResult(built); setPhase("result"); }, 700 + built.buildLog.length * 650)
     );
+  }
+
+  async function run(value: string) {
+    const v = value.trim();
+    if (!v) return;
+    setText(v);
+    setResult(null);
+    setSaved(false);
+    setLogShown(0);
+    setAiNote(null);
+    setPhase("building");
+
+    // ١) الوكيل الذكي الحقيقي (Claude خلف الخادم) يبني أي لعبة
+    if (onAiGame) {
+      setAiTry(true);
+      try {
+        const game = await generateAiGame(v, { stage, gender });
+        setAiTry(false);
+        onAiGame(game);
+        onClose();
+        return;
+      } catch (e) {
+        setAiTry(false);
+        if (e instanceof AiUnavailableError) {
+          setAiNote("الوكيل الذكي غير مفعّل بعد (يحتاج خادمًا ومفتاح Claude) — استخدمت المولّد المحلي");
+        } else {
+          setAiNote((e as Error).message || "تعذّر الوكيل الذكي — استخدمت المولّد المحلي");
+        }
+      }
+    }
+    // ٢) الاحتياطي: المولّد المحلي (محرّكات جاهزة)
+    localBuild(v);
   }
 
   return (
@@ -98,7 +132,7 @@ export function ActivityAssistant({
             </span>
             <div>
               <h3 className="font-display text-2xl text-ink">وكيل الأنشطة الذكي</h3>
-              <p className="text-sm text-ink-muted">اكتب فكرتك أو أرفِق ملف مسابقة، والوكيل يبنيها لعبةً تُلعب على شاشتك</p>
+              <p className="text-sm text-ink-muted">اطلب أي لعبة أو مسابقة (إكس-أو، ذاكرة، عجلة، سباق أسئلة…) أو أرفِق ملفًا، والوكيل يبنيها لك</p>
             </div>
           </div>
           <button type="button" onClick={onClose} aria-label="إغلاق"
@@ -165,10 +199,11 @@ export function ActivityAssistant({
                   animate={{ scale: [1, 1.1, 1], rotate: [0, 6, -6, 0] }} transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}>
                   <Robot weight="fill" className="h-7 w-7" />
                 </motion.span>
-                <p className="text-base font-semibold text-ink">الوكيل يبني لعبتك…</p>
+                <p className="text-base font-semibold text-ink">{aiTry ? "الوكيل الذكي يبني لعبتك… قد يستغرق لحظات" : "الوكيل يبني لعبتك…"}</p>
+                {aiTry && <p className="text-xs text-ink-muted">يكتب النموذج اللعبة كاملة من فكرتك</p>}
               </div>
               <ul className="space-y-2">
-                {buildChallenge(text).buildLog.slice(0, logShown).map((line, i) => (
+                {!aiTry && buildChallenge(text).buildLog.slice(0, logShown).map((line, i) => (
                   <motion.li key={i} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
                     className="flex items-start gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm leading-relaxed text-ink">
                     <CheckCircle weight="fill" className={cn("mt-0.5 h-4 w-4 shrink-0", accentText)} />
@@ -182,6 +217,11 @@ export function ActivityAssistant({
           {/*، —، — النتيجة، —، — */}
           {phase === "result" && result && (
             <motion.div key="result" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-6 space-y-5">
+              {aiNote && (
+                <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-xs leading-relaxed text-amber-200">
+                  ⚠️ {aiNote}
+                </div>
+              )}
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
                 <span className={cn("text-xs font-semibold", accentText)}>لعبة جاهزة للّعب</span>
                 <h4 className="mt-1 font-display text-2xl text-ink">{result.title}</h4>

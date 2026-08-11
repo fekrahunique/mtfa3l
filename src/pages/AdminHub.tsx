@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Robot, ArrowSquareOut, Database, Trash } from "@phosphor-icons/react";
 import { ActivityAssistant } from "../components/dashboard/ActivityAssistant";
 import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../activities/ChallengePlayer";
+import { AiGamePlayer } from "../activities/AiGamePlayer";
 import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentStore";
 import { isSubscribed, setSubscribed } from "../lib/subscriptionStore";
 import type { BuiltChallenge } from "../lib/agentBuilder";
@@ -26,6 +27,7 @@ export function AdminHub() {
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [games, setGames] = useState<SavedGame[]>(() => loadGames());
   const [playing, setPlaying] = useState<{ title: string; type: ChallengeType; content: ChallengeContent } | null>(null);
+  const [aiGame, setAiGame] = useState<{ title: string; html: string } | null>(null);
   const [storageTick, setStorageTick] = useState(0);
   const [subscribed, setSub] = useState(isSubscribed());
 
@@ -150,13 +152,16 @@ export function AdminHub() {
 
       <AnimatePresence>
         {assistantOpen && (
-          <ActivityAssistant accentBg="bg-sun-400" accentText="text-sun-300" onPlay={playBuilt} onSaveGame={saveBuilt} onClose={() => setAssistantOpen(false)} />
+          <ActivityAssistant accentBg="bg-sun-400" accentText="text-sun-300" onPlay={playBuilt} onSaveGame={saveBuilt} onAiGame={(g) => { setAssistantOpen(false); setAiGame(g); }} onClose={() => setAssistantOpen(false)} />
         )}
       </AnimatePresence>
       <AnimatePresence>
         {playing && (
           <ChallengePlayer title={playing.title} type={playing.type} content={playing.content} pal={AGENT_PAL} onClose={() => setPlaying(null)} />
         )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {aiGame && <AiGamePlayer title={aiGame.title} html={aiGame.html} onClose={() => setAiGame(null)} />}
       </AnimatePresence>
     </div>
   );

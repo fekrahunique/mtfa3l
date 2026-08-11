@@ -43,6 +43,7 @@ import {
   type CornerOverrides,
 } from "../lib/cornerStore";
 import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../activities/ChallengePlayer";
+import { AiGamePlayer } from "../activities/AiGamePlayer";
 import type { BuiltChallenge } from "../lib/agentBuilder";
 import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentStore";
 import { loadCapsule, toggleCapsuleAchieved, removeCapsuleGoal, clearCapsule, type CapsuleGoal } from "../lib/capsuleStore";
@@ -91,6 +92,7 @@ export function Dashboard() {
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [games, setGames] = useState<SavedGame[]>(() => loadGames());
   const [playingGame, setPlayingGame] = useState<{ title: string; type: ChallengeType; content: ChallengeContent } | null>(null);
+  const [aiGame, setAiGame] = useState<{ title: string; html: string } | null>(null);
   const [capsule, setCapsule] = useState<CapsuleGoal[]>(() => loadCapsule());
   const [capsuleOpen, setCapsuleOpen] = useState(false);
   const [badges, setBadges] = useState<string[]>(() => loadBadges());
@@ -566,9 +568,16 @@ export function Dashboard() {
             accentText={accent.text}
             onPlay={playBuilt}
             onSaveGame={saveBuilt}
+            onAiGame={(g) => { setAssistantOpen(false); setAiGame(g); }}
+            stage={stageLabel}
+            gender={gender === "boys" ? "بنين" : "بنات"}
             onClose={() => setAssistantOpen(false)}
           />
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {aiGame && <AiGamePlayer title={aiGame.title} html={aiGame.html} onClose={() => setAiGame(null)} />}
       </AnimatePresence>
 
       <AnimatePresence>
