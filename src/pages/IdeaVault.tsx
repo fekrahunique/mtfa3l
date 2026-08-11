@@ -1,32 +1,39 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MagnifyingGlass, CaretLeft, CaretDown, Target, GraduationCap, Play } from "@phosphor-icons/react";
+import { MagnifyingGlass, CaretLeft, CaretDown, Target, GraduationCap, Play, Lock, Crown } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { vaultCategories, type VaultChallenge, type VaultStage } from "../data/ideaVault";
 import { ChallengePlayer } from "../activities/ChallengePlayer";
 import { emptyRegistration, type RegistrationData } from "../lib/theme";
+import { isPremium, goToPricing } from "../lib/subscriptionStore";
 import { noDot } from "../lib/utils";
 
 const STAGES: (VaultStage | "الكل")[] = ["الكل", "ابتدائي", "متوسط"];
 const TYPE_LABEL: Record<string, string> = { quizRace: "سؤال بالنقاط", predict: "تصويت وتوقّع", sort: "تصنيف", order: "ترتيب", budget: "ميزانية", timer: "مؤقّت وتحكيم", map: "خريطة/مناطق" };
 
-function ChallengeCard({ ch, accent, accentSoft, deep, onPlay }: { ch: VaultChallenge; accent: string; accentSoft: string; deep: string; onPlay: () => void }) {
+function ChallengeCard({ ch, accent, accentSoft, deep, onPlay, locked }: { ch: VaultChallenge; accent: string; accentSoft: string; deep: string; onPlay: () => void; locked?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="overflow-hidden rounded-2xl border" style={{ borderColor: `${accent}44`, background: `linear-gradient(150deg, ${deep}, rgba(19,18,9,0.92))` }}>
       <div className="flex items-center gap-3 p-4">
         <button type="button" onClick={() => setOpen((v) => !v)} className="min-w-0 flex-1 text-right">
-          <span className="block font-display text-lg text-white">{noDot(ch.title)}</span>
+          <span className="flex items-center gap-1.5 font-display text-lg text-white">{locked && <Lock weight="fill" className="h-4 w-4 shrink-0" style={{ color: accentSoft }} />}{noDot(ch.title)}</span>
           <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs" style={{ color: accentSoft }}>
             <span className="rounded-full px-2 py-0.5" style={{ background: `${accent}33` }}>{ch.stage}</span>
             <span className="rounded-full border px-2 py-0.5" style={{ borderColor: `${accent}44`, color: accentSoft }}>{TYPE_LABEL[ch.type]}</span>
             <span className="text-white/45">{noDot(ch.tag)}</span>
           </span>
         </button>
-        <button type="button" onClick={onPlay} className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95" style={{ background: accent }}>
-          <Play weight="fill" className="h-4 w-4" /> شغّل
-        </button>
+        {locked ? (
+          <button type="button" onClick={onPlay} className="flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-bold transition-transform hover:scale-105 active:scale-95" style={{ borderColor: `${accent}88`, color: accentSoft }}>
+            <Lock weight="fill" className="h-4 w-4" /> للباقة العليا
+          </button>
+        ) : (
+          <button type="button" onClick={onPlay} className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95" style={{ background: accent }}>
+            <Play weight="fill" className="h-4 w-4" /> شغّل
+          </button>
+        )}
         <button type="button" onClick={() => setOpen((v) => !v)} className="shrink-0"><CaretDown weight="bold" className="h-4 w-4 text-white/50 transition-transform duration-300" style={{ transform: open ? "rotate(180deg)" : "none" }} /></button>
       </div>
       <AnimatePresence>
@@ -49,10 +56,12 @@ export function IdeaVault() {
   const data = (location.state as RegistrationData | null) ?? emptyRegistration;
   const [query, setQuery] = useState("");
   const [stage, setStage] = useState<VaultStage | "الكل">("الكل");
-  const [activeCat, setActiveCat] = useState(vaultCategories[0].id);
+  const [activeCat, setActiveCat] = useState((vaultCategories.find((c) => !c.premium) ?? vaultCategories[0]).id);
   const [playing, setPlaying] = useState<VaultChallenge | null>(null);
 
   const cat = vaultCategories.find((c) => c.id === activeCat)!;
+  const premiumUnlocked = isPremium(data.plan);
+  const catLocked = !!cat.premium && !premiumUnlocked;
 
   const filtered = useMemo(() => {
     const q = query.trim();
@@ -69,7 +78,7 @@ export function IdeaVault() {
     <div className="relative min-h-screen overflow-x-clip bg-bg pb-24">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         {vaultCategories.map((c, i) => (
-          <div key={c.id} className="absolute rounded-full blur-3xl" style={{ width: 360, height: 360, left: `${[8, 70, 30][i]}%`, top: `${[4, 30, 70][i]}%`, background: `${c.accent}22` }} />
+          <div key={c.id} className="absolute rounded-full blur-3xl" style={{ width: 360, height: 360, left: `${[8, 70, 30, 55, 18][i % 5]}%`, top: `${[4, 30, 70, 12, 52][i % 5]}%`, background: `${c.accent}22` }} />
         ))}
       </div>
 
@@ -146,6 +155,7 @@ export function IdeaVault() {
               <button key={c.id} type="button" onClick={() => setActiveCat(c.id)} className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 hover:scale-105"
                 style={{ borderColor: isActive ? c.accentSoft : "rgba(255,255,255,0.12)", backgroundColor: isActive ? `${c.accent}33` : "rgba(255,255,255,0.04)", color: isActive ? c.accentSoft : "rgba(255,255,255,0.75)" }}>
                 <span>{c.emoji}</span> {c.title}
+                {c.premium && !premiumUnlocked && <Lock weight="fill" className="h-3 w-3" />}
                 <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px]">{c.challenges.length}</span>
               </button>
             );
@@ -156,10 +166,25 @@ export function IdeaVault() {
           <p className="text-sm" style={{ color: cat.accentSoft }}>{noDot(cat.blurb)}</p>
         </ScrollReveal>
 
+        {/* شريط الترقية للحزمة الحصرية */}
+        {catLocked && (
+          <div className="mt-5 flex flex-col items-center gap-3 rounded-2xl border p-5 text-center sm:flex-row sm:text-right"
+            style={{ borderColor: `${cat.accent}55`, background: `linear-gradient(150deg, ${cat.accent}1f, rgba(19,18,9,0.9))` }}>
+            <Crown weight="fill" className="h-8 w-8 shrink-0" style={{ color: cat.accent }} />
+            <div className="flex-1">
+              <p className="font-display text-lg text-white">حزمة حصرية للرائد المتكامل</p>
+              <p className="mt-0.5 text-sm text-white/70">هذه البطولات النوعية متاحة لمشتركي الباقة العليا، رقِّ باقتك لتفتحها كلها</p>
+            </div>
+            <button type="button" onClick={() => goToPricing(navigate)} className="shrink-0 rounded-full px-6 py-2.5 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95" style={{ background: cat.accent }}>
+              رقِّ للباقة العليا ✨
+            </button>
+          </div>
+        )}
+
         {/* البطاقات */}
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {filtered.map((ch) => (
-            <ChallengeCard key={ch.id} ch={ch} accent={cat.accent} accentSoft={cat.accentSoft} deep={cat.deep} onPlay={() => setPlaying(ch)} />
+            <ChallengeCard key={ch.id} ch={ch} accent={cat.accent} accentSoft={cat.accentSoft} deep={cat.deep} locked={catLocked} onPlay={() => (catLocked ? goToPricing(navigate) : setPlaying(ch))} />
           ))}
         </div>
         {filtered.length === 0 && (

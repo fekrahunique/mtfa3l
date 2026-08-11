@@ -6,7 +6,8 @@ import { ActivityAssistant } from "../components/dashboard/ActivityAssistant";
 import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../activities/ChallengePlayer";
 import { AiGamePlayer } from "../activities/AiGamePlayer";
 import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentStore";
-import { isSubscribed, setSubscribed } from "../lib/subscriptionStore";
+import { isSubscribed, setSubscribed, getTier, setTier } from "../lib/subscriptionStore";
+import { PLANS, type PlanId } from "../data/plans";
 import type { BuiltChallenge } from "../lib/agentBuilder";
 
 const ROUTES: { to: string; label: string; note: string }[] = [
@@ -31,6 +32,7 @@ export function AdminHub() {
   const [aiGame, setAiGame] = useState<{ title: string; html: string } | null>(null);
   const [storageTick, setStorageTick] = useState(0);
   const [subscribed, setSub] = useState(isSubscribed());
+  const [tier, setTierState] = useState<PlanId | null>(getTier());
 
   const storage = useMemo(() => {
     void storageTick;
@@ -116,6 +118,22 @@ export function AdminHub() {
               className={`rounded-full px-6 py-3 font-bold transition-transform hover:scale-[1.03] active:scale-95 ${subscribed ? "bg-emerald-400 text-bg" : "border border-white/20 text-ink"}`}>
               {subscribed ? "مشترك ✓، إلغاء" : "فعّل الاشتراك"}
             </button>
+          </div>
+          <div className="mt-5 border-t border-white/10 pt-4">
+            <p className="mb-2 text-sm text-ink-muted">فئة الاشتراك (لتجربة قفل حزمة النخبة في المستودع):</p>
+            <div className="flex flex-wrap gap-2">
+              {PLANS.map((p) => (
+                <button key={p.id} onClick={() => { setTier(p.id); setTierState(p.id); }}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${tier === p.id ? "bg-sun-400 text-bg" : "border border-white/15 text-ink-muted hover:text-ink"}`}>
+                  {p.id === "premium" ? "👑 " : ""}{p.name}
+                </button>
+              ))}
+              <button onClick={() => { setTier(null); setTierState(null); }}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${tier === null ? "bg-sun-400 text-bg" : "border border-white/15 text-ink-muted hover:text-ink"}`}>
+                بلا فئة
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-ink-faint">{tier === "premium" ? "👑 حزمة النخبة مفتوحة" : "🔒 حزمة النخبة مقفلة (تظهر بزر ترقية)"}</p>
           </div>
         </section>
 
