@@ -156,17 +156,24 @@ export function Pricing() {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#131209] via-[#131209]/70 to-transparent" />
         </div>
 
-        {/* المرحلة ١: العنوان فوق الفصل */}
-        <motion.div style={{ opacity: heroOpacity, y: heroY }} className="pointer-events-none absolute inset-x-0 top-[24vh] flex flex-col items-center px-4 text-center">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-md">
-            <Sparkle weight="fill" className="h-4 w-4" /> خطط الاستثمار في فصلك
-          </span>
-          <h2 className="max-w-[820px] font-display text-4xl text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.7)] sm:text-6xl">هكذا يصير فصلك مع نشاط</h2>
-        </motion.div>
-
-        <motion.div style={{ opacity: hintOpacity }} className="pointer-events-none absolute inset-x-0 bottom-10 flex flex-col items-center gap-1 text-white/70">
-          <span className="text-sm">انزل لتظهر الباقات على سبورة الفصل</span>
-          <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.4, repeat: Infinity }}><CaretDown weight="bold" className="h-5 w-5" /></motion.span>
+        {/* المرحلة ١: الجملة التسويقية فوق الفصل — بخلفية ناعمة تفصلها عن زحمة المشهد */}
+        <motion.div style={{ opacity: heroOpacity, y: heroY }} className="pointer-events-none absolute inset-x-0 top-[17vh] flex flex-col items-center px-4 text-center">
+          <div className="relative flex flex-col items-center">
+            <div aria-hidden className="absolute -inset-x-24 -inset-y-10 -z-10 rounded-[50%] bg-[#131209]/60 blur-2xl" />
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-sun-400/30 bg-black/45 px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-md">
+              <Sparkle weight="fill" className="h-4 w-4" /> خطط الاستثمار في فصلك
+            </span>
+            <h2 className="max-w-[900px] font-display text-5xl leading-[1.15] text-white [text-shadow:0_2px_30px_rgba(0,0,0,0.85)] sm:text-7xl">
+              حصةٌ ينتظرها طلابك
+            </h2>
+            <p className="mt-4 max-w-[560px] text-lg font-medium text-white/85 [text-shadow:0_1px_16px_rgba(0,0,0,0.9)]">
+              حوّل وقت النشاط إلى تجربة يعيشها فصلك — واستثمِر فيها بثقة
+            </p>
+            <motion.div style={{ opacity: hintOpacity }} className="mt-8 flex flex-col items-center gap-1 text-white/75">
+              <span className="text-sm">انزل لتظهر الباقات على سبورة الفصل</span>
+              <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.4, repeat: Infinity }}><CaretDown weight="bold" className="h-5 w-5" /></motion.span>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* عنوان صغير أعلى السبورة عند ظهور الباقات */}
