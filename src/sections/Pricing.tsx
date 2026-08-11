@@ -170,7 +170,6 @@ export function Pricing() {
               حوّل وقت النشاط إلى تجربة يعيشها فصلك، واستثمِر فيها بثقة
             </p>
             <motion.div style={{ opacity: hintOpacity }} className="mt-8 flex flex-col items-center gap-1 text-white/75">
-              <span className="text-sm">انزل لتظهر الباقات على سبورة الفصل</span>
               <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.4, repeat: Infinity }}><CaretDown weight="bold" className="h-5 w-5" /></motion.span>
             </motion.div>
           </div>
