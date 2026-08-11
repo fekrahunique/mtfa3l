@@ -28,7 +28,7 @@ const SHIRTS = ["#e0556b", "#4a8fe0", "#e0a23c", "#3cb2a0", "#8a6fe0", "#5fb04a"
 const BOARD_SHORT: Record<string, string[]> = {
   starter: ["أنشطة الاستراحة", "الأسبوع التمهيدي", "فصل ونقاط"],
   pro: ["مستودع ١٠٠+ تحدٍّ", "برامج المجالات", "خطة ١٤٤٨ والمواسم"],
-  premium: ["وكيل الذكاء", "استيراد الملفات", "تقرير PDF"],
+  premium: ["بطولة نشاط", "لعبة الشفرة", "بطاقات وتقارير PDF"],
 };
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
