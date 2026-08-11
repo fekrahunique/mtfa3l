@@ -429,9 +429,10 @@ export function Dashboard() {
           </div>
 
           <button
+            id="tournament"
             type="button"
             onClick={() => navigate("/بطولة-نشاط", { state: data })}
-            className="group mt-4 flex w-full items-center justify-between gap-4 rounded-2xl border border-amber-400/30 p-5 text-right transition-transform duration-300 hover:scale-[1.01]"
+            className="group mt-4 flex w-full scroll-mt-24 items-center justify-between gap-4 rounded-2xl border border-amber-400/30 p-5 text-right transition-transform duration-300 hover:scale-[1.01]"
             style={{ background: "linear-gradient(150deg, rgba(245,158,11,0.16), rgba(19,18,9,0.9))" }}
           >
             <div>

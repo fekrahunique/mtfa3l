@@ -53,6 +53,8 @@ function Setup({ s, dispatch, onExit }: { s: GameState; dispatch: (a: Action) =>
         <p className="mt-2 text-lg text-amber-300">خطّط. خاطر. نافس. اربح</p>
       </div>
 
+      <HowToPlay />
+
       <div className="mt-8 space-y-6">
         <Field label="الفئة العمرية">
           <select value={c.ageGroup} onChange={(e) => dispatch({ t: "setConfig", patch: { ageGroup: e.target.value } })} className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-white outline-none">
@@ -114,6 +116,38 @@ function Setup({ s, dispatch, onExit }: { s: GameState; dispatch: (a: Action) =>
           جهّز اللعبة <CaretLeft weight="bold" className="h-5 w-5" />
         </button>
       </div>
+    </div>
+  );
+}
+
+/** شرح مبسّط للرائد: كيف تُدار البطولة أمام الفصل، قبل أن يبدأ الإعداد. */
+function HowToPlay() {
+  const steps = [
+    { emoji: "🧩", title: "قسّم فصلك فِرَقًا", body: "تختار عدد الفرق (٢ إلى ٨) وتسمّيها، ولكل فريق رصيد يبدأ به السباق" },
+    { emoji: "🎯", title: "جولات التحدّي", body: "كل فريق بدوره ينفّذ تحدّياً على الشاشة، وأنت الحَكَم: نجح فيربح رصيداً، أخفق فيخسر جزءاً منه" },
+    { emoji: "💥", title: "المخاطرة (اختياري)", body: "قبل التحدّي يراهن الفريق بجزء من رصيده، الجرأة تضاعف الربح لكنها تضاعف الخسارة أيضاً" },
+    { emoji: "⚡", title: "أحداث مفاجئة (اختياري)", body: "بضغطة تنقلب الموازين: جولة ذهبية بمكافأة مضاعفة أو مفاجأة تهزّ الترتيب فجأة" },
+    { emoji: "🚨", title: "الجولة النهائية", body: "قرب نهاية الوقت كل فريق يقرّر: يحافظ على رصيده بأمان أو يخاطر ليضاعفه بتحدٍّ أخير" },
+    { emoji: "👑", title: "التتويج", body: "يُعلَن الترتيب تشويقاً من الأخير إلى الأول، ويُتوَّج صاحب أعلى رصيد بطلاً للبطولة" },
+  ];
+  return (
+    <div className="mt-6 rounded-2xl border border-amber-400/25 bg-amber-400/[0.06] p-5 text-right">
+      <p className="font-display text-lg text-amber-200">كيف تُدار البطولة؟</p>
+      <p className="mt-1 text-sm text-white/65">أنت تقودها من شاشة العرض، والفرق تتنافس أمامك، إليك الفكرة كاملة في لمحة</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {steps.map((st, i) => (
+          <div key={st.title} className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-400/15 text-xl">{st.emoji}</span>
+            <div>
+              <p className="text-sm font-bold text-white">{ar(i + 1)}. {st.title}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-white/65">{st.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 rounded-xl bg-white/[0.03] px-4 py-2.5 text-center text-xs text-white/60">
+        الإعداد ← انطلاق بعدّاد ← جولات وتحدّيات ← الجولة النهائية ← تتويج البطل
+      </p>
     </div>
   );
 }

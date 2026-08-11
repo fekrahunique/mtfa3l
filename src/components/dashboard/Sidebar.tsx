@@ -5,6 +5,7 @@ import {
   Confetti,
   Wrench,
   UsersThree,
+  Trophy,
   List,
   X,
 } from "@phosphor-icons/react";
@@ -67,6 +68,20 @@ export function Sidebar({
             {item.label}
           </button>
         ))}
+
+        <button
+          type="button"
+          onClick={() => {
+            setMobileOpen(false);
+            const el = document.getElementById("tournament");
+            if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+          }}
+          className="mt-1 flex items-center gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-sm font-bold text-amber-300 transition-all duration-300 hover:bg-amber-400/20 hover:text-amber-200"
+        >
+          <Trophy weight="fill" className="h-5 w-5" />
+          بطولة نشاط
+          <span className="mr-auto rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">جديد</span>
+        </button>
       </nav>
 
       <Link
