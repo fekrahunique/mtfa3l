@@ -49,10 +49,11 @@ export function isPremium(incoming?: PlanId | null): boolean {
   return getTier() === "premium" || incoming === "premium";
 }
 
-/** ينتقل إلى قسم الباقات في الصفحة الرئيسية من أي مسار. */
+/** ينتقل مباشرة إلى شريط اختيار الباقة في الصفحة الرئيسية من أي مسار، بلا تمرير يدوي. */
 export function goToPricing(navigate: (to: string) => void) {
   navigate("/");
   window.setTimeout(() => {
-    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = document.getElementById("plans") ?? document.getElementById("pricing");
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 450);
 }

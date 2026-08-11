@@ -108,7 +108,7 @@ function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
         <h2 className="text-3xl text-ink sm:text-4xl">اختر خطة استثمارك في فصلك</h2>
         <p className="mt-3 text-ink-muted">بأقل من ريالين يوميًا، فصلٌ لا يعرف الملل طوال العام</p>
       </div>
-      <div className="mt-8"><BillingToggle annual={annual} setAnnual={setAnnual} /></div>
+      <div id="plans" className="mt-8 scroll-mt-24"><BillingToggle annual={annual} setAnnual={setAnnual} /></div>
       <div className="mx-auto mt-8 grid max-w-6xl items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} annual={annual} />)}
       </div>
@@ -145,6 +145,8 @@ export function Pricing() {
 
   return (
     <section id="pricing" ref={trackRef} className="relative h-[340vh]">
+      {/* مرساة «الباقات»: تقفز مباشرة إلى الموضع الذي يظهر فيه شريط اختيار الباقة، بلا تمرير */}
+      <div id="plans" aria-hidden className="pointer-events-none absolute inset-x-0 h-px" style={{ top: "54%" }} />
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* الفصل + الزوم على السبورة (الباقات مرسومة عليها) */}
         <div className="absolute inset-0">

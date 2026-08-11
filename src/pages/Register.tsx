@@ -88,7 +88,7 @@ export function Register() {
           <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-sun-400/30 bg-sun-400/10 px-4 py-2 text-sm">
             <span className="font-semibold text-sun-300">باقتك: {plan.name}</span>
             <span className="text-ink-muted">· {arDigits(plan.monthly)}﷼ شهريًا</span>
-            <Link to="/#pricing" className="rounded-full px-2 text-xs font-semibold text-sun-400 hover:underline">غيّر الباقة</Link>
+            <Link to="/#plans" className="rounded-full px-2 text-xs font-semibold text-sun-400 hover:underline">غيّر الباقة</Link>
           </div>
         </div>
 
