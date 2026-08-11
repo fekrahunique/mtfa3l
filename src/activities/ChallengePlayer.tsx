@@ -5,7 +5,7 @@ import { noDot } from "../lib/utils";
 import { playCorrect, playWin, playTick, playAlarm, playUnlock } from "../lib/sound";
 import { CompetitorBoard } from "./CompetitorBoard";
 
-export type ChallengeType = "quizRace" | "predict" | "sort" | "order" | "budget" | "timer" | "map" | "xo";
+export type ChallengeType = "quizRace" | "predict" | "sort" | "order" | "budget" | "timer" | "map" | "xo" | "reveal" | "duel";
 
 export interface ChallengeContent {
   quiz?: { q: string; a: string }[];
@@ -16,6 +16,8 @@ export interface ChallengeContent {
   timer?: { seconds: number; criteria: string[]; prompts?: string[] };
   map?: { title: string; regions: { label: string; q: string; a: string }[] };
   xo?: { xName?: string; oName?: string };
+  reveal?: { rounds: { answer: string; clues: string[]; hint?: string }[] };
+  duel?: { rounds: { prompt: string; a: string; b: string; correct: "a" | "b"; why?: string }[] };
 }
 
 interface Pal { accent: string; accentSoft: string; deep: string; }
@@ -370,8 +372,123 @@ function TicTacToe({ content, pal }: { content: ChallengeContent; pal: Pal }) {
   );
 }
 
+/* ————— محرّك «اكشف» — سباق تخمين بالتلميحات (الأسرع تخمينًا يكسب أكثر) ————— */
+function Reveal({ content, pal }: { content: ChallengeContent; pal: Pal }) {
+  const rounds = content.reveal?.rounds ?? [];
+  const [i, setI] = useState(0);
+  const [shown, setShown] = useState(1);
+  const [revealed, setRevealed] = useState(false);
+  const done = i >= rounds.length;
+  const cur = rounds[i];
+  const value = cur ? Math.max(1, cur.clues.length - (shown - 1)) : 0;
+
+  function nextClue() { if (cur && shown < cur.clues.length) { setShown((v) => v + 1); playTick(); } }
+  function reveal() { setRevealed(true); playUnlock(); }
+  function nextRound() { if (i + 1 >= rounds.length) { setI(rounds.length); playWin(); } else { setI(i + 1); setShown(1); setRevealed(false); } }
+
+  if (done) return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-4 text-center">
+      <div className="text-7xl">🎉</div>
+      <h3 className="font-display text-2xl" style={{ color: pal.accent }}>انتهت الجولات، أعلن الفائز من اللوحة</h3>
+      <button onClick={() => { setI(0); setShown(1); setRevealed(false); }} className="rounded-full px-6 py-2.5 font-bold text-black" style={{ background: pal.accent }}>أعد اللعبة</button>
+    </div>
+  );
+
+  return (
+    <div className="h-full overflow-y-auto">
+    <div className="flex min-h-full flex-col items-center justify-center gap-5 px-6 py-6 text-center">
+      <div className="flex items-center gap-4">
+        <span className="text-sm" style={{ color: pal.accentSoft }}>جولة {i + 1} / {rounds.length}</span>
+        <span className="flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold" style={{ background: `${pal.accent}22`, color: pal.accent }}>💎 قيمة التخمين الآن: {value}</span>
+      </div>
+
+      {/* التلميحات تتساقط واحدًا واحدًا */}
+      <div className="flex w-full max-w-2xl flex-col gap-2.5">
+        {cur.clues.slice(0, shown).map((c, k) => (
+          <motion.div key={k} initial={{ x: -24, opacity: 0, scale: 0.9 }} animate={{ x: 0, opacity: 1, scale: 1 }} className="flex items-center gap-3 rounded-2xl border-2 px-5 py-3 text-right" style={{ borderColor: `${pal.accent}55`, background: pal.deep }}>
+            <span className="font-display text-lg" style={{ color: pal.accent }}>{k + 1}</span>
+            <span className="flex-1 text-lg font-semibold text-white">{noDot(c)}</span>
+          </motion.div>
+        ))}
+        {Array.from({ length: cur.clues.length - shown }).map((_, k) => (
+          <div key={`h${k}`} className="rounded-2xl border-2 border-dashed px-5 py-3 text-sm" style={{ borderColor: `${pal.accent}22`, color: pal.accentSoft }}>تلميح مخفيّ …</div>
+        ))}
+      </div>
+
+      <AnimatePresence>
+        {revealed && <motion.p initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="rounded-2xl border-2 px-8 py-4 font-display text-3xl font-bold" style={{ borderColor: pal.accent, color: pal.accent, background: pal.deep }}>{noDot(cur.answer)}</motion.p>}
+      </AnimatePresence>
+
+      <div className="flex flex-wrap justify-center gap-3">
+        {!revealed && shown < cur.clues.length && <button onClick={nextClue} className="rounded-full border-2 px-6 py-3 font-bold text-white" style={{ borderColor: pal.accent }}>💡 تلميح تالٍ</button>}
+        {!revealed
+          ? <button onClick={reveal} className="flex items-center gap-2 rounded-full px-6 py-3 font-bold text-black" style={{ background: pal.accent }}><Eye weight="fill" className="h-5 w-5" /> اكشف الإجابة</button>
+          : <button onClick={nextRound} className="rounded-full px-8 py-3 font-bold text-black" style={{ background: pal.accent }}>الجولة التالية</button>}
+      </div>
+      <CompetitorBoard pal={{ accent: pal.accent, accentSoft: pal.accentSoft }} />
+    </div>
+    </div>
+  );
+}
+
+/* ————— محرّك «أيهما؟» — مبارزة ذوق/معرفة بخيارين ثم كشف السبب ————— */
+function Duel({ content, pal }: { content: ChallengeContent; pal: Pal }) {
+  const rounds = content.duel?.rounds ?? [];
+  const [i, setI] = useState(0);
+  const [revealed, setRevealed] = useState(false);
+  const cur = rounds[i];
+  const done = i >= rounds.length;
+
+  function reveal() { setRevealed(true); playCorrect(); }
+  function next() { if (i + 1 >= rounds.length) { setI(rounds.length); playWin(); } else { setI(i + 1); setRevealed(false); } }
+
+  if (done) return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-4 text-center">
+      <div className="text-7xl">🏆</div>
+      <h3 className="font-display text-2xl" style={{ color: pal.accent }}>انتهت المبارزات، أعلن الفائز من اللوحة</h3>
+      <button onClick={() => { setI(0); setRevealed(false); }} className="rounded-full px-6 py-2.5 font-bold text-black" style={{ background: pal.accent }}>أعد اللعبة</button>
+    </div>
+  );
+
+  const card = (side: "a" | "b", label: string) => {
+    const isRight = revealed && cur.correct === side;
+    const isWrong = revealed && cur.correct !== side;
+    return (
+      <motion.div whileTap={{ scale: 0.97 }} className="relative flex min-h-[9rem] flex-1 flex-col items-center justify-center rounded-3xl border-2 p-6 text-center"
+        style={{ borderColor: isRight ? "#22c55e" : isWrong ? "#ef4444" : `${pal.accent}66`, background: isRight ? "#22c55e1f" : pal.deep, opacity: isWrong ? 0.5 : 1, boxShadow: isRight ? "0 0 30px #22c55e66" : "none" }}>
+        <span className="mb-2 flex h-8 w-8 items-center justify-center rounded-full font-display text-lg" style={{ background: `${pal.accent}33`, color: pal.accent }}>{side === "a" ? "أ" : "ب"}</span>
+        <span className="font-display text-xl text-white sm:text-2xl">{noDot(label)}</span>
+        {isRight && <span className="mt-2 text-2xl">✅</span>}
+      </motion.div>
+    );
+  };
+
+  return (
+    <div className="h-full overflow-y-auto">
+    <div className="flex min-h-full flex-col items-center justify-center gap-6 px-6 py-6 text-center">
+      <span className="text-sm" style={{ color: pal.accentSoft }}>مبارزة {i + 1} / {rounds.length}</span>
+      <p className="max-w-2xl font-display text-2xl leading-snug text-white sm:text-3xl">{noDot(cur.prompt)}</p>
+      <div className="flex w-full max-w-2xl flex-col items-stretch gap-3 sm:flex-row">
+        {card("a", cur.a)}
+        <span className="flex items-center justify-center font-display text-xl" style={{ color: pal.accentSoft }}>مقابل</span>
+        {card("b", cur.b)}
+      </div>
+      <AnimatePresence>
+        {revealed && cur.why && <motion.p initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="max-w-xl rounded-2xl border px-5 py-3 text-white/90" style={{ borderColor: `${pal.accent}44`, background: pal.deep }}>💡 {noDot(cur.why)}</motion.p>}
+      </AnimatePresence>
+      <div className="flex gap-3">
+        {!revealed
+          ? <button onClick={reveal} className="flex items-center gap-2 rounded-full px-7 py-3 font-bold text-black" style={{ background: pal.accent }}><Eye weight="fill" className="h-5 w-5" /> اكشف الأصحّ</button>
+          : <button onClick={next} className="rounded-full px-8 py-3 font-bold text-black" style={{ background: pal.accent }}>المبارزة التالية</button>}
+      </div>
+      <p className="text-xs" style={{ color: pal.accentSoft }}>يصوّت كل فريق «أ» أو «ب» قبل الكشف، ثم ناقشوا السبب</p>
+    </div>
+    </div>
+  );
+}
+
 const ENGINES: Record<ChallengeType, (p: { content: ChallengeContent; pal: Pal }) => React.ReactElement> = {
-  quizRace: QuizRace, predict: Predict, sort: Sort, order: Order, budget: Budget, timer: TimerJudge, map: MapGrid, xo: TicTacToe,
+  quizRace: QuizRace, predict: Predict, sort: Sort, order: Order, budget: Budget, timer: TimerJudge, map: MapGrid, xo: TicTacToe, reveal: Reveal, duel: Duel,
 };
 
 export function ChallengePlayer({ title, type, content, pal, onClose }: { title: string; type: ChallengeType; content: ChallengeContent; pal: Pal; onClose: () => void }) {

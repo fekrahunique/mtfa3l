@@ -24,6 +24,8 @@ export const ENGINE_LABEL: Record<ChallengeType, string> = {
   timer: "التحدّي الزمني والتحكيم",
   map: "خريطة المحطّات",
   xo: "لعبة إكس-أو",
+  reveal: "تخمين بالتلميحات",
+  duel: "أيهما؟ مبارزة",
 };
 
 const norm = (s: string) => s.replace(/[.،؛]+\s*$/u, "").trim();
