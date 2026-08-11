@@ -56,7 +56,7 @@ export function ValueTree({ onExit }: { onExit: () => void }) {
       subtitle={
         full
           ? "اكتملت اللوحة الجماعية"
-          : `${leaves.length} من ${LEAF_SPOTS.length} ورقة — كل طالب يضيف قيمة يفتخر بها`
+          : `${leaves.length} من ${LEAF_SPOTS.length} ورقة، كل طالب يضيف قيمة يفتخر بها`
       }
       onExit={onExit}
       footer={

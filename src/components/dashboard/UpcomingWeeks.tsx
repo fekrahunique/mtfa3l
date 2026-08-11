@@ -25,7 +25,7 @@ export function UpcomingWeeks({ accentBg, accentText }: { accentBg: string; acce
         <span className={cn("text-sm font-semibold", accentText)}>التجربة الكاملة</span>
         <h3 className="font-display text-2xl text-ink sm:text-3xl">أسابيع كاملة بانتظارك</h3>
         <p className="mt-1 text-sm text-ink-muted">
-          جرّبت نشاطًا من الأسبوع التمهيدي — اشترك لتفتح كل الأسابيع بمناسباتها وأنشطتها التفاعلية وأدوات صنع أنشطتك
+          جرّبت نشاطًا من الأسبوع التمهيدي، اشترك لتفتح كل الأسابيع بمناسباتها وأنشطتها التفاعلية وأدوات صنع أنشطتك
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export function UpcomingWeeks({ accentBg, accentText }: { accentBg: string; acce
       {requested ? (
         <div className="relative z-10 mt-6 flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-center text-sm text-ink">
           <CheckCircle weight="fill" className={cn("h-5 w-5", accentText)} />
-          سجّلناك في قائمة الاهتمام — بنبلّغك أول ما تُفتح التجربة الكاملة
+          سجّلناك في قائمة الاهتمام، بنبلّغك أول ما تُفتح التجربة الكاملة
         </div>
       ) : (
         <div className="relative z-10 mt-6 flex justify-center">

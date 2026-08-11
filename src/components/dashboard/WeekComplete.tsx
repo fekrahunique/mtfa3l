@@ -83,7 +83,7 @@ export function WeekComplete({
         أنجزت كل أركان {week.occasion ? noDot(week.occasion) : "الأسبوع"} مع طلابك
       </p>
 
-      {/* ملخّص الإنجاز — لوحة قابلة للمشاركة */}
+      {/* ملخّص الإنجاز، لوحة قابلة للمشاركة */}
       <div className="relative z-10 mx-auto mt-7 grid max-w-md grid-cols-3 gap-3">
         <Stat icon={Confetti} value={cornersCount} label="أركان" tint={theme.accentSoft} />
         <Stat icon={Sparkle} value={valuesCount} label="قيم" tint="#E8C05A" />

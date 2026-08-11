@@ -84,7 +84,7 @@ export function IdeaVault() {
           </span>
           <h1 className="mt-5 font-display text-4xl text-ink sm:text-6xl">مستودع الأنشطة والأفكار</h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-ink-muted">
-            كل ما تحتاجه من مسابقات وتحديات وأنشطة تفاعلية — ابحث، افرز، واختر ما يناسب فصلك
+            كل ما تحتاجه من مسابقات وتحديات وأنشطة تفاعلية، ابحث، افرز، واختر ما يناسب فصلك
           </p>
         </ScrollReveal>
 
@@ -131,7 +131,7 @@ export function IdeaVault() {
           ))}
         </div>
         {filtered.length === 0 && (
-          <p className="mt-10 text-center text-ink-muted">لا نتائج مطابقة — جرّب كلمة أخرى أو غيّر المرحلة</p>
+          <p className="mt-10 text-center text-ink-muted">لا نتائج مطابقة، جرّب كلمة أخرى أو غيّر المرحلة</p>
         )}
       </main>
 

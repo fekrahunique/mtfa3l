@@ -60,9 +60,9 @@ export function StepReview({ data }: { data: RegistrationData }) {
         <Row label="المعلم أو المعلمة" value={data.teacherName} />
         <Row label="البريد الإلكتروني" value={data.email} />
         <Row label="المدرسة" value={data.schoolName} />
-        <Row label="نوع المدرسة" value={schoolTypeLabel[data.schoolType ?? ""] ?? "—"} />
-        <Row label="المرحلة" value={stageLabel[data.stage ?? ""] ?? "—"} />
-        <Row label="الطلاب" value={genderLabel[data.gender ?? ""] ?? "—"} />
+        <Row label="نوع المدرسة" value={schoolTypeLabel[data.schoolType ?? ""] ?? "، "} />
+        <Row label="المرحلة" value={stageLabel[data.stage ?? ""] ?? "، "} />
+        <Row label="الطلاب" value={genderLabel[data.gender ?? ""] ?? "، "} />
         <Row label="عدد الطلاب المرفوعين" value={String(data.students.length)} />
       </GlassCard>
     </ScrollReveal>

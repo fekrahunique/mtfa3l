@@ -155,7 +155,7 @@ export function ActivityPresentation({
       {/* رأس خفيف فوق جدار الفصل */}
       <header className="relative z-20 flex items-center justify-between gap-4 px-5 pt-6 sm:px-8">
         <span className="rounded-full bg-black/15 px-4 py-1.5 text-sm font-semibold" style={{ color: ROOM.deep }}>
-          اليوم {corner.day} — {noDot(corner.title)}
+          اليوم {corner.day}، {noDot(corner.title)}
         </span>
         <div className="flex shrink-0 items-center gap-2">
           <button
@@ -634,7 +634,7 @@ function LaunchSlide({
         هيّا نبدأ النشاط!
       </h2>
       <p className="mt-3 text-lg" style={{ color: ROOM.chalkSoft }}>
-        شرحنا الفكرة — الآن نلعبها مع الطلاب
+        شرحنا الفكرة، الآن نلعبها مع الطلاب
       </p>
       <motion.button
         type="button"

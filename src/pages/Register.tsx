@@ -83,7 +83,7 @@ export function Register() {
             ✨ رحلة تسجيلك تبدأ هنا
           </motion.span>
           <h1 className="text-3xl text-ink sm:text-4xl">سجّل كمعلم أو معلمة نشاط</h1>
-          <p className="mt-3 text-ink-muted">ثلاث خطوات بسيطة، وتوصل للوحة التحكم — وتضيف فصولك وطلابك من داخل اللوحة</p>
+          <p className="mt-3 text-ink-muted">ثلاث خطوات بسيطة، وتوصل للوحة التحكم، وتضيف فصولك وطلابك من داخل اللوحة</p>
 
           <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-sun-400/30 bg-sun-400/10 px-4 py-2 text-sm">
             <span className="font-semibold text-sun-300">باقتك: {plan.name}</span>

@@ -195,7 +195,7 @@ export function QuizGame({
             {winner ? teamNames[winner.id] : "تعادل مشرّف"}
           </motion.h3>
           <p className="mt-3 text-lg" style={{ color: pal.accent }}>
-            {scores.blue} — {scores.green}
+            {scores.blue}، {scores.green}
           </p>
           <button
             type="button"

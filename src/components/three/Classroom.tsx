@@ -233,7 +233,7 @@ function Scene({ progress, faqs }: { progress: MotionValue<number>; faqs: Faq[] 
         </mesh>
       </group>
 
-      {/* بوستر العودة للدراسة الموسمي — معلّق على الجدار الأمامي بجانب السبورة */}
+      {/* بوستر العودة للدراسة الموسمي، معلّق على الجدار الأمامي بجانب السبورة */}
       {btsTexture && (
         <group position={[6.4, 2.5, -4.9]}>
           <mesh><boxGeometry args={[2.9, 1.95, 0.1]} /><meshStandardMaterial color="#2f2153" roughness={0.8} /></mesh>

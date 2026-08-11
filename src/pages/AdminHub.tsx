@@ -89,7 +89,7 @@ export function AdminHub() {
           </div>
           {games.length > 0 && (
             <div className="mt-5 border-t border-white/10 pt-4">
-              <p className="mb-3 text-sm text-ink-muted">ألعاب محفوظة ({games.length}) — تظهر أيضًا في لوحة التحكم:</p>
+              <p className="mb-3 text-sm text-ink-muted">ألعاب محفوظة ({games.length})، تظهر أيضًا في لوحة التحكم:</p>
               <div className="flex flex-wrap gap-2">
                 {games.map((g) => (
                   <button key={g.id} onClick={() => setPlaying({ title: g.title, type: g.type, content: g.content })} className="rounded-full border border-white/15 px-4 py-2 text-sm hover:border-sun-400/50">
@@ -110,7 +110,7 @@ export function AdminHub() {
             </div>
             <button onClick={() => { const n = !subscribed; setSubscribed(n); setSub(n); setStorageTick((x) => x + 1); }}
               className={`rounded-full px-6 py-3 font-bold transition-transform hover:scale-[1.03] active:scale-95 ${subscribed ? "bg-emerald-400 text-bg" : "border border-white/20 text-ink"}`}>
-              {subscribed ? "مشترك ✓ — إلغاء" : "فعّل الاشتراك"}
+              {subscribed ? "مشترك ✓، إلغاء" : "فعّل الاشتراك"}
             </button>
           </div>
         </section>
@@ -122,7 +122,7 @@ export function AdminHub() {
               <Database weight="duotone" className="h-6 w-6 text-sun-300" />
               <div>
                 <h2 className="font-display text-xl">التخزين المحلي (متصفّحك فقط)</h2>
-                <p className="text-sm text-ink-muted">كل ما يضيفه المعلم يُحفَظ في متصفّحه — لا خادم ولا تخزين سحابي</p>
+                <p className="text-sm text-ink-muted">كل ما يضيفه المعلم يُحفَظ في متصفّحه، لا خادم ولا تخزين سحابي</p>
               </div>
             </div>
             <span className="font-display text-2xl text-sun-300">{storage.totalKb.toFixed(1)} كيلوبايت</span>
@@ -144,7 +144,7 @@ export function AdminHub() {
           )}
         </section>
 
-        <p className="mt-8 text-center text-xs text-ink-faint">صفحة داخلية للتجربة — غير مربوطة بالتنقّل العام. تُؤمَّن أو تُزال قبل الإطلاق</p>
+        <p className="mt-8 text-center text-xs text-ink-faint">صفحة داخلية للتجربة، غير مربوطة بالتنقّل العام. تُؤمَّن أو تُزال قبل الإطلاق</p>
       </div>
 
       <AnimatePresence>

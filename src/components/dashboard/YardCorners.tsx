@@ -134,7 +134,7 @@ export function YardCorners({
       <YardBackdrop theme={theme} />
 
       <div className="relative z-10">
-        {/* خط الأيام المستقيم — اختر يومًا ليظهر محتواه وحده */}
+        {/* خط الأيام المستقيم، اختر يومًا ليظهر محتواه وحده */}
         <div className="relative mx-auto flex max-w-3xl items-start justify-center gap-8 sm:gap-16">
           <div className="absolute inset-x-8 top-6 h-0.5 bg-white/15" />
           {corners.map((corner) => {

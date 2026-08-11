@@ -49,7 +49,7 @@ function QuizRace({ content, pal }: { content: ChallengeContent; pal: Pal }) {
       ) : (
         <div className="flex flex-col items-center gap-3">
           <div className="text-6xl">✅</div>
-          <h3 className="font-display text-2xl" style={{ color: pal.accent }}>انتهت الأسئلة — أعلن الفائز من اللوحة</h3>
+          <h3 className="font-display text-2xl" style={{ color: pal.accent }}>انتهت الأسئلة، أعلن الفائز من اللوحة</h3>
           <button onClick={() => { setI(0); setRevealed(false); }} className="rounded-full px-6 py-2.5 font-bold text-black" style={{ background: pal.accent }}>أعد الأسئلة</button>
         </div>
       )}
@@ -85,7 +85,7 @@ function Predict({ content, pal }: { content: ChallengeContent; pal: Pal }) {
           );
         })}
       </div>
-      <p className="text-sm" style={{ color: pal.accentSoft }}>اضغط الخيار مع كل صوت من الفصل — ثم ناقشوا: لماذا؟</p>
+      <p className="text-sm" style={{ color: pal.accentSoft }}>اضغط الخيار مع كل صوت من الفصل، ثم ناقشوا: لماذا؟</p>
       <button onClick={() => setI((v) => (v + 1) % items.length)} className="rounded-full px-8 py-3 font-bold text-black" style={{ background: pal.accent }}>الموقف التالي</button>
     </div>
   );
@@ -209,7 +209,7 @@ function Budget({ content, pal }: { content: ChallengeContent; pal: Pal }) {
             <p className="text-sm" style={{ color: pal.accentSoft }}>⚡ طارئ مفاجئ</p>
             <p className="mt-1 text-lg font-bold text-white">{noDot(emergency)}</p>
             <p className="mt-3 font-display text-xl" style={{ color: savedEnough || gotEssentials ? "#22c55e" : "#ef4444" }}>
-              {savedEnough ? "ادّخارك أنقذك! 🎉" : gotEssentials ? "غطّيت الأساسيات — بالكاد نجوت" : "انهار توزيعك — لا ادّخار ولا أساسيات"}
+              {savedEnough ? "ادّخارك أنقذك! 🎉" : gotEssentials ? "غطّيت الأساسيات، بالكاد نجوت" : "انهار توزيعك، لا ادّخار ولا أساسيات"}
             </p>
             <button onClick={() => { setEmergency(null); setCart([]); }} className="mt-3 rounded-full px-5 py-2 font-semibold text-black" style={{ background: pal.accent }}>أعد المحاولة</button>
           </motion.div>

@@ -83,7 +83,7 @@ export function CornerCard({
           <button
             type="button"
             onClick={onPlay}
-            aria-label={`ابدأ ${playLabel(corner.play)} — ${corner.title}`}
+            aria-label={`ابدأ ${playLabel(corner.play)}، ${corner.title}`}
             className="group flex items-center justify-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-white/30 hover:bg-white/5 active:scale-95"
           >
             <Play weight="fill" className="h-4 w-4" />

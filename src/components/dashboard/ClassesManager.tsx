@@ -120,7 +120,7 @@ export function ClassesManager({ accent = "#ff9d3d" }: { accent?: string }) {
       {!active ? (
         <div className="py-10 text-center text-ink-muted">
           <UsersThree className="mx-auto mb-3 h-10 w-10 opacity-50" />
-          أضف فصلك الأول لتبدأ — سمّه، ثم أضف أسماء طلابه
+          أضف فصلك الأول لتبدأ، سمّه، ثم أضف أسماء طلابه
         </div>
       ) : (
         <>
@@ -145,7 +145,7 @@ export function ClassesManager({ accent = "#ff9d3d" }: { accent?: string }) {
             <div className="flex flex-col gap-3 sm:flex-row">
               <textarea
                 value={namesDraft} onChange={(e) => setNamesDraft(e.target.value)}
-                placeholder={"الصق أو اكتب الأسماء — اسم لكل سطر\nأو أسقِط ملف .txt / .csv هنا"}
+                placeholder={"الصق أو اكتب الأسماء، اسم لكل سطر\nأو أسقِط ملف .txt / .csv هنا"}
                 rows={3}
                 className="flex-1 resize-y rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-sun-400/50"
               />
@@ -159,7 +159,7 @@ export function ClassesManager({ accent = "#ff9d3d" }: { accent?: string }) {
                 <input ref={fileRef} type="file" accept=".txt,.csv,text/plain" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
               </div>
             </div>
-            <p className="mt-2 text-xs text-ink-faint">أسقِط ملف أسماء (.txt / .csv) أو اكتبها — بلا حسابات للطلاب.</p>
+            <p className="mt-2 text-xs text-ink-faint">أسقِط ملف أسماء (.txt / .csv) أو اكتبها، بلا حسابات للطلاب.</p>
           </div>
 
           {active.students.length > 0 && (

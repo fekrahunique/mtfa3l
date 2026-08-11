@@ -217,7 +217,7 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
       <SchoolBuilding />
       <Courtyard />
 
-      {/* الشعار اللفظي «العودة للدراسة» فوق مدخل الفناء — تعبره الكاميرا مباشرة */}
+      {/* الشعار اللفظي «العودة للدراسة» فوق مدخل الفناء، تعبره الكاميرا مباشرة */}
       {backToSchoolSeason() && (
         <>
           <BtsWordmark position={[0, 6.4, -16]} width={9} height={3.6} />

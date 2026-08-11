@@ -255,7 +255,7 @@ export function TeacherTools({
 }) {
   return (
     <div className="space-y-5">
-      {/* المساعد الذكي — الميزة الأبرز */}
+      {/* المساعد الذكي، الميزة الأبرز */}
       <button
         type="button"
         onClick={onOpenAssistant}
@@ -271,7 +271,7 @@ export function TeacherTools({
             <Sparkle weight="fill" className={cn("h-4 w-4", accentText)} />
           </span>
           <span className="mt-0.5 block text-sm text-ink-muted">
-            اكتب فكرتك، ويبتكر لك نشاطًا ومسابقة تفاعلية توصل الرسالة — بضغطة
+            اكتب فكرتك، ويبتكر لك نشاطًا ومسابقة تفاعلية توصل الرسالة، بضغطة
           </span>
         </span>
         <span className="hidden shrink-0 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-ink transition-colors group-hover:bg-white/15 sm:block">

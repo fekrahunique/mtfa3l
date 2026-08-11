@@ -156,7 +156,7 @@ export function Pricing() {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#131209] via-[#131209]/70 to-transparent" />
         </div>
 
-        {/* المرحلة ١: الجملة التسويقية فوق الفصل — بخلفية ناعمة تفصلها عن زحمة المشهد */}
+        {/* المرحلة ١: الجملة التسويقية فوق الفصل، بخلفية ناعمة تفصلها عن زحمة المشهد */}
         <motion.div style={{ opacity: heroOpacity, y: heroY }} className="pointer-events-none absolute inset-x-0 top-[17vh] flex flex-col items-center px-4 text-center">
           <div className="relative flex flex-col items-center">
             <div aria-hidden className="absolute -inset-x-24 -inset-y-10 -z-10 rounded-[50%] bg-[#131209]/60 blur-2xl" />
@@ -167,7 +167,7 @@ export function Pricing() {
               حصةٌ ينتظرها طلابك
             </h2>
             <p className="mt-4 max-w-[560px] text-lg font-medium text-white/85 [text-shadow:0_1px_16px_rgba(0,0,0,0.9)]">
-              حوّل وقت النشاط إلى تجربة يعيشها فصلك — واستثمِر فيها بثقة
+              حوّل وقت النشاط إلى تجربة يعيشها فصلك، واستثمِر فيها بثقة
             </p>
             <motion.div style={{ opacity: hintOpacity }} className="mt-8 flex flex-col items-center gap-1 text-white/75">
               <span className="text-sm">انزل لتظهر الباقات على سبورة الفصل</span>

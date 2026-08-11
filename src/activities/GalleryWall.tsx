@@ -50,7 +50,7 @@ export function GalleryWall({ onExit }: { onExit: () => void }) {
       subtitle={
         works.length === 0
           ? "كل طالب يكتب عبارة عن الوطن، وتُعلَّق في الركن"
-          : `${works.length} عمل معلّق${featuredCount ? ` — ${featuredCount} بوسام إبداع مميز` : ""}`
+          : `${works.length} عمل معلّق${featuredCount ? `، ${featuredCount} بوسام إبداع مميز` : ""}`
       }
       onExit={onExit}
       footer={
@@ -93,7 +93,7 @@ export function GalleryWall({ onExit }: { onExit: () => void }) {
             <Plus weight="bold" className="h-7 w-7" style={{ color: `${ND.cream}55` }} />
           </div>
           <p className="max-w-md text-base" style={{ color: `${ND.cream}99` }}>
-            الركن فاضي — أول عمل يُعلَّق يفتح المعرض
+            الركن فاضي، أول عمل يُعلَّق يفتح المعرض
           </p>
         </div>
       ) : (

@@ -65,7 +65,7 @@ function SchoolBuilding({ theme, schoolName }: { theme: WeekTheme; schoolName: s
         <planeGeometry args={[10, 2.8]} />
         <meshBasicMaterial color={theme.bannerInk} toneMapped={false} />
       </mesh>
-      {/* لوحة اسم المدرسة فوق المدخل — تواجه الكاميرا، بنسبة مطابقة للنسيج (4:1) */}
+      {/* لوحة اسم المدرسة فوق المدخل، تواجه الكاميرا، بنسبة مطابقة للنسيج (4:1) */}
       <mesh position={[0, 7.7, 4.75]}>
         <planeGeometry args={[9.6, 2.4]} />
         <meshBasicMaterial map={sign} toneMapped={false} />

@@ -128,7 +128,7 @@ export function CornerEditor({
             <textarea value={tools} onChange={(e) => setTools(e.target.value)} rows={3} className={cn(inputCls, "resize-y leading-relaxed")} />
           </Field>
 
-          <Field label="خطوات العرض — بصيغة تخاطب الطلاب (سطر لكل خطوة)">
+          <Field label="خطوات العرض، بصيغة تخاطب الطلاب (سطر لكل خطوة)">
             <textarea value={steps} onChange={(e) => setSteps(e.target.value)} rows={5} className={cn(inputCls, "resize-y leading-relaxed")} placeholder="بنفتح الركن… خذ ورقتك… جاهزين؟" />
           </Field>
         </div>

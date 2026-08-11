@@ -48,7 +48,7 @@ export function WeeklyTargetCard({
         </p>
         <p className="mt-2 text-xs text-ink-faint">
           المرحلة {week.stage}
-          {week.stageNote ? ` — ${noDot(week.stageNote)}` : ""}
+          {week.stageNote ? `، ${noDot(week.stageNote)}` : ""}
         </p>
       </div>
 

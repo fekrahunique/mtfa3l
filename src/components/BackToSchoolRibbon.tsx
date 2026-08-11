@@ -13,7 +13,7 @@ export function BackToSchoolRibbon({ className = "" }: { className?: string }) {
     >
       <span className="flex items-center gap-2.5">
         <BackToSchoolMark className="h-8" />
-        <span className="hidden text-sm font-semibold text-white/90 sm:inline">أهلًا بعودتكم — عام دراسي جديد ✨</span>
+        <span className="hidden text-sm font-semibold text-white/90 sm:inline">أهلًا بعودتكم، عام دراسي جديد ✨</span>
       </span>
       <span
         className="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold"

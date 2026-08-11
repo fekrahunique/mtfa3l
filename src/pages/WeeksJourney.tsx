@@ -285,7 +285,7 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
 
               {/* تحدي الفريقين */}
               <motion.h4 {...scene(2)} className="mt-12 font-display text-2xl text-white">
-                تحدي الفريقين <span className="text-sm font-sans text-white/60">— اضغط لكشف الجواب</span>
+                تحدي الفريقين <span className="text-sm font-sans text-white/60">، اضغط لكشف الجواب</span>
               </motion.h4>
               <motion.div {...scene(2.15)} className="mt-4 space-y-2">
                 {program.challenge.map((c) => (
@@ -314,7 +314,7 @@ function DomainsSection({ stage }: { stage: "ابتدائي" | "متوسط" }) {
         </span>
         <h2 className="mt-4 font-display text-3xl text-ink sm:text-5xl">مجالات الأنشطة الطلابية</h2>
         <p className="mx-auto mt-3 max-w-xl text-base text-ink-muted">
-          برامج ممتدة من ملفات الوزارة — كل مجال بعالمه وبرامجه وتحدياته
+          برامج ممتدة من ملفات الوزارة، كل مجال بعالمه وبرامجه وتحدياته
         </p>
       </ScrollReveal>
 
@@ -348,7 +348,7 @@ function DomainsSection({ stage }: { stage: "ابتدائي" | "متوسط" }) {
         <p className="text-sm" style={{ color: active.accentSoft }}>{noDot(active.blurb)}</p>
       </ScrollReveal>
 
-      {/* برامج المجال النشط — شبكة بوسترات */}
+      {/* برامج المجال النشط، شبكة بوسترات */}
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {programs.map((p) => (
           <ProgramCard key={p.id} program={p} accent={active.accent} accentSoft={active.accentSoft} deep={active.deep} />
@@ -405,11 +405,11 @@ export function WeeksJourney() {
           </span>
           <h1 className="mt-5 font-display text-4xl text-ink sm:text-6xl">رحلة رائد النشاط</h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-ink-muted">
-            كل أسبوع بموضوعه وهويته ومغامرته — أسبوعك الأول هدية، وبقية الرحلة بانتظارك
+            كل أسبوع بموضوعه وهويته ومغامرته، أسبوعك الأول هدية، وبقية الرحلة بانتظارك
           </p>
         </ScrollReveal>
 
-        {/* خطة النشاط ١٤٤٨هـ — تحديث الوزارة */}
+        {/* خطة النشاط ١٤٤٨هـ، تحديث الوزارة */}
         <ScrollReveal className="mt-12">
           <button
             type="button"
@@ -419,14 +419,14 @@ export function WeeksJourney() {
           >
             <div>
               <span className="inline-flex items-center gap-2 rounded-full bg-emerald-400/15 px-3 py-0.5 text-[11px] font-bold text-emerald-300">✦ تحديث ١٤٤٨هـ · الإصدار السادس</span>
-              <h3 className="mt-2 font-display text-xl text-ink sm:text-2xl">خطة النشاط ٦٤ برنامجًا — بعدد الحصص لكل نشاط</h3>
+              <h3 className="mt-2 font-display text-xl text-ink sm:text-2xl">خطة النشاط ٦٤ برنامجًا، بعدد الحصص لكل نشاط</h3>
               <p className="mt-1 text-sm text-ink-muted">خمسة مجالات + الأيام والمناسبات + الفترات اللاصفية، بحصصها المعتمدة للمرحلتين</p>
             </div>
             <CaretLeft weight="bold" className="h-6 w-6 shrink-0 text-emerald-300" />
           </button>
         </ScrollReveal>
 
-        {/* الأسبوع التمهيدي — بوابة العرض الحيّ */}
+        {/* الأسبوع التمهيدي، بوابة العرض الحيّ */}
         <ScrollReveal className="mt-8">
           <button
             type="button"
@@ -440,7 +440,7 @@ export function WeeksJourney() {
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-xs font-bold text-white">✦ جديد · عرض حيّ على البروجكتر</span>
                 <h2 className="mt-3 font-display text-3xl text-ink sm:text-4xl">الأسبوع التمهيدي الحافل</h2>
                 <p className="mt-2 max-w-lg text-sm text-ink-muted">
-                  خمسة أيام، شاشة حيّة يقودها رائد النشاط بالنقر، وسيناريو جاهز لكل لحظة — {stageLabel === "متوسط" ? "أكاديمية الرواد" : "رحلة كوكب المواهب"}. بلا ورق ولا تحضير
+                  خمسة أيام، شاشة حيّة يقودها رائد النشاط بالنقر، وسيناريو جاهز لكل لحظة، {stageLabel === "متوسط" ? "أكاديمية الرواد" : "رحلة كوكب المواهب"}. بلا ورق ولا تحضير
                 </p>
               </div>
               <span className="flex shrink-0 items-center gap-2 rounded-full bg-sun-400 px-7 py-3.5 text-base font-bold text-bg shadow-xl transition-transform duration-300 group-hover:scale-105">
@@ -450,7 +450,7 @@ export function WeeksJourney() {
           </button>
         </ScrollReveal>
 
-        {/* الرحلة — بطاقات متعرّجة على مسار */}
+        {/* الرحلة، بطاقات متعرّجة على مسار */}
         <div className="relative mt-16 flex flex-col gap-10">
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-0.5 -translate-x-1/2 bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block" />
           {weeks.map((week, i) => (
@@ -475,7 +475,7 @@ export function WeeksJourney() {
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-xs font-bold text-white">🧰 ٧٠+ مسابقة وفكرة</span>
                 <h2 className="mt-3 font-display text-3xl text-ink sm:text-4xl">مستودع الأنشطة والأفكار</h2>
                 <p className="mt-2 max-w-lg text-sm text-ink-muted">
-                  تحديات المجالات الأربعة، ومسابقات المناسبات الوطنية والعالمية، وأفكار الأسبوع التمهيدي — ابحث واختر ما يناسب فصلك
+                  تحديات المجالات الأربعة، ومسابقات المناسبات الوطنية والعالمية، وأفكار الأسبوع التمهيدي، ابحث واختر ما يناسب فصلك
                 </p>
               </div>
               <span className="flex shrink-0 items-center gap-2 rounded-full bg-cyan-400 px-7 py-3.5 text-base font-bold text-bg shadow-xl transition-transform duration-300 group-hover:scale-105">
@@ -485,7 +485,7 @@ export function WeeksJourney() {
           </button>
         </ScrollReveal>
 
-        {/* بانر الاشتراك — تشويق لاستكمال الرحلة */}
+        {/* بانر الاشتراك، تشويق لاستكمال الرحلة */}
         <ScrollReveal className="mt-16">
           <div
             id="subscribe"
@@ -495,12 +495,12 @@ export function WeeksJourney() {
             <Crown weight="fill" className="mx-auto h-12 w-12 text-sun-400" />
             <h2 className="mt-4 font-display text-3xl text-ink sm:text-4xl">أكمل رحلتك النوعية</h2>
             <p className="mx-auto mt-3 max-w-lg text-base text-ink-muted">
-              افتح كل الأسابيع بمواضيعها وأنشطتها التفاعلية وأدوات صنع أنشطتك الخاصة — تجربة مختلفة لكل رائد نشاط
+              افتح كل الأسابيع بمواضيعها وأنشطتها التفاعلية وأدوات صنع أنشطتك الخاصة، تجربة مختلفة لكل رائد نشاط
             </p>
             {subscribed ? (
               <div className="mx-auto mt-7 flex max-w-sm items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-sm text-ink">
                 <CheckCircle weight="fill" className="h-5 w-5 text-sun-400" />
-                سجّلناك في قائمة الاهتمام — بنبلّغك أول ما تُفتح الرحلة الكاملة
+                سجّلناك في قائمة الاهتمام، بنبلّغك أول ما تُفتح الرحلة الكاملة
               </div>
             ) : (
               <button

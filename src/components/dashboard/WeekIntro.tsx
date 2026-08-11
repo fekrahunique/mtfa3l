@@ -111,7 +111,7 @@ export function WeekIntro({
         )}
 
         <motion.p {...line(0.7)} className="mt-6 text-base text-white/85 [text-shadow:0_1px_10px_rgba(0,0,0,0.8)] sm:text-lg">
-          أسبوعك جاهز — {week.corners.length} أركان تنتظر طلابك
+          أسبوعك جاهز، {week.corners.length} أركان تنتظر طلابك
         </motion.p>
 
         <motion.button

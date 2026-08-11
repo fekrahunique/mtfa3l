@@ -18,7 +18,7 @@ export async function extractFileText(file: File): Promise<ExtractResult> {
   if (isPdf) return extractPdf(file);
   if (isDocx) return extractDocx(file);
   if (isXlsx) return extractXlsx(file);
-  if (name.endsWith(".doc")) return { text: "", note: "صيغة .doc القديمة غير مدعومة — احفظ الملف بصيغة .docx" };
+  if (name.endsWith(".doc")) return { text: "", note: "صيغة .doc القديمة غير مدعومة، احفظ الملف بصيغة .docx" };
 
   // نصّي (txt/csv/md/text)
   const text = await file.text();

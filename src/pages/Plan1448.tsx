@@ -52,7 +52,7 @@ export function Plan1448() {
           </span>
           <h1 className="mt-5 font-display text-4xl text-ink sm:text-6xl">خطة النشاط الطلابي ١٤٤٨هـ</h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-ink-muted">
-            ٦٤ برنامجًا في خمسة مجالات + الأيام والمناسبات + الفترات اللاصفية — بعدد الحصص المعتمد لكل نشاط
+            ٦٤ برنامجًا في خمسة مجالات + الأيام والمناسبات + الفترات اللاصفية، بعدد الحصص المعتمد لكل نشاط
           </p>
         </ScrollReveal>
 
@@ -114,7 +114,7 @@ export function Plan1448() {
           </motion.section>
         </div>
 
-        <p className="mt-8 text-center text-xs text-ink-muted">المصدر: دليل الخطط الدراسية للأنشطة الطلابية — الإصدار السادس ١٤٤٨هـ · وزارة التعليم</p>
+        <p className="mt-8 text-center text-xs text-ink-muted">المصدر: دليل الخطط الدراسية للأنشطة الطلابية، الإصدار السادس ١٤٤٨هـ · وزارة التعليم</p>
       </main>
     </div>
   );

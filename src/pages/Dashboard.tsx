@@ -28,10 +28,10 @@ import { BackToSchoolRibbon } from "../components/BackToSchoolRibbon";
 import { OnboardingTour, TourButton, type TourStep } from "../components/dashboard/OnboardingTour";
 
 const TOUR_STEPS: TourStep[] = [
-  { title: "أهلًا بك في لوحتك 👋", body: "خلّني آخذك جولة سريعة أوريك فيها كل شي بأبسط طريقة — تقدر تتخطّاها وقت ما تبي." },
-  { targetId: "activities", title: "📋 أنشطة الأسبوع", body: "هنا أركان يومك جاهزة. اضغط أيّ ركن ليبدأ العرض التفاعلي على الشاشة أمام طلابك — بلا تحضير ولا ورق." },
+  { title: "أهلًا بك في لوحتك 👋", body: "خلّني آخذك جولة سريعة أوريك فيها كل شي بأبسط طريقة، تقدر تتخطّاها وقت ما تبي." },
+  { targetId: "activities", title: "📋 أنشطة الأسبوع", body: "هنا أركان يومك جاهزة. اضغط أيّ ركن ليبدأ العرض التفاعلي على الشاشة أمام طلابك، بلا تحضير ولا ورق." },
   { targetId: "tools", title: "🧰 أدواتك", body: "هنا المؤقّت، ومنتقي الطلاب، والمساعد الذكي اللي يصنع لك أنشطة ومسابقات جديدة بضغطة." },
-  { targetId: "students", title: "🧑‍🎓 فصولك وطلابك", body: "أضف فصولك وأسماء طلابهم (أسقِط ملفًا أو اكتب)، وزّع المجموعات، وامنح النقاط — وآخر الأسبوع يطلع الفائزون." },
+  { targetId: "students", title: "🧑‍🎓 فصولك وطلابك", body: "أضف فصولك وأسماء طلابهم (أسقِط ملفًا أو اكتب)، وزّع المجموعات، وامنح النقاط، وآخر الأسبوع يطلع الفائزون." },
   { title: "جاهز تبدأ! 🎉", body: "تنقّل بين الأقسام من الشريط الجانبي، ولو احتجت الجولة مرة ثانية اضغط زر «؟» تحت." },
 ];
 import {
@@ -188,10 +188,10 @@ export function Dashboard() {
     const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
     const pct = capsule.length ? Math.round((capsuleDone / capsule.length) * 100) : 0;
     const rows = capsule
-      .map((g, i) => `<tr class="${g.achieved ? "done" : ""}"><td class="n">${i + 1}</td><td class="goal">${esc(g.text)}</td><td class="who">${g.who ? esc(g.who) : "—"}</td><td class="st">${g.achieved ? "✓ تحقّق" : "لم يتحقّق بعد"}</td></tr>`)
+      .map((g, i) => `<tr class="${g.achieved ? "done" : ""}"><td class="n">${i + 1}</td><td class="goal">${esc(g.text)}</td><td class="who">${g.who ? esc(g.who) : "، "}</td><td class="st">${g.achieved ? "✓ تحقّق" : "لم يتحقّق بعد"}</td></tr>`)
       .join("");
     const html = `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8">
-<title>كبسولة المستقبل — حصاد الأهداف</title>
+<title>كبسولة المستقبل، حصاد الأهداف</title>
 <style>
   *{box-sizing:border-box} body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#1a1636;margin:0;padding:32px;background:#fff}
   .head{border-bottom:3px solid #6b4de6;padding-bottom:16px;margin-bottom:20px}
@@ -215,13 +215,13 @@ export function Dashboard() {
 </style></head>
 <body>
   <div class="head">
-    <h1>كبسولة المستقبل — حصاد الأهداف</h1>
+    <h1>كبسولة المستقبل، حصاد الأهداف</h1>
     <div class="sub">ما تمنّاه الطلاب في بداية العام، وما تحقّق منه</div>
   </div>
-  <div class="meta"><span><b>المدرسة:</b> ${esc(data.schoolName || "—")}</span><span><b>رائد النشاط:</b> ${esc(data.teacherName || "—")}</span><span><b>المرحلة:</b> ${esc(stageLabel)}</span></div>
+  <div class="meta"><span><b>المدرسة:</b> ${esc(data.schoolName || "، ")}</span><span><b>رائد النشاط:</b> ${esc(data.teacherName || "، ")}</span><span><b>المرحلة:</b> ${esc(stageLabel)}</span></div>
   <div class="summary"><span class="big">${capsuleDone} / ${capsule.length}</span><div class="bar"><i></i></div><span>${pct}% تحقّق</span></div>
   <table><thead><tr><th>#</th><th>الهدف</th><th>الطالب</th><th>الحالة</th></tr></thead><tbody>${rows}</tbody></table>
-  <footer>وُثّق عبر منصة «نشاط» — كبسولة المستقبل</footer>
+  <footer>وُثّق عبر منصة «نشاط»، كبسولة المستقبل</footer>
   <script>window.onload=function(){window.focus();window.print();}</script>
 </body></html>`;
     const w = window.open("", "_blank");
@@ -248,7 +248,7 @@ export function Dashboard() {
 
   return (
     <div className="relative min-h-screen">
-      {/* خلفية المدرسة ثلاثية الأبعاد — ثابتة خلف كامل اللوحة. */}
+      {/* خلفية المدرسة ثلاثية الأبعاد، ثابتة خلف كامل اللوحة. */}
       {immersive ? (
         <Suspense
           fallback={
@@ -291,7 +291,7 @@ export function Dashboard() {
         <OnboardingTour steps={TOUR_STEPS} />
         <TourButton />
 
-        {/* شريط موسمي «العودة للدراسة» — يظهر أول أسبوعين ثم يختفي تلقائيًا. */}
+        {/* شريط موسمي «العودة للدراسة»، يظهر أول أسبوعين ثم يختفي تلقائيًا. */}
         <BackToSchoolRibbon className="mb-4" />
 
         {/* ترحيب مختصر أعلى المحتوى بعد الدخول. */}
@@ -332,7 +332,7 @@ export function Dashboard() {
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-ink">استكشف رحلة الأسابيع</span>
-                      <span className="block text-xs text-ink-muted">كل أسبوع بموضوعه وهويته — افتح رحلتك النوعية</span>
+                      <span className="block text-xs text-ink-muted">كل أسبوع بموضوعه وهويته، افتح رحلتك النوعية</span>
                     </span>
                   </span>
                   <CaretLeft weight="bold" className="h-5 w-5 text-ink-faint transition-transform duration-300 group-hover:-translate-x-1" />
@@ -430,7 +430,7 @@ export function Dashboard() {
         {games.length > 0 && (
           <ScrollReveal delay={0.1} className="mt-12">
             <h2 id="agent-games" className="scroll-mt-24 text-2xl text-ink">ألعاب بناها لك الوكيل</h2>
-            <p className="mt-1 text-sm text-ink-muted">تحديات جاهزة على صفحتك — اضغط ▶ لتلعبها أمام طلابك</p>
+            <p className="mt-1 text-sm text-ink-muted">تحديات جاهزة على صفحتك، اضغط ▶ لتلعبها أمام طلابك</p>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {games.map((g) => (
                 <GlassCard key={g.id} className="flex flex-col gap-3 p-5">
@@ -456,7 +456,7 @@ export function Dashboard() {
         {capsule.length > 0 && (
           <ScrollReveal delay={0.1} className="mt-12">
             <h2 id="capsule" className="scroll-mt-24 text-2xl text-ink">كبسولة المستقبل</h2>
-            <p className="mt-1 text-sm text-ink-muted">أهداف ختمها طلابك في الأسبوع التمهيدي — افتحها آخر الفصل وأشّر ما تحقّق ليقيس كل طالب نموّه</p>
+            <p className="mt-1 text-sm text-ink-muted">أهداف ختمها طلابك في الأسبوع التمهيدي، افتحها آخر الفصل وأشّر ما تحقّق ليقيس كل طالب نموّه</p>
             <div className="mt-6">
               <GlassCard className="p-6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -505,7 +505,7 @@ export function Dashboard() {
 
         <ScrollReveal delay={0.1} className="mt-12">
           <h2 id="students" className="scroll-mt-24 text-2xl text-ink">فصولك وطلابك</h2>
-          <p className="mt-1 text-sm text-ink-muted">أضف فصولك وأسماء طلابك، وزّع المجموعات، وامنح النقاط — وفي نهاية الأسبوع يظهر الفائزون</p>
+          <p className="mt-1 text-sm text-ink-muted">أضف فصولك وأسماء طلابك، وزّع المجموعات، وامنح النقاط، وفي نهاية الأسبوع يظهر الفائزون</p>
           <div className="mt-6">
             <ClassesManager accent="#ff9d3d" />
           </div>
@@ -519,7 +519,7 @@ export function Dashboard() {
 
         {week && (
           <p className="mt-10 text-xs text-ink-faint">
-            المصدر: {week.source.fileName} — برامج الأنشطة الطلابية، نسخة تجريبية ١٤٤٧-٢٠٢٥
+            المصدر: {week.source.fileName}، برامج الأنشطة الطلابية، نسخة تجريبية ١٤٤٧-٢٠٢٥
           </p>
         )}
           </div>

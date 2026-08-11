@@ -107,7 +107,7 @@ export function CompetitorBoard({ pal }: { pal: { accent: string; accentSoft: st
             style={{ borderColor: `${pal.accent}66`, background: selectedClassId === null ? pal.accent : "transparent", color: selectedClassId === null ? "#000" : "rgba(255,255,255,0.7)" }}>
             فرق عامة
           </button>
-          {rosterClasses.length === 0 && <span className="text-xs" style={{ color: pal.accentSoft }}>لا فصول بعد — أضفها من لوحة التحكم، أو العب بفرق عامة</span>}
+          {rosterClasses.length === 0 && <span className="text-xs" style={{ color: pal.accentSoft }}>لا فصول بعد، أضفها من لوحة التحكم، أو العب بفرق عامة</span>}
         </div>
 
         {/* خطوة ٢: نمط المنافسة */}
@@ -128,7 +128,7 @@ export function CompetitorBoard({ pal }: { pal: { accent: string; accentSoft: st
             ))}
           </div>
         )}
-        {!hasRoster && <p className="mt-3 text-center text-xs" style={{ color: pal.accentSoft }}>أضف فصولك وطلابك من لوحة التحكم لتنافس بأسمائهم — أو ابدأ بفرق عامة الآن</p>}
+        {!hasRoster && <p className="mt-3 text-center text-xs" style={{ color: pal.accentSoft }}>أضف فصولك وطلابك من لوحة التحكم لتنافس بأسمائهم، أو ابدأ بفرق عامة الآن</p>}
         <button onClick={start} className="mt-4 w-full rounded-full py-2.5 font-bold text-black" style={{ background: pal.accent }}>ابدأ المنافسة</button>
       </div>
     );
@@ -175,7 +175,7 @@ export function CompetitorBoard({ pal }: { pal: { accent: string; accentSoft: st
         </button>
       )}
 
-      {/* إعلان الفائز — قصاصات وأضواء وصوت مبهر */}
+      {/* إعلان الفائز، قصاصات وأضواء وصوت مبهر */}
       <AnimatePresence>
         {champion && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[95] flex items-center justify-center overflow-hidden" style={{ background: "rgba(6,6,12,0.82)" }}>

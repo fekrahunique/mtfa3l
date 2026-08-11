@@ -100,7 +100,7 @@ function CipherScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
       {!solved ? (
         <>
           <div className="rounded-2xl border p-6" style={{ borderColor: `${pal.accent}55`, background: pal.panel }}>
-            <p className="text-sm" style={{ color: pal.sub }}>الشفرة — {c?.key}</p>
+            <p className="text-sm" style={{ color: pal.sub }}>الشفرة، {c?.key}</p>
             <p dir="ltr" className="mt-3 text-2xl tracking-widest" style={{ color: pal.ink }}>{c?.encoded}</p>
           </div>
           <button onClick={() => { setSolved(true); playUnlock(); }} className="rounded-full px-8 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95" style={{ backgroundColor: pal.accent }}>
@@ -323,7 +323,7 @@ function TimerScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
         </button>
       </div>
 
-      {/* لوحة التنافس: أفراد / مجموعات / فصول — بإظهار النقاط أو إخفائها */}
+      {/* لوحة التنافس: أفراد / مجموعات / فصول، بإظهار النقاط أو إخفائها */}
       {criteria.length > 0 && (
         <p className="flex items-center gap-2 text-xs" style={{ color: pal.sub }}>
           <ListChecks className="h-3.5 w-3.5" /> معايير التحكيم: {criteria.map(noDot).join(" · ")}
@@ -380,7 +380,7 @@ function EscapeScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
         <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="z-10 flex flex-1 flex-col items-center justify-center gap-4 text-center">
           <div className="text-8xl">🎉</div>
           <h2 className="font-display text-5xl" style={{ color: pal.accentSoft }}>خرجتم!</h2>
-          <p className="text-xl" style={{ color: pal.ink }}>لا شفرة تُفكّ بمفردك — التعاون فتح الباب</p>
+          <p className="text-xl" style={{ color: pal.ink }}>لا شفرة تُفكّ بمفردك، التعاون فتح الباب</p>
         </motion.div>
       ) : (
         <div className="z-10 grid w-full max-w-4xl gap-4 sm:grid-cols-2">
@@ -512,7 +512,7 @@ function GrowthScreen({ screen, pal, track }: { screen: IntroScreen; pal: Pal; t
       <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-6xl">🎇</motion.div>
       <h2 className="text-center font-display text-3xl" style={{ color: pal.ink }}>{noDot(screen.headline ?? "")}</h2>
 
-      {/* بطاقة إنجاز الفصل — قابلة للمشاركة */}
+      {/* بطاقة إنجاز الفصل، قابلة للمشاركة */}
       <div className="w-full max-w-md rounded-[1.5rem] border-2 p-5 text-center" style={{ borderColor: pal.accent, background: `linear-gradient(160deg, ${pal.panel}, ${pal.bg})` }}>
         <p className="text-sm" style={{ color: pal.sub }}>أنهى فصلنا</p>
         <p className="font-display text-2xl" style={{ color: pal.accent }}>{noDot(track.theme)}</p>
@@ -529,7 +529,7 @@ function GrowthScreen({ screen, pal, track }: { screen: IntroScreen; pal: Pal; t
       {/* حلبة المدارس + الدعوة */}
       <div className="w-full max-w-md rounded-[1.5rem] border p-5" style={{ borderColor: `${pal.accent}44`, background: pal.panel }}>
         <p className="flex items-center gap-2 font-display text-lg" style={{ color: pal.ink }}>
-          <Trophy weight="fill" className="h-5 w-5" style={{ color: pal.accent }} /> حلبة المدارس — مركزك #{rank}
+          <Trophy weight="fill" className="h-5 w-5" style={{ color: pal.accent }} /> حلبة المدارس، مركزك #{rank}
         </p>
         <div className="mt-3 space-y-1.5">
           {board.map((s, i) => (
@@ -548,7 +548,7 @@ function GrowthScreen({ screen, pal, track }: { screen: IntroScreen; pal: Pal; t
           <div className="mt-3 h-2 overflow-hidden rounded-full" style={{ background: `${pal.accent}22` }}>
             <motion.div className="h-full rounded-full" style={{ background: pal.accent }} animate={{ width: `${Math.min(100, (invited / goal) * 100)}%` }} />
           </div>
-          <p className="mt-1 text-xs" style={{ color: pal.sub }}>{invited} / {goal} — {invited >= goal ? "فتحتَ الأسبوع الإضافي! 🎁" : `ادعُ ${goal - invited} ليُفتح الأسبوع الإضافي`}</p>
+          <p className="mt-1 text-xs" style={{ color: pal.sub }}>{invited} / {goal}، {invited >= goal ? "فتحتَ الأسبوع الإضافي! 🎁" : `ادعُ ${goal - invited} ليُفتح الأسبوع الإضافي`}</p>
 
           <div className="mt-3 flex gap-2">
             <div dir="ltr" className="flex-1 truncate rounded-lg border px-3 py-2 text-sm" style={{ borderColor: `${pal.accent}44`, color: pal.sub }}>{link}</div>
@@ -611,7 +611,7 @@ function MapScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
         ))}
       </div>
 
-      {/* شريط قطع الخريطة — الكلمة السرّية تتجمّع */}
+      {/* شريط قطع الخريطة، الكلمة السرّية تتجمّع */}
       {treasure && !allFound && (
         <div className="flex items-center gap-2" dir="rtl">
           <span className="text-sm font-semibold" style={{ color: pal.sub }}>قطع الخريطة:</span>
@@ -647,7 +647,7 @@ function MapScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
                 <p className="text-sm font-bold" style={{ color: pal.accent }}>🎯 مهمّة الفريق</p>
                 <p className="mt-1 text-lg font-bold leading-relaxed" style={{ color: pal.ink }}>{noDot(spots[open].challenge)}</p>
                 <button onClick={() => complete(open)} className="mt-4 rounded-full px-6 py-2 text-sm font-bold text-black" style={{ background: "#22c55e" }}>
-                  {found[open] ? "تمام ✓" : `أنجزناها — خذوا القطعة «${spots[open].piece ?? "✓"}» ✓`}
+                  {found[open] ? "تمام ✓" : `أنجزناها، خذوا القطعة «${spots[open].piece ?? "✓"}» ✓`}
                 </button>
               </>
             )}
@@ -881,7 +881,7 @@ function CheerScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
           <div className="text-7xl">🚀</div>
           <p className="max-w-lg text-lg" style={{ color: pal.ink }}>{noDot(screen.headline ?? "")}</p>
           <button onClick={start} className="rounded-full px-8 py-4 text-lg font-bold text-black" style={{ background: pal.accent }}>🎤 اسمح بالميكروفون وابدأ</button>
-          <p className="max-w-md text-xs" style={{ color: pal.sub }}>يستخدم الميكروفون لقياس صوت التشجيع فقط — لا يُسجَّل ولا يُرسَل أي صوت</p>
+          <p className="max-w-md text-xs" style={{ color: pal.sub }}>يستخدم الميكروفون لقياس صوت التشجيع فقط، لا يُسجَّل ولا يُرسَل أي صوت</p>
         </>
       )}
       {status === "asking" && <p style={{ color: pal.sub }}>بانتظار إذن الميكروفون من المتصفح...</p>}
@@ -889,7 +889,7 @@ function CheerScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
         <>
           <div className="text-5xl">🔇</div>
           <p className="max-w-md" style={{ color: pal.ink }}>
-            {status === "denied" ? "لم يُسمح باستخدام الميكروفون — يمكنك تفعيله من إعدادات المتصفح والمحاولة، أو تحكيم الحماس يدويًا." : "المتصفح لا يدعم الميكروفون هنا — استخدم التحكيم اليدوي."}
+            {status === "denied" ? "لم يُسمح باستخدام الميكروفون، يمكنك تفعيله من إعدادات المتصفح والمحاولة، أو تحكيم الحماس يدويًا." : "المتصفح لا يدعم الميكروفون هنا، استخدم التحكيم اليدوي."}
           </p>
           <button onClick={() => { setStatus("live"); setProgress(0); setWon(false); }} className="rounded-full px-6 py-3 font-bold text-black" style={{ background: pal.accent }}>تحكيم يدوي 👏</button>
         </>
@@ -959,7 +959,7 @@ function RhythmScreen({ screen, pal }: { screen: IntroScreen; pal: Pal }) {
   return (
     <div className="flex min-h-full flex-col items-center justify-center gap-6 px-6 py-4 text-center">
       <p className="max-w-2xl text-base font-semibold sm:text-lg" style={{ color: pal.sub }}>{noDot(screen.headline ?? "")}</p>
-      <p className="font-display text-xl" style={{ color: pal.accent }}>الجولة {seq.length || "—"} / {GOAL}</p>
+      <p className="font-display text-xl" style={{ color: pal.accent }}>الجولة {seq.length || "، "} / {GOAL}</p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         {seq.length === 0 && <span className="text-sm" style={{ color: pal.sub }}>اضغط «ابدأ» ليظهر أول حركة</span>}
         {seq.map((mi, i) => (
@@ -1279,7 +1279,7 @@ function DayPlayer({ day, pal, track, onExit, locked, onSubscribe }: { day: Intr
         {scenarioOpen && (
           <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }} className="mx-4 mb-2 rounded-2xl border p-4" style={{ borderColor: `${pal.accent}44`, background: pal.panel }}>
             <p className="flex items-center gap-2 text-xs font-semibold" style={{ color: pal.accent }}>
-              <Sparkle weight="fill" className="h-3.5 w-3.5" /> سيناريو الرائد — ماذا تقول وتفعل
+              <Sparkle weight="fill" className="h-3.5 w-3.5" /> سيناريو الرائد، ماذا تقول وتفعل
             </p>
             <p className="mt-1.5 text-sm leading-relaxed" style={{ color: pal.ink }}>{noDot(screen.scenario)}</p>
             {screen.minutes && <p className="mt-1 text-xs" style={{ color: pal.sub }}>⏱ نحو {screen.minutes} دقائق</p>}
@@ -1348,7 +1348,7 @@ export function IntroWeek() {
           <h1 className="mt-5 font-display text-4xl sm:text-6xl" style={{ color: pal.ink }}>{noDot(track.theme)}</h1>
           <p className="mx-auto mt-3 max-w-xl text-lg" style={{ color: pal.sub }}>{noDot(track.tagline)}</p>
           <p className="mx-auto mt-4 max-w-lg text-sm" style={{ color: pal.sub }}>
-            شاشة تُعرض على البروجكتر أمام الطلاب، وأنت تقودها بالنقر — بلا ورق ولا تحضير. بجانب كل شاشة سيناريو دقيق لما تقوله وتفعله
+            شاشة تُعرض على البروجكتر أمام الطلاب، وأنت تقودها بالنقر، بلا ورق ولا تحضير. بجانب كل شاشة سيناريو دقيق لما تقوله وتفعله
           </p>
         </div>
 

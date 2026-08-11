@@ -47,15 +47,15 @@ export function ActivityAssistant({
   }, [onClose]);
 
   async function readFile(file: File) {
-    if (file.size > 10 * 1024 * 1024) { setFileName("الملف كبير جدًّا (أكثر من ١٠ ميغا) — الصق نصّه مباشرة"); return; }
-    setFileName(`${file.name} — يُقرأ…`);
+    if (file.size > 10 * 1024 * 1024) { setFileName("الملف كبير جدًّا (أكثر من ١٠ ميغا)، الصق نصّه مباشرة"); return; }
+    setFileName(`${file.name}، يُقرأ…`);
     try {
       const { text: content, note } = await extractFileText(file);
-      if (!content.trim()) { setFileName(note || "لم أعثر على نصّ في الملف — الصقه مباشرة"); return; }
+      if (!content.trim()) { setFileName(note || "لم أعثر على نصّ في الملف، الصقه مباشرة"); return; }
       setText((prev) => (prev ? prev + "\n" : "") + content);
-      setFileName(note ? `${file.name} — ${note}` : file.name);
+      setFileName(note ? `${file.name}، ${note}` : file.name);
     } catch {
-      setFileName("تعذّرت قراءة الملف — جرّب نصًّا أو CSV أو Word/PDF أوضح");
+      setFileName("تعذّرت قراءة الملف، جرّب نصًّا أو CSV أو Word/PDF أوضح");
     }
   }
 
@@ -98,7 +98,7 @@ export function ActivityAssistant({
             </span>
             <div>
               <h3 className="font-display text-2xl text-ink">وكيل الأنشطة الذكي</h3>
-              <p className="text-sm text-ink-muted">اكتب فكرتك أو أرفِق ملف مسابقة — والوكيل يبنيها لعبةً تُلعب على شاشتك</p>
+              <p className="text-sm text-ink-muted">اكتب فكرتك أو أرفِق ملف مسابقة، والوكيل يبنيها لعبةً تُلعب على شاشتك</p>
             </div>
           </div>
           <button type="button" onClick={onClose} aria-label="إغلاق"
@@ -108,7 +108,7 @@ export function ActivityAssistant({
         </div>
 
         <AnimatePresence mode="wait">
-          {/* ———— الإدخال ———— */}
+          {/*، —، — الإدخال، —، — */}
           {phase === "input" && (
             <motion.div key="input" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-6">
               <form onSubmit={(e) => { e.preventDefault(); run(text); }}>
@@ -157,7 +157,7 @@ export function ActivityAssistant({
             </motion.div>
           )}
 
-          {/* ———— البناء (خطوات الوكيل تِباعًا) ———— */}
+          {/*، —، — البناء (خطوات الوكيل تِباعًا)، —، — */}
           {phase === "building" && (
             <motion.div key="building" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-8 min-h-[220px]">
               <div className="mb-5 flex flex-col items-center gap-3 text-center">
@@ -179,7 +179,7 @@ export function ActivityAssistant({
             </motion.div>
           )}
 
-          {/* ———— النتيجة ———— */}
+          {/*، —، — النتيجة، —، — */}
           {phase === "result" && result && (
             <motion.div key="result" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-6 space-y-5">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
