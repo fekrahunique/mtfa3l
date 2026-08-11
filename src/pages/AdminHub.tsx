@@ -18,6 +18,7 @@ const ROUTES: { to: string; label: string; note: string }[] = [
   { to: "/مستودع-الأفكار", label: "مستودع الأفكار", note: "حزم التحديات القابلة للّعب" },
   { to: "/خطة-النشاط", label: "خطة النشاط ١٤٤٨", note: "المجالات وعدد الحصص" },
   { to: "/بطولة-نشاط", label: "🏆 بطولة نشاط", note: "لعبة الفرق التنافسية (MVP)" },
+  { to: "/الشفرة", label: "🔐 الشفرة", note: "ألغاز ومعلومات ناقصة وتفاوض (MVP)" },
 ];
 
 const AGENT_PAL = { accent: "#ff9d3d", accentSoft: "#ffd9a8", deep: "#2a1a05" };

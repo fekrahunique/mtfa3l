@@ -88,6 +88,38 @@ export function IdeaVault() {
           </p>
         </ScrollReveal>
 
+        {/* الألعاب الكبرى — تجارب جماعية كاملة تُدار من شاشة الرائد */}
+        <ScrollReveal className="mt-10">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="text-lg">🎮</span>
+            <h2 className="font-display text-xl text-ink">الألعاب الكبرى</h2>
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-ink-muted">تجربة جماعية كاملة</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button type="button" onClick={() => navigate("/بطولة-نشاط", { state: data })}
+              className="group flex items-center justify-between gap-4 overflow-hidden rounded-2xl border border-amber-400/30 p-5 text-right transition-transform duration-300 hover:scale-[1.02]"
+              style={{ background: "linear-gradient(150deg, rgba(245,158,11,0.16), rgba(19,18,9,0.92))" }}>
+              <div className="min-w-0">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-300">🏆 لعبة جماعية</span>
+                <h3 className="mt-2 font-display text-xl text-white">بطولة نشاط</h3>
+                <p className="mt-1 text-sm text-white/70">قسّم فصلك فرقًا: تحدّيات ومخاطرة وأحداث وجولة نهائية</p>
+              </div>
+              <span className="shrink-0 rounded-full bg-amber-400 px-5 py-2.5 text-sm font-bold text-black shadow-xl transition-transform duration-300 group-hover:scale-105">ابدأ ▶</span>
+            </button>
+
+            <button type="button" onClick={() => navigate("/الشفرة", { state: data })}
+              className="group flex items-center justify-between gap-4 overflow-hidden rounded-2xl border p-5 text-right transition-transform duration-300 hover:scale-[1.02]"
+              style={{ borderColor: "rgba(245,183,60,0.3)", background: "linear-gradient(150deg, rgba(75,214,239,0.12), rgba(10,13,20,0.95))" }}>
+              <div className="min-w-0">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-400/15 px-2.5 py-0.5 text-[11px] font-bold text-cyan-300">🔐 ألغاز وتفاوض · جديد</span>
+                <h3 className="mt-2 font-display text-xl text-white">الشفرة</h3>
+                <p className="mt-1 text-sm text-white/70">معلومات ناقصة موزّعة على الفرق، اجمعوها وفكّوا الشفرة قبل الوقت</p>
+              </div>
+              <span className="shrink-0 rounded-full bg-amber-400 px-5 py-2.5 text-sm font-bold text-black shadow-xl transition-transform duration-300 group-hover:scale-105">ابدأ ▶</span>
+            </button>
+          </div>
+        </ScrollReveal>
+
         {/* البحث والفرز */}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
