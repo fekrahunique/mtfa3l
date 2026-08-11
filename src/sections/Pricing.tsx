@@ -11,10 +11,9 @@ const ClassroomBackdrop = lazy(() =>
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 const ICONS: Record<PlanIcon, typeof Sparkle> = { sparkle: Sparkle, rocket: RocketLaunch, crown: Crown };
-
 const TRIAL_NOTE = "بلا اشتراك: جرّب نشاطًا واحدًا من الأسبوع التمهيدي، ثم اختر خطتك";
 
-/** بطاقة بإمالة ثلاثية الأبعاد خفيفة تتبع المؤشّر. */
+/** إمالة ثلاثية الأبعاد خفيفة تتبع المؤشّر. */
 function TiltCard({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
   const mvX = useMotionValue(0);
@@ -38,20 +37,14 @@ function TiltCard({ children }: { children: ReactNode }) {
   );
 }
 
-/** بطاقة باقة — نمط «داكن» لبقية الموقع، أو «شاشة» فاتح لعرض البروجكتر. */
 function PlanCard({ plan, annual, light }: { plan: Plan; annual: boolean; light?: boolean }) {
   const Icon = ICONS[plan.icon];
   const { amount, period } = planPrice(plan, annual);
   const featured = plan.featured;
 
   const shell = light
-    ? featured
-      ? "border-sun-500/70 bg-white shadow-[0_14px_44px_rgba(180,120,20,0.22)]"
-      : "border-black/10 bg-white/92"
-    : featured
-      ? "border-sun-400/60 bg-[#141018]/85 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
-      : "border-white/12 bg-[#141018]/75 backdrop-blur-xl";
-
+    ? featured ? "border-sun-500/70 bg-white shadow-[0_14px_44px_rgba(180,120,20,0.22)]" : "border-black/10 bg-white/92"
+    : featured ? "border-sun-400/60 bg-[#141018]/85 shadow-[0_20px_60px_rgba(0,0,0,0.5)]" : "border-white/12 bg-[#141018]/75 backdrop-blur-xl";
   const ink = light ? "text-[#22203a]" : "text-ink";
   const sub = light ? "text-[#6b6478]" : "text-ink-muted";
   const featText = light ? "text-[#5b5568]" : "text-ink-muted";
@@ -136,18 +129,13 @@ function BillingToggle({ annual, setAnnual, light }: { annual: boolean; setAnnua
   );
 }
 
-/** الشريحة المعروضة على «شاشة العرض» — تكملة لما كان الطلاب يتفاعلون معه. */
-function ScreenSlide({ annual, setAnnual }: { annual: boolean; setAnnual: (v: boolean) => void }) {
+/** محتوى الباقات كما يُعرض «على الشاشة» — بلا إطار، منصة نشاط في الزاوية. */
+function PlansContent({ annual, setAnnual }: { annual: boolean; setAnnual: (v: boolean) => void }) {
   return (
-    <div className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-[26px] border border-white/60 bg-gradient-to-b from-[#fdf9f0] to-[#f3ead8] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.55)] sm:p-7">
-      {/* شريط الشاشة العلوي */}
-      <div className="mb-4 flex items-center justify-between">
-        <span className="flex items-center gap-1.5 font-display text-lg text-[#4d1c9b]">✦ منصة نشاط</span>
-        <span className="text-xs font-bold text-[#b06a00]">خطط الاستثمار</span>
-      </div>
+    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center">
       <div className="mb-5 text-center">
-        <h2 className="font-display text-2xl text-[#22203a] sm:text-3xl">اختر خطة استثمارك في فصلك</h2>
-        <p className="mx-auto mt-2 max-w-[520px] text-sm text-[#6b6478]">بأقل من ريالين يوميًا... فصلٌ لا يعرف الملل طوال العام</p>
+        <h2 className="font-display text-3xl text-[#22203a] sm:text-4xl">اختر خطة استثمارك في فصلك</h2>
+        <p className="mx-auto mt-2 max-w-[540px] text-sm text-[#6b6478] sm:text-base">بأقل من ريالين يوميًا... فصلٌ لا يعرف الملل طوال العام</p>
       </div>
       <BillingToggle annual={annual} setAnnual={setAnnual} light />
       <div className="mt-6 grid items-stretch gap-4 lg:grid-cols-3">
@@ -158,25 +146,12 @@ function ScreenSlide({ annual, setAnnual }: { annual: boolean; setAnnual: (v: bo
   );
 }
 
-/** نسخة عادية (جوّال أو تفضيل تقليل الحركة) — تدفّق طبيعي بلا تثبيت. */
+/** نسخة عادية (جوّال أو تفضيل تقليل الحركة). */
 function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: boolean) => void }) {
   return (
-    <section id="pricing" className="relative overflow-hidden px-4 py-24">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <Suspense fallback={<div className="h-full w-full bg-[#171019]" />}>
-          <ClassroomBackdrop className="h-full w-full" />
-        </Suspense>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#131209] via-[#131209]/55 to-[#131209]" />
-      </div>
-      <div className="mx-auto max-w-[680px] text-center">
-        <h2 className="text-3xl text-ink sm:text-4xl">اختر خطة استثمارك في فصلك</h2>
-        <p className="mt-4 text-lg text-ink-muted">بأقل من ريالين يوميًا، فصلٌ لا يعرف الملل طوال العام</p>
-      </div>
-      <div className="mt-10"><BillingToggle annual={annual} setAnnual={setAnnual} /></div>
-      <div className="mx-auto mt-8 grid max-w-6xl items-stretch gap-6 lg:grid-cols-3">
-        {PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} annual={annual} />)}
-      </div>
-      <p className="mt-8 text-center text-sm text-ink-muted">{noDot(TRIAL_NOTE)}</p>
+    <section id="pricing" className="relative overflow-hidden bg-gradient-to-b from-[#fdf9f0] to-[#efe2cc] px-4 py-20">
+      <div className="absolute right-5 top-5 flex items-center gap-1.5 font-display text-base text-[#4d1c9b]">✦ منصة نشاط</div>
+      <div className="mt-6"><PlansContent annual={annual} setAnnual={setAnnual} /></div>
     </section>
   );
 }
@@ -196,23 +171,23 @@ export function Pricing() {
     return () => m.removeEventListener("change", u);
   }, []);
 
-  // المرحلة ١: الفصل واضح + العنوان — يتلاشى مبكرًا وبالكامل قبل الشريحة
+  // المرحلة ١: الفصل + العنوان (يتلاشى مبكرًا وبالكامل)
   const heroOpacity = useTransform(scrollYProgress, [0, 0.14, 0.24], [1, 1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 0.24], [0, -60]);
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1, 0.18], [1, 1, 0]);
-  // تعتيم الفصل ليتراجع خلف الشاشة عند الزوم
-  const scrimOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [0.06, 0.2, 0.55]);
-  // المرحلة ٣: شريحة الشاشة تظهر بعد اكتمال الزوم (بلا تداخل مع العنوان)
-  const slideOpacity = useTransform(scrollYProgress, [0.5, 0.66], [0, 1]);
-  const slideScale = useTransform(scrollYProgress, [0.5, 0.72], [0.9, 1]);
-  const slideY = useTransform(scrollYProgress, [0.5, 0.72], [40, 0]);
-  const slidePE = useTransform(scrollYProgress, (v) => (v > 0.6 ? "auto" : "none"));
+  const scrimOpacity = useTransform(scrollYProgress, [0, 0.3, 0.5], [0.06, 0.2, 0.4]);
+  // المرحلة ٣: سطح الشاشة المضيء يغطّي الفصل والتحدي، ثم يظهر المحتوى — بلا إطار
+  const screenOpacity = useTransform(scrollYProgress, [0.46, 0.6], [0, 1]);
+  const contentOpacity = useTransform(scrollYProgress, [0.57, 0.72], [0, 1]);
+  const contentY = useTransform(scrollYProgress, [0.57, 0.72], [36, 0]);
+  const contentPE = useTransform(scrollYProgress, (v) => (v > 0.62 ? "auto" : "none"));
 
   if (reduce || !wide) return <StaticPricing annual={annual} setAnnual={setAnnual} />;
 
   return (
     <section id="pricing" ref={trackRef} className="relative h-[340vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
+        {/* الفصل الحيّ + الزوم داخل الشاشة */}
         <div className="absolute inset-0">
           <Suspense fallback={<div className="h-full w-full bg-[#171019]" />}>
             <ClassroomBackdrop progress={scrollYProgress} className="h-full w-full" />
@@ -225,26 +200,27 @@ export function Pricing() {
         {/* المرحلة ١: العنوان فوق الفصل الواضح */}
         <motion.div style={{ opacity: heroOpacity, y: heroY }} className="pointer-events-none absolute inset-x-0 top-[24vh] flex flex-col items-center px-4 text-center">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-md">
-            <Sparkle weight="fill" className="h-4 w-4" />
-            خطط الاستثمار في فصلك
+            <Sparkle weight="fill" className="h-4 w-4" /> خطط الاستثمار في فصلك
           </span>
-          <h2 className="max-w-[820px] font-display text-4xl text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.7)] sm:text-6xl">
-            هكذا يصير فصلك مع نشاط
-          </h2>
+          <h2 className="max-w-[820px] font-display text-4xl text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.7)] sm:text-6xl">هكذا يصير فصلك مع نشاط</h2>
         </motion.div>
 
         <motion.div style={{ opacity: hintOpacity }} className="pointer-events-none absolute inset-x-0 bottom-10 flex flex-col items-center gap-1 text-white/70">
           <span className="text-sm">انزل لتُعرَض خطتك على الشاشة</span>
-          <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.4, repeat: Infinity }}>
-            <CaretDown weight="bold" className="h-5 w-5" />
-          </motion.span>
+          <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.4, repeat: Infinity }}><CaretDown weight="bold" className="h-5 w-5" /></motion.span>
         </motion.div>
 
-        {/* المرحلة ٣: شريحة الباقات على شاشة العرض */}
-        <motion.div style={{ opacity: slideOpacity, scale: slideScale, y: slideY, pointerEvents: slidePE }} className="absolute inset-0 flex items-center justify-center px-4 py-10">
-          <div className="max-h-[88vh] w-full overflow-y-auto">
-            <ScreenSlide annual={annual} setAnnual={setAnnual} />
-          </div>
+        {/* المرحلة ٣: سطح الشاشة المضيء يغطّي كل ما خلفه */}
+        <motion.div style={{ opacity: screenOpacity }} className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#fdf9f0] to-[#efe2cc]" />
+
+        {/* منصة نشاط في زاوية الشاشة */}
+        <motion.div style={{ opacity: contentOpacity }} className="pointer-events-none absolute right-6 top-5 z-10 flex items-center gap-1.5 font-display text-base text-[#4d1c9b] sm:text-lg">
+          ✦ منصة نشاط
+        </motion.div>
+
+        {/* الباقات مباشرة على الشاشة — بلا إطار إضافي */}
+        <motion.div style={{ opacity: contentOpacity, y: contentY, pointerEvents: contentPE }} className="absolute inset-0 flex flex-col overflow-y-auto px-4 pb-8 pt-14 sm:pt-16">
+          <PlansContent annual={annual} setAnnual={setAnnual} />
         </motion.div>
       </div>
     </section>

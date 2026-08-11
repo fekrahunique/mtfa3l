@@ -12,6 +12,7 @@ const Plan1448 = lazy(() => import("./pages/Plan1448").then((m) => ({ default: m
 const PrivacyPolicy = lazy(() => import("./pages/Legal").then((m) => ({ default: m.PrivacyPolicy })));
 const Terms = lazy(() => import("./pages/Legal").then((m) => ({ default: m.Terms })));
 const NotFound = lazy(() => import("./pages/NotFound").then((m) => ({ default: m.NotFound })));
+const AdminHub = lazy(() => import("./pages/AdminHub").then((m) => ({ default: m.AdminHub })));
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/الأسبوع-التمهيدي" element={<IntroWeek />} />
           <Route path="/مستودع-الأفكار" element={<IdeaVault />} />
           <Route path="/خطة-النشاط" element={<Plan1448 />} />
+          <Route path="/admin" element={<AdminHub />} />
           <Route path="/سياسة-الخصوصية" element={<PrivacyPolicy />} />
           <Route path="/الشروط-والأحكام" element={<Terms />} />
           <Route path="*" element={<NotFound />} />

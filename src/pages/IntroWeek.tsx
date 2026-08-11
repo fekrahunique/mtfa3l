@@ -13,6 +13,7 @@ import { playCorrect, playWin, playTick, playLaunch, playUnlock, playAlarm, play
 import { CompetitorBoard } from "../activities/CompetitorBoard";
 import { loadClasses, loadActiveClassId } from "../lib/rosterStore";
 import { loadCapsule, addCapsuleGoal, type CapsuleGoal } from "../lib/capsuleStore";
+import { isSubscribed, goToPricing } from "../lib/subscriptionStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -1235,7 +1236,7 @@ function ScreenBody({ screen, pal, track }: { screen: IntroScreen; pal: Pal; tra
 
 /* ————————————————————————— مشغّل اليوم ————————————————————————— */
 
-function DayPlayer({ day, pal, track, onExit }: { day: IntroDay; pal: Pal; track: IntroTrack; onExit: () => void }) {
+function DayPlayer({ day, pal, track, onExit, locked, onSubscribe }: { day: IntroDay; pal: Pal; track: IntroTrack; onExit: () => void; locked?: boolean; onSubscribe?: () => void }) {
   const [s, setS] = useState(0);
   const [scenarioOpen, setScenarioOpen] = useState(true);
   const screen = day.screens[s];
@@ -1294,7 +1295,11 @@ function DayPlayer({ day, pal, track, onExit }: { day: IntroDay; pal: Pal; track
         <button onClick={() => setScenarioOpen((v) => !v)} className="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm" style={{ color: pal.sub }}>
           <CaretDown className={`h-4 w-4 transition-transform ${scenarioOpen ? "" : "rotate-180"}`} /> السيناريو
         </button>
-        {last ? (
+        {locked ? (
+          <button onClick={onSubscribe} className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-black" style={{ background: pal.accent }}>
+            <LockSimple weight="fill" className="h-4 w-4" /> اشترك لفتح بقية الأنشطة
+          </button>
+        ) : last ? (
           <button onClick={onExit} className="flex items-center gap-1 rounded-full px-6 py-2 text-sm font-bold text-black" style={{ background: pal.accent }}>
             أنهِ اليوم <Confetti weight="fill" className="h-4 w-4" />
           </button>
@@ -1318,6 +1323,7 @@ export function IntroWeek() {
   const track = introTrack(stage);
   const pal = stage === "متوسط" ? ACADEMY_PAL : SPACE_PAL;
   const [openDay, setOpenDay] = useState<IntroDay | null>(null);
+  const subscribed = isSubscribed();
 
   return (
     <div className="relative min-h-screen overflow-x-clip pb-20" style={{ background: pal.bg }}>
@@ -1356,9 +1362,9 @@ export function IntroWeek() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.06 }}
               whileHover={{ scale: 1.02, y: -3 }}
-              onClick={() => setOpenDay(day)}
+              onClick={() => { if (!subscribed && i > 0) goToPricing(navigate); else setOpenDay(day); }}
               className="relative overflow-hidden rounded-[1.5rem] border-2 p-6 text-right"
-              style={{ borderColor: `${pal.accent}44`, background: `linear-gradient(150deg, ${pal.panel}, ${pal.bg})` }}
+              style={{ borderColor: `${pal.accent}44`, background: `linear-gradient(150deg, ${pal.panel}, ${pal.bg})`, opacity: !subscribed && i > 0 ? 0.7 : 1 }}
             >
               <div className="pointer-events-none absolute -left-8 -top-8 h-32 w-32 rounded-full blur-3xl" style={{ background: `${pal.accent}33` }} />
               <div className="relative z-10 flex items-start justify-between">
@@ -1367,16 +1373,25 @@ export function IntroWeek() {
               </div>
               <h3 className="relative z-10 mt-4 font-display text-2xl" style={{ color: pal.ink }}>{noDot(day.planet)}</h3>
               <p className="relative z-10 mt-1 text-sm" style={{ color: pal.accentSoft }}>{day.screens.length} شاشات · {noDot(day.vibe)}</p>
-              <span className="relative z-10 mt-4 inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-bold text-black" style={{ background: pal.accent }}>
-                <Play weight="fill" className="h-4 w-4" /> افتح العرض
-              </span>
+              {!subscribed && i === 0 && (
+                <p className="relative z-10 mt-1 text-xs" style={{ color: "#22c55e" }}>✦ نشاط تجريبي مجاني</p>
+              )}
+              {!subscribed && i > 0 ? (
+                <span className="relative z-10 mt-4 inline-flex items-center gap-2 rounded-full border px-5 py-2 text-sm font-bold" style={{ borderColor: `${pal.accent}66`, color: pal.accentSoft }}>
+                  <LockSimple weight="fill" className="h-4 w-4" /> اشترك لفتحه
+                </span>
+              ) : (
+                <span className="relative z-10 mt-4 inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-bold text-black" style={{ background: pal.accent }}>
+                  <Play weight="fill" className="h-4 w-4" /> افتح العرض
+                </span>
+              )}
             </motion.button>
           ))}
         </div>
       </main>
 
       <AnimatePresence>
-        {openDay && <DayPlayer day={openDay} pal={pal} track={track} onExit={() => setOpenDay(null)} />}
+        {openDay && <DayPlayer day={openDay} pal={pal} track={track} onExit={() => setOpenDay(null)} locked={!subscribed} onSubscribe={() => goToPricing(navigate)} />}
       </AnimatePresence>
     </div>
   );

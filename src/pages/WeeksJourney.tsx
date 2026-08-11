@@ -8,6 +8,7 @@ import { activityDomains, activityPrograms, type ActivityProgram } from "../data
 import { noDot } from "../lib/utils";
 import { weekTheme } from "../lib/weekTheme";
 import { emptyRegistration, type RegistrationData } from "../lib/theme";
+import { isSubscribed, setSubscribed as persistSubscribed } from "../lib/subscriptionStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -363,7 +364,7 @@ export function WeeksJourney() {
   const data = (location.state as RegistrationData | null) ?? emptyRegistration;
   const stageLabel = data.stage === "middle" ? "متوسط" : "ابتدائي";
   const weeks = breakWeeks.filter((w) => w.stage === stageLabel).sort((a, b) => a.week - b.week);
-  const [subscribed, setSubscribed] = useState(false);
+  const [subscribed, setSubscribed] = useState(isSubscribed());
 
   function openWeek(week: BreakWeek, locked: boolean) {
     if (locked) {
@@ -453,7 +454,7 @@ export function WeeksJourney() {
         <div className="relative mt-16 flex flex-col gap-10">
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-0.5 -translate-x-1/2 bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block" />
           {weeks.map((week, i) => (
-            <WeekTile key={week.id} week={week} index={i} locked={false} onOpen={() => openWeek(week, false)} />
+            <WeekTile key={week.id} week={week} index={i} locked={!subscribed} onOpen={() => openWeek(week, !subscribed)} />
           ))}
         </div>
 
@@ -504,7 +505,7 @@ export function WeeksJourney() {
             ) : (
               <button
                 type="button"
-                onClick={() => setSubscribed(true)}
+                onClick={() => { persistSubscribed(true); setSubscribed(true); }}
                 className="mx-auto mt-7 flex items-center gap-2 rounded-full bg-sun-400 px-8 py-3.5 text-base font-bold text-bg shadow-xl transition-transform duration-300 hover:scale-105 active:scale-95"
               >
                 <Sparkle weight="fill" className="h-5 w-5" />
