@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LockSimple, Play, Sparkle, Crown, CaretLeft, CheckCircle, Timer, MapPin, Wrench, Eye, X, FilmSlate, MagnifyingGlass } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
-import { ChallengePlayer } from "../activities/ChallengePlayer";
+import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../activities/ChallengePlayer";
 import { breakWeeks, type BreakWeek } from "../data/breakPeriods";
 import { activityDomains, activityPrograms, type ActivityProgram } from "../data/activityPrograms";
 import { noDot } from "../lib/utils";
@@ -140,9 +140,48 @@ function ChallengeRow({ q, a, accent }: { q: string; a: string; accent: string }
 }
 
 /** بوستر برنامج — يفتح عرضًا سينمائيًا كامل الشاشة. */
+const arWJ = (n: number | string) => String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
+
+/** توزيع محرّكات المسابقة على المجالات للتنويع، بتحويل أسئلة البرنامج لكل محرّك. */
+const DOMAIN_ENGINE: Record<string, "board" | "duel" | "reveal"> = {
+  "science-tech": "board", "sports-health": "duel", "citizenship": "reveal",
+  "scouts": "board", "world-days": "duel", "national-days": "reveal", "prayer-duty": "board",
+};
+
+function programGame(program: ActivityProgram): { type: ChallengeType; content: ChallengeContent; label: string } {
+  const ch = program.challenge;
+  const engine = DOMAIN_ENGINE[program.domainId] ?? "board";
+
+  if (engine === "duel" && ch.length >= 2) {
+    const rounds = ch.map((c, i) => {
+      const distractor = ch[(i + 1) % ch.length].answer;
+      const aIsCorrect = i % 2 === 0;
+      return {
+        prompt: c.question,
+        a: aIsCorrect ? c.answer : distractor,
+        b: aIsCorrect ? distractor : c.answer,
+        correct: (aIsCorrect ? "a" : "b") as "a" | "b",
+      };
+    });
+    return { type: "duel", content: { duel: { rounds } }, label: "⚔️ مبارزة: أيّهما الصحيح؟" };
+  }
+
+  if (engine === "reveal") {
+    const rounds = ch.map((c) => {
+      const ans = c.answer.trim();
+      const words = ans.split(/\s+/).filter(Boolean).length;
+      return { answer: c.answer, clues: [c.question, `تبدأ بحرف «${ans[0] ?? ""}»`, `من ${arWJ(words)} كلمة`] };
+    });
+    return { type: "reveal", content: { reveal: { rounds } }, label: "🔍 خمّن الإجابة بالتلميحات" };
+  }
+
+  return { type: "board", content: { quiz: ch.map((c) => ({ q: c.question, a: c.answer })) }, label: "🎮 معركة الفرق (صندوق التحدّي)" };
+}
+
 function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityProgram; accent: string; accentSoft: string; deep: string }) {
   const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const game = programGame(program);
   const EASE_C = [0.32, 0.72, 0, 1] as const;
   const scene = (delay: number) => ({
     initial: { opacity: 0, y: 28, filter: "blur(8px)" },
@@ -297,7 +336,7 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
                     className="flex items-center gap-2 rounded-full px-6 py-3 text-base font-bold text-black shadow-xl transition-transform hover:scale-105 active:scale-95"
                     style={{ backgroundColor: accentSoft }}
                   >
-                    <Play weight="fill" className="h-5 w-5" /> 🎮 معركة الفرق (صندوق التحدّي)
+                    <Play weight="fill" className="h-5 w-5" /> {game.label}
                   </button>
                 )}
               </motion.div>
@@ -316,8 +355,8 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
         {playing && (
           <ChallengePlayer
             title={program.title}
-            type="board"
-            content={{ quiz: program.challenge.map((c) => ({ q: c.question, a: c.answer })) }}
+            type={game.type}
+            content={game.content}
             pal={{ accent, accentSoft, deep }}
             onClose={() => setPlaying(false)}
           />
