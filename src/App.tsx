@@ -16,6 +16,8 @@ const AdminHub = lazy(() => import("./pages/AdminHub").then((m) => ({ default: m
 const BigGame = lazy(() => import("./pages/BigGame").then((m) => ({ default: m.BigGame })));
 const Shifra = lazy(() => import("./pages/Shifra").then((m) => ({ default: m.Shifra })));
 const LastChance = lazy(() => import("./pages/LastChance").then((m) => ({ default: m.LastChance })));
+const SmartPlanner = lazy(() => import("./pages/SmartPlanner").then((m) => ({ default: m.SmartPlanner })));
+const ActivityLog = lazy(() => import("./pages/ActivityLog").then((m) => ({ default: m.ActivityLog })));
 
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
@@ -36,6 +38,8 @@ function App() {
           <Route path="/بطولة-نشاط" element={<BigGame />} />
           <Route path="/الشفرة" element={<Shifra />} />
           <Route path="/آخر-فرصة" element={<LastChance />} />
+          <Route path="/مخطط-النشاط" element={<SmartPlanner />} />
+          <Route path="/سجل-النشاط" element={<ActivityLog />} />
           <Route path="/سياسة-الخصوصية" element={<PrivacyPolicy />} />
           <Route path="/الشروط-والأحكام" element={<Terms />} />
           <Route path="*" element={<NotFound />} />

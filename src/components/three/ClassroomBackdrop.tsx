@@ -93,9 +93,10 @@ function makePlansTexture(annual: boolean): THREE.CanvasTexture {
   ctx.fillText("خطط الاستثمار في فصلك", width / 2, 84);
 
   const pad = 28;
-  const cw = (width - pad * 4) / 3;
+  const cols = PLANS.length;
+  const cw = (width - pad * (cols + 1)) / cols;
   PLANS.forEach((p, i) => {
-    // من اليمين لليسار: المنطلِق ثم الرائد ثم المتكامل
+    // من اليمين لليسار حسب ترتيب الباقات
     const x = width - pad - (i + 1) * cw - i * pad;
     const cx = x + cw / 2;
     if (p.featured) { ctx.fillStyle = "rgba(244,182,58,0.18)"; roundRect(ctx, x, 116, cw, 316, 18); ctx.fill(); ctx.strokeStyle = "#f4b63a"; ctx.lineWidth = 2; roundRect(ctx, x, 116, cw, 316, 18); ctx.stroke(); }

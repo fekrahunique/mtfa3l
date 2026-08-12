@@ -101,7 +101,7 @@ function DecisionHelper() {
   return (
     <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-md">
       <p className="text-center font-display text-lg text-ink">ماذا تحتاج؟</p>
-      <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
+      <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
         {PLANS.map((p) => (
           <Link key={p.id} to="/تسجيل" state={{ plan: p.id }}
             className={`group rounded-xl border p-3.5 text-center transition-transform duration-300 hover:scale-[1.03] ${p.featured ? "border-sun-400/50 bg-sun-400/10" : "border-white/12 bg-white/[0.03] hover:border-white/30"}`}>
@@ -129,7 +129,7 @@ function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
       </div>
       <DecisionHelper />
       <div id="plans" className="mt-8 scroll-mt-24"><BillingToggle annual={annual} setAnnual={setAnnual} /></div>
-      <div className="mx-auto mt-8 grid max-w-6xl items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto mt-8 grid max-w-3xl items-stretch gap-5 sm:grid-cols-2">
         {PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} annual={annual} />)}
       </div>
       <p className="mt-8 text-center text-sm text-ink-muted">{noDot(TRIAL_NOTE)}</p>
@@ -206,7 +206,7 @@ export function Pricing() {
         <motion.div style={{ opacity: ctrlOpacity, y: ctrlY, pointerEvents: ctrlPE }} className="absolute inset-x-0 bottom-0 px-4 pb-7 pt-6">
           <div className="mx-auto max-w-3xl">
             <BillingToggle annual={annual} setAnnual={setAnnual} />
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
               {PLANS.map((plan) => {
                 const { amount } = planPrice(plan, annual);
                 const featured = plan.featured;
