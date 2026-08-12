@@ -24,7 +24,7 @@ export interface Plan {
   nudge?: string;
 }
 
-export const ANNUAL_MULTIPLIER = 10; // الدفع السنوي بسعر ١٠ أشهر، شهران مجانًا
+export const TERM_MONTHS = 3; // الترم الدراسي ≈ ٣ أشهر (السنة ثلاثة فصول)
 
 export const PLANS: Plan[] = [
   {
@@ -75,9 +75,9 @@ export function arDigits(n: number | string): string {
   return String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
 }
 
-/** السعر المعروض حسب الدورة (شهري/سنوي). */
-export function planPrice(plan: Plan, annual: boolean): { amount: number; period: string } {
-  return annual
-    ? { amount: plan.monthly * ANNUAL_MULTIPLIER, period: "﷼ / سنويًا" }
+/** السعر المعروض حسب الدورة (شهري/للترم). المعامل الثاني: true = للترم. */
+export function planPrice(plan: Plan, perTerm: boolean): { amount: number; period: string } {
+  return perTerm
+    ? { amount: plan.monthly * TERM_MONTHS, period: "﷼ / الترم" }
     : { amount: plan.monthly, period: "﷼ / شهريًا" };
 }

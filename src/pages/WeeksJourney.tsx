@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LockSimple, Play, Sparkle, Crown, CaretLeft, CheckCircle, Timer, MapPin, Wrench, Eye, X, FilmSlate, MagnifyingGlass } from "@phosphor-icons/react";
 import { ScrollReveal } from "../components/ScrollReveal";
+import { ChallengePlayer } from "../activities/ChallengePlayer";
 import { breakWeeks, type BreakWeek } from "../data/breakPeriods";
 import { activityDomains, activityPrograms, type ActivityProgram } from "../data/activityPrograms";
 import { noDot } from "../lib/utils";
@@ -141,6 +142,7 @@ function ChallengeRow({ q, a, accent }: { q: string; a: string; accent: string }
 /** بوستر برنامج — يفتح عرضًا سينمائيًا كامل الشاشة. */
 function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityProgram; accent: string; accentSoft: string; deep: string }) {
   const [open, setOpen] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const EASE_C = [0.32, 0.72, 0, 1] as const;
   const scene = (delay: number) => ({
     initial: { opacity: 0, y: 28, filter: "blur(8px)" },
@@ -284,9 +286,21 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
               </motion.ul>
 
               {/* تحدي الفريقين */}
-              <motion.h4 {...scene(2)} className="mt-12 font-display text-2xl text-white">
-                تحدي الفريقين <span className="text-sm font-sans text-white/60">، اضغط لكشف الجواب</span>
-              </motion.h4>
+              <motion.div {...scene(2)} className="mt-12 flex flex-wrap items-center justify-between gap-3">
+                <h4 className="font-display text-2xl text-white">
+                  تحدي الفريقين <span className="text-sm font-sans text-white/60">، اضغط لكشف الجواب</span>
+                </h4>
+                {program.challenge.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setPlaying(true)}
+                    className="flex items-center gap-2 rounded-full px-6 py-3 text-base font-bold text-black shadow-xl transition-transform hover:scale-105 active:scale-95"
+                    style={{ backgroundColor: accentSoft }}
+                  >
+                    <Play weight="fill" className="h-5 w-5" /> شغّله مسابقة بالنقاط
+                  </button>
+                )}
+              </motion.div>
               <motion.div {...scene(2.15)} className="mt-4 space-y-2">
                 {program.challenge.map((c) => (
                   <ChallengeRow key={c.question} q={c.question} a={c.answer} accent={accentSoft} />
@@ -294,6 +308,19 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
               </motion.div>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* تشغيل تحدّي البرنامج كمسابقة تفاعلية بالنقاط */}
+      <AnimatePresence>
+        {playing && (
+          <ChallengePlayer
+            title={program.title}
+            type="quizRace"
+            content={{ quiz: program.challenge.map((c) => ({ q: c.question, a: c.answer })) }}
+            pal={{ accent, accentSoft, deep }}
+            onClose={() => setPlaying(false)}
+          />
         )}
       </AnimatePresence>
     </>

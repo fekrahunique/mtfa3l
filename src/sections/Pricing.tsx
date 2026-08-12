@@ -82,7 +82,7 @@ function BillingToggle({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
   return (
     <div className="flex items-center justify-center gap-3">
       <div className="relative flex items-center rounded-full border border-white/15 bg-black/50 p-1 backdrop-blur-md">
-        {[{ key: false, label: "شهري" }, { key: true, label: "سنوي" }].map((opt) => (
+        {[{ key: false, label: "شهري" }, { key: true, label: "للترم" }].map((opt) => (
           <button key={String(opt.key)} type="button" onClick={() => setAnnual(opt.key)} className="relative z-10 rounded-full px-5 py-1.5 text-sm font-semibold transition-colors duration-300" style={{ color: annual === opt.key ? "#131209" : undefined }}>
             {annual === opt.key && <motion.span layoutId="billing-pill" transition={{ duration: 0.4, ease: EASE }} className="absolute inset-0 -z-10 rounded-full bg-sun-400" />}
             <span className={annual === opt.key ? "" : "text-ink-muted"}>{opt.label}</span>
@@ -90,7 +90,7 @@ function BillingToggle({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
         ))}
       </div>
       <AnimatePresence>
-        {annual && <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-300">🎁 شهران مجانًا</motion.span>}
+        {annual && <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-300">💳 دفعة واحدة كل ترم</motion.span>}
       </AnimatePresence>
     </div>
   );

@@ -88,7 +88,7 @@ function makePlansTexture(annual: boolean): THREE.CanvasTexture {
   ctx.textAlign = "right"; ctx.fillStyle = "#4d1c9b"; ctx.font = "800 30px 'Thmanyah Sans', sans-serif";
   ctx.fillText("✦ منصة نشاط", width - 34, 38);
   ctx.textAlign = "left"; ctx.fillStyle = "#b06a00"; ctx.font = "700 26px 'Thmanyah Sans', sans-serif";
-  ctx.fillText(annual ? "سنوي" : "شهري", 34, 38);
+  ctx.fillText(annual ? "للترم" : "شهري", 34, 38);
   ctx.textAlign = "center"; ctx.fillStyle = "#6b4de6"; ctx.font = "800 36px 'Thmanyah Sans', sans-serif";
   ctx.fillText("خطط الاستثمار في فصلك", width / 2, 84);
 
