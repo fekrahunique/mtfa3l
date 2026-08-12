@@ -2,6 +2,7 @@ import { IslandNav } from "../components/IslandNav";
 import { Footer } from "../components/Footer";
 import { Hero } from "../sections/Hero";
 import { TaglineReveal } from "../sections/TaglineReveal";
+import { OperatingLoop } from "../sections/OperatingLoop";
 import { Benefits } from "../sections/Benefits";
 import { HowItWorks } from "../sections/HowItWorks";
 import { JourneyPreview } from "../sections/JourneyPreview";
@@ -16,6 +17,7 @@ export function Landing() {
       <main id="main-content">
         <Hero />
         <TaglineReveal />
+        <OperatingLoop />
         <Benefits />
         <HowItWorks />
         <JourneyPreview />

@@ -30,7 +30,7 @@ export function Hero() {
           className="mb-6 flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-4 py-1.5 text-sm font-semibold text-sun-300 backdrop-blur-xl"
         >
           <Sparkle weight="fill" className="h-4 w-4" />
-          نسخة تجريبية قيد التطوير
+          نظام تشغيل رائد النشاط
         </motion.div>
 
         <motion.h1
@@ -39,9 +39,9 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
           className="mx-auto max-w-[680px] text-4xl leading-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.55)] sm:text-6xl"
         >
-          خطّط أنشطة أسبوعك
+          خطّط، نفّذ، وقِس أثرك
           <br />
-          في دقائق، لا أيام
+          بلا تحضير
         </motion.h1>
 
         <motion.p
@@ -50,9 +50,8 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
           className="mx-auto mt-6 max-w-[680px] text-lg text-white/85 [text-shadow:0_1px_16px_rgba(0,0,0,0.6)]"
         >
-          نشاط منصة جاهزة لرواد النشاط في المدارس الحكومية والأهلية، فيها كل نشاط
-          صفي ولا صفي يحقق المستهدف الأسبوعي المعتمد، لمرحلتي الابتدائي والمتوسط،
-          بنين وبنات
+          «نشاط» تجهّز لك الحصة، وتشغّل التجربة على الشاشة، وتدير المنافسة بين
+          الفرق، وتُخرج لك تقريرك. وفّر ساعات كل أسبوع، وخلّ طلابك يعيشون النشاط
         </motion.p>
 
         <motion.div
@@ -69,10 +68,10 @@ export function Hero() {
             <CaretLeft weight="bold" className="h-4 w-4 transition-transform duration-500 group-hover:-translate-x-1" />
           </Link>
           <a
-            href="#benefits"
+            href="#loop"
             className="rounded-full border border-white/30 bg-black/25 px-6 py-3 text-base font-semibold text-white backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-white/50 hover:bg-black/40 active:scale-95"
           >
-            كمّل الطريق معنا
+            شوف كيف تعمل
           </a>
         </motion.div>
       </div>
