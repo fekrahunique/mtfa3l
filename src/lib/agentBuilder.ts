@@ -26,6 +26,7 @@ export const ENGINE_LABEL: Record<ChallengeType, string> = {
   xo: "لعبة إكس-أو",
   reveal: "تخمين بالتلميحات",
   duel: "أيهما؟ مبارزة",
+  board: "صندوق التحدّي",
 };
 
 const norm = (s: string) => s.replace(/[.،؛]+\s*$/u, "").trim();

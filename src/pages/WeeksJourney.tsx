@@ -297,7 +297,7 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
                     className="flex items-center gap-2 rounded-full px-6 py-3 text-base font-bold text-black shadow-xl transition-transform hover:scale-105 active:scale-95"
                     style={{ backgroundColor: accentSoft }}
                   >
-                    <Play weight="fill" className="h-5 w-5" /> شغّله مسابقة بالنقاط
+                    <Play weight="fill" className="h-5 w-5" /> 🎮 معركة الفرق (صندوق التحدّي)
                   </button>
                 )}
               </motion.div>
@@ -316,7 +316,7 @@ function ProgramCard({ program, accent, accentSoft, deep }: { program: ActivityP
         {playing && (
           <ChallengePlayer
             title={program.title}
-            type="quizRace"
+            type="board"
             content={{ quiz: program.challenge.map((c) => ({ q: c.question, a: c.answer })) }}
             pal={{ accent, accentSoft, deep }}
             onClose={() => setPlaying(false)}

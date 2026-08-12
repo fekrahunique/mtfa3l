@@ -5,7 +5,7 @@ import { noDot } from "../lib/utils";
 import { playCorrect, playWin, playTick, playAlarm, playUnlock } from "../lib/sound";
 import { CompetitorBoard } from "./CompetitorBoard";
 
-export type ChallengeType = "quizRace" | "predict" | "sort" | "order" | "budget" | "timer" | "map" | "xo" | "reveal" | "duel";
+export type ChallengeType = "quizRace" | "predict" | "sort" | "order" | "budget" | "timer" | "map" | "xo" | "reveal" | "duel" | "board";
 
 export interface ChallengeContent {
   quiz?: { q: string; a: string }[];
@@ -487,8 +487,128 @@ function Duel({ content, pal }: { content: ChallengeContent; pal: Pal }) {
   );
 }
 
+/* ————— محرّك «صندوق التحدّي» — لوحة نقاط للفرق بمخاطرة وسرقة ومضاعفة ————— */
+const BOARD_TEAMS = [
+  { emoji: "🦅", name: "الصقور", color: "#3b82f6" },
+  { emoji: "🐯", name: "النمور", color: "#22c55e" },
+  { emoji: "⚡", name: "البرق", color: "#f59e0b" },
+  { emoji: "🦁", name: "الأسود", color: "#a855f7" },
+  { emoji: "🦈", name: "القروش", color: "#06b6d4" },
+  { emoji: "🐝", name: "النحل", color: "#eab308" },
+];
+const ar2 = (n: number) => String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
+
+function ChallengeBoard({ content, pal }: { content: ChallengeContent; pal: Pal }) {
+  const qs = content.quiz ?? [];
+  const tiles = useMemo(() => qs.map((q, i) => ({ q: q.q, a: q.a, value: 100 * (1 + (i % 6)), double: i % 7 === 3 })), [qs]);
+  const [count, setCount] = useState(3);
+  const [scores, setScores] = useState<number[]>(() => Array(3).fill(0));
+  const [turn, setTurn] = useState(0);
+  const [used, setUsed] = useState<number[]>([]);
+  const [pick, setPick] = useState<number | null>(null);
+  const [revealed, setRevealed] = useState(false);
+  const [stealing, setStealing] = useState(false);
+
+  function setTeams(n: number) { setCount(n); setScores(Array(n).fill(0)); setTurn(0); setUsed([]); setPick(null); setStealing(false); }
+  const done = tiles.length > 0 && used.length === tiles.length;
+  const cur = pick != null ? tiles[pick] : null;
+  const gain = cur ? cur.value * (cur.double ? 2 : 1) : 0;
+
+  function award(team: number, delta: number) { setScores((s) => s.map((v, i) => (i === team ? v + delta : v))); }
+  function resolve(next = true) {
+    if (pick != null) setUsed((u) => [...u, pick]);
+    setPick(null); setRevealed(false); setStealing(false);
+    if (next) setTurn((t) => (t + 1) % count);
+  }
+  function correct() { award(turn, gain); playWin(); resolve(); }
+  function wrong() { playAlarm(); setStealing(true); }
+  function steal(team: number) { award(team, gain); playCorrect(); resolve(); }
+
+  if (qs.length === 0) return <div className="flex min-h-full items-center justify-center text-white/70">لا توجد أسئلة لهذا التحدّي</div>;
+
+  const winner = done ? scores.indexOf(Math.max(...scores)) : -1;
+
+  return (
+    <div className="h-full overflow-y-auto">
+      <div className="mx-auto flex min-h-full max-w-3xl flex-col gap-4 px-4 py-5">
+        {/* لوحة النتائج */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {BOARD_TEAMS.slice(0, count).map((t, i) => (
+            <div key={i} className="flex items-center gap-2 rounded-2xl border-2 px-4 py-2"
+              style={{ borderColor: i === turn && !done ? t.color : "rgba(255,255,255,0.12)", background: i === turn && !done ? `${t.color}22` : "transparent" }}>
+              <span className="text-xl">{t.emoji}</span>
+              <span className="font-display text-sm text-white">{t.name}</span>
+              <span className="font-display text-lg" style={{ color: t.color }}>{ar2(scores[i] ?? 0)}</span>
+            </div>
+          ))}
+        </div>
+
+        {done ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
+            <div className="text-7xl">🏆</div>
+            <h3 className="font-display text-3xl text-white">فاز {BOARD_TEAMS[winner].emoji} {BOARD_TEAMS[winner].name}</h3>
+            <p className="text-white/70">بـ {ar2(scores[winner])} نقطة</p>
+            <button onClick={() => setTeams(count)} className="rounded-full px-6 py-3 font-bold text-black" style={{ background: pal.accent }}>جولة جديدة</button>
+          </div>
+        ) : !cur ? (
+          <>
+            <div className="flex items-center justify-center gap-2 text-sm text-white/60">
+              عدد الفرق:
+              {[2, 3, 4, 5, 6].map((n) => (
+                <button key={n} onClick={() => setTeams(n)} className="rounded-full border px-3 py-1 font-bold" style={{ borderColor: n === count ? pal.accent : "rgba(255,255,255,0.15)", color: n === count ? pal.accent : "#fff" }}>{ar2(n)}</button>
+              ))}
+            </div>
+            <p className="text-center text-sm" style={{ color: pal.accentSoft }}>دور {BOARD_TEAMS[turn].emoji} {BOARD_TEAMS[turn].name} — اختر خانة</p>
+            <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+              {tiles.map((tile, i) => {
+                const spent = used.includes(i);
+                return (
+                  <button key={i} disabled={spent} onClick={() => { setPick(i); setRevealed(false); playUnlock(); }}
+                    className="relative flex h-20 items-center justify-center rounded-2xl border-2 font-display text-2xl transition-transform hover:scale-[1.04] disabled:opacity-20"
+                    style={{ borderColor: `${pal.accent}55`, background: spent ? "transparent" : pal.deep, color: pal.accent }}>
+                    {spent ? "✓" : <>{ar2(tile.value)}{tile.double && <span className="absolute right-1.5 top-1.5 text-xs">⚡×٢</span>}</>}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+            <span className="rounded-full px-4 py-1 text-sm font-bold" style={{ background: `${pal.accent}22`, color: pal.accent }}>
+              {ar2(gain)} نقطة{cur.double ? " · مضاعفة ⚡" : ""}
+            </span>
+            <p className="max-w-2xl font-display text-2xl leading-snug text-white sm:text-3xl">{noDot(cur.q)}</p>
+            <AnimatePresence>
+              {revealed && <motion.p initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="rounded-2xl border-2 px-6 py-3 text-xl font-bold" style={{ borderColor: pal.accent, color: pal.accent, background: pal.deep }}>{noDot(cur.a)}</motion.p>}
+            </AnimatePresence>
+            {!revealed && <button onClick={() => { setRevealed(true); playTick(); }} className="flex items-center gap-2 rounded-full border-2 px-5 py-2 font-bold text-white" style={{ borderColor: pal.accent }}><Eye weight="fill" className="h-5 w-5" /> اكشف الجواب</button>}
+
+            {!stealing ? (
+              <div className="flex flex-wrap justify-center gap-3">
+                <button onClick={correct} className="rounded-full bg-emerald-500 px-7 py-3 text-lg font-bold text-white">أجاب صح ✓ (+{ar2(gain)})</button>
+                <button onClick={wrong} className="rounded-full bg-red-500 px-7 py-3 text-lg font-bold text-white">أخطأ ✗</button>
+                <button onClick={() => resolve()} className="rounded-full border border-white/20 px-5 py-3 text-sm font-semibold text-white/80">تمرير</button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-sm font-bold text-amber-300">🔓 سرقة! أيّ فريق أجاب؟</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {BOARD_TEAMS.slice(0, count).map((t, i) => (
+                    i === turn ? null : <button key={i} onClick={() => steal(i)} className="rounded-full border-2 px-4 py-2 text-sm font-bold text-white" style={{ borderColor: t.color }}>{t.emoji} {t.name} +{ar2(gain)}</button>
+                  ))}
+                  <button onClick={() => resolve()} className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70">لا أحد</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const ENGINES: Record<ChallengeType, (p: { content: ChallengeContent; pal: Pal }) => React.ReactElement> = {
-  quizRace: QuizRace, predict: Predict, sort: Sort, order: Order, budget: Budget, timer: TimerJudge, map: MapGrid, xo: TicTacToe, reveal: Reveal, duel: Duel,
+  quizRace: QuizRace, predict: Predict, sort: Sort, order: Order, budget: Budget, timer: TimerJudge, map: MapGrid, xo: TicTacToe, reveal: Reveal, duel: Duel, board: ChallengeBoard,
 };
 
 export function ChallengePlayer({ title, type, content, pal, onClose }: { title: string; type: ChallengeType; content: ChallengeContent; pal: Pal; onClose: () => void }) {

@@ -10,7 +10,7 @@ import { isPremium, goToPricing } from "../lib/subscriptionStore";
 import { noDot } from "../lib/utils";
 
 const STAGES: (VaultStage | "الكل")[] = ["الكل", "ابتدائي", "متوسط"];
-const TYPE_LABEL: Record<string, string> = { quizRace: "سؤال بالنقاط", predict: "تصويت وتوقّع", sort: "تصنيف", order: "ترتيب", budget: "ميزانية", timer: "مؤقّت وتحكيم", map: "خريطة/مناطق", xo: "إكس-أو", reveal: "تخمين بالتلميحات", duel: "أيهما؟ مبارزة" };
+const TYPE_LABEL: Record<string, string> = { quizRace: "سؤال بالنقاط", predict: "تصويت وتوقّع", sort: "تصنيف", order: "ترتيب", budget: "ميزانية", timer: "مؤقّت وتحكيم", map: "خريطة/مناطق", xo: "إكس-أو", reveal: "تخمين بالتلميحات", duel: "أيهما؟ مبارزة", board: "صندوق التحدّي" };
 
 function ChallengeCard({ ch, accent, accentSoft, deep, onPlay, locked }: { ch: VaultChallenge; accent: string; accentSoft: string; deep: string; onPlay: () => void; locked?: boolean }) {
   const [open, setOpen] = useState(false);
