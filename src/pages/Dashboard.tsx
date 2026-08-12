@@ -7,6 +7,8 @@ import { GlassCard } from "../components/GlassCard";
 import { Sidebar } from "../components/dashboard/Sidebar";
 import { WeeklyTargetCard } from "../components/dashboard/WeeklyTargetCard";
 import { ClassesManager } from "../components/dashboard/ClassesManager";
+import { BadgesPanel } from "../components/dashboard/BadgesPanel";
+import { isPremium, goToPricing } from "../lib/subscriptionStore";
 import { TeacherTools } from "../components/dashboard/TeacherTools";
 import { RoutineJourney } from "../components/dashboard/RoutineJourney";
 import { YardCorners } from "../components/dashboard/YardCorners";
@@ -132,6 +134,9 @@ export function Dashboard() {
   const completed = corners.filter((c) => doneIds.includes(c.id)).length;
   const allDone = corners.length > 0 && completed === corners.length;
   const uniqueValues = new Set(corners.flatMap((c) => c.values)).size;
+  const premium = isPremium(data.plan);
+  const nextCorner = corners.find((c) => !doneIds.includes(c.id)) ?? null;
+  const weekPct = corners.length ? Math.round((completed / corners.length) * 100) : 0;
 
   function toggleDone(id: string) {
     setDoneIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -322,6 +327,44 @@ export function Dashboard() {
           <div className="relative z-10">
         {week ? (
           <>
+            {/* مركز القيادة: يجيب بثوانٍ — ماذا أفعل الآن؟ ماذا لديّ؟ ما الجديد؟ كيف أنفّذ؟ */}
+            <ScrollReveal>
+              <div className="rounded-2xl border p-4 sm:p-5" style={{ borderColor: `${scene.accent}33`, background: "rgba(255,255,255,0.03)" }}>
+                <span className="mb-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-faint">🧭 مركز القيادة</span>
+                {/* ماذا أفعل الآن؟ */}
+                <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4" style={{ borderColor: `${scene.accent}44`, background: `${scene.accent}12` }}>
+                  <div className="min-w-0">
+                    <span className={cn("text-xs font-bold", accent.text)}>▶ ماذا أفعل الآن؟</span>
+                    <h3 className="mt-1 font-display text-xl text-ink sm:text-2xl">{nextCorner ? nextCorner.title : "أنجزت كل أركان الأسبوع 🎉"}</h3>
+                    <p className="mt-0.5 text-sm text-ink-muted">{nextCorner ? "جاهز بخطواته وأدواته، اعرضه على طلابك مباشرة" : "أحسنت، راجع إنجازك أو استكشف رحلة الأسابيع"}</p>
+                  </div>
+                  {nextCorner && (
+                    <button type="button" onClick={() => setPresentingId(nextCorner.id)} className={cn("shrink-0 rounded-full px-7 py-3.5 text-base font-bold text-bg shadow-xl transition-transform hover:scale-105 active:scale-95", accent.bg)}>
+                      ▶ ابدأ العرض
+                    </button>
+                  )}
+                </div>
+                {/* ثلاث إجابات سريعة */}
+                <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <span className="text-xs font-bold text-ink-muted">📅 ماذا لديّ هذا الأسبوع؟</span>
+                    <p className="mt-1 truncate font-display text-ink">{week.occasion ?? `الأسبوع ${arN(week.week)}`}</p>
+                    <p className="mt-0.5 text-xs text-ink-faint">{arN(completed)}/{arN(corners.length)} أركان · {arN(weekPct)}٪ مكتمل</p>
+                  </div>
+                  <button type="button" onClick={() => navigate("/آخر-فرصة", { state: data })} className="group rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-right transition-colors hover:border-white/25">
+                    <span className="text-xs font-bold text-ink-muted">✨ ما الجديد؟</span>
+                    <p className="mt-1 font-display text-ink">الألعاب الكبرى + المخطّط الذكي</p>
+                    <p className="mt-0.5 text-xs" style={{ color: scene.accent }}>جرّبها الآن ←</p>
+                  </button>
+                  <button type="button" onClick={() => window.dispatchEvent(new Event("motafael:open-tour"))} className="group rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-right transition-colors hover:border-white/25">
+                    <span className="text-xs font-bold text-ink-muted">❓ كيف أنفّذ فعالية؟</span>
+                    <p className="mt-1 font-display text-ink">جولة سريعة خطوة بخطوة</p>
+                    <p className="mt-0.5 text-xs" style={{ color: scene.accent }}>ابدأ الجولة ←</p>
+                  </button>
+                </div>
+              </div>
+            </ScrollReveal>
+
             {weeks.length > 1 && (
               <ScrollReveal className="mt-8">
                 <button
@@ -572,6 +615,9 @@ export function Dashboard() {
           <p className="mt-1 text-sm text-ink-muted">أضف فصولك وأسماء طلابك، وزّع المجموعات، وامنح النقاط، وفي نهاية الأسبوع يظهر الفائزون</p>
           <div className="mt-6">
             <ClassesManager accent="#ff9d3d" />
+          </div>
+          <div className="mt-4">
+            <BadgesPanel students={data.students} premium={premium} accentBg={accent.bg} accentText={accent.text} onUpgrade={() => goToPricing(navigate)} />
           </div>
         </ScrollReveal>
 
