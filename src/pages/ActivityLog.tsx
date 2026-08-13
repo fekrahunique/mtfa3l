@@ -68,6 +68,12 @@ export function ActivityLog() {
     setForm(null);
   }
   function remove(id: string) { persist(records.filter((r) => r.id !== id)); }
+  function seedIntroWeek() {
+    const days = ["الأسبوع التمهيدي — اليوم الأول", "الأسبوع التمهيدي — اليوم الثاني", "الأسبوع التمهيدي — اليوم الثالث", "الأسبوع التمهيدي — اليوم الرابع", "الأسبوع التمهيدي — اليوم الخامس"];
+    let next = [...records];
+    days.forEach((name) => { next = [...next, { name, date: "", participants: 0, participationPct: 0, engagement: 5, goal: 4, points: 0, results: "", notes: "", id: makeRecordId(next) }]; });
+    persist(next);
+  }
 
   if (!premium) {
     return (
@@ -106,7 +112,10 @@ export function ActivityLog() {
 
       {/* زر إضافة / النموذج */}
       {!form ? (
-        <button onClick={() => setForm(blank())} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-sun-400 px-6 py-3.5 text-lg font-bold text-bg transition-transform hover:scale-[1.02] active:scale-95"><Plus weight="bold" className="h-5 w-5" /> وثّق نشاطًا</button>
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+          <button onClick={() => setForm(blank())} className="flex flex-1 items-center justify-center gap-2 rounded-full bg-sun-400 px-6 py-3.5 text-lg font-bold text-bg transition-transform hover:scale-[1.02] active:scale-95"><Plus weight="bold" className="h-5 w-5" /> وثّق نشاطًا</button>
+          <button onClick={seedIntroWeek} className="flex items-center justify-center gap-2 rounded-full border border-sun-400/40 bg-sun-400/10 px-6 py-3.5 text-base font-bold text-sun-300 transition-transform hover:scale-[1.02] active:scale-95">📋 توثيق الأسبوع التمهيدي (٥ أيام)</button>
+        </div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 space-y-4 rounded-2xl border border-white/12 bg-white/[0.03] p-5">
           <p className="font-display text-lg">كيف كان النشاط؟</p>

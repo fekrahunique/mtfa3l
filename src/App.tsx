@@ -18,6 +18,8 @@ const Shifra = lazy(() => import("./pages/Shifra").then((m) => ({ default: m.Shi
 const LastChance = lazy(() => import("./pages/LastChance").then((m) => ({ default: m.LastChance })));
 const SmartPlanner = lazy(() => import("./pages/SmartPlanner").then((m) => ({ default: m.SmartPlanner })));
 const ActivityLog = lazy(() => import("./pages/ActivityLog").then((m) => ({ default: m.ActivityLog })));
+const IntroWeekCampaign = lazy(() => import("./pages/IntroWeekCampaign").then((m) => ({ default: m.IntroWeekCampaign })));
+const ObservationForm = lazy(() => import("./pages/ObservationForm").then((m) => ({ default: m.ObservationForm })));
 
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
@@ -40,6 +42,8 @@ function App() {
           <Route path="/آخر-فرصة" element={<LastChance />} />
           <Route path="/مخطط-النشاط" element={<SmartPlanner />} />
           <Route path="/سجل-النشاط" element={<ActivityLog />} />
+          <Route path="/الأسبوع-التمهيدي-١٤٤٨" element={<IntroWeekCampaign />} />
+          <Route path="/بطاقة-الملاحظة" element={<ObservationForm />} />
           <Route path="/سياسة-الخصوصية" element={<PrivacyPolicy />} />
           <Route path="/الشروط-والأحكام" element={<Terms />} />
           <Route path="*" element={<NotFound />} />

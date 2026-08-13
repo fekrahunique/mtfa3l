@@ -2,6 +2,7 @@ import { IslandNav } from "../components/IslandNav";
 import { Footer } from "../components/Footer";
 import { Hero } from "../sections/Hero";
 import { TaglineReveal } from "../sections/TaglineReveal";
+import { IntroWeekBanner } from "../sections/IntroWeekBanner";
 import { OperatingLoop } from "../sections/OperatingLoop";
 import { Benefits } from "../sections/Benefits";
 import { HowItWorks } from "../sections/HowItWorks";
@@ -17,6 +18,7 @@ export function Landing() {
       <main id="main-content">
         <Hero />
         <TaglineReveal />
+        <IntroWeekBanner />
         <OperatingLoop />
         <Benefits />
         <HowItWorks />
