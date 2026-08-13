@@ -132,7 +132,9 @@ export function IntroWeekCampaign() {
             <p className="mt-2 flex items-center gap-1.5 text-xs text-white/55"><Camera weight="bold" className="h-4 w-4" /> الصور تُرفق يدويًا حاليًا (وقريبًا رفع مباشر عبر التخزين السحابي)</p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link to="/سجل-النشاط" className="rounded-full bg-teal-400 px-5 py-2.5 text-sm font-bold text-[#062522]">سجل وأثر النشاط</Link>
-              <Link to="/بطاقة-الملاحظة" className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-bold text-white hover:border-white/40">استمارة الملاحظة اليومية</Link>
+              <Link to="/بطاقة-الملاحظة" className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-bold text-white hover:border-white/40">استمارة الملاحظة</Link>
+              <Link to="/بطاقات-التعريف" className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-bold text-white hover:border-white/40">🪪 بطاقات التعريف</Link>
+              <Link to="/أركان-التمهيدي" className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-bold text-white hover:border-white/40">🎪 الأركان الجاهزة</Link>
             </div>
           </div>
         </ScrollReveal>

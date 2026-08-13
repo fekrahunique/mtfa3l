@@ -24,8 +24,8 @@ const steps = [
   },
   {
     icon: Confetti,
-    title: "ابدأ التفاعل",
-    body: "أنشطة ومسابقات وأدوات جاهزة تحقق المستهدف كل أسبوع.",
+    title: "ابدأ التشغيل",
+    body: "أنشطة ومسابقات وألعاب جاهزة تشغّلها على الشاشة، وتقيس أثرها كل أسبوع.",
   },
 ];
 
@@ -37,8 +37,8 @@ function StepsList() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-24">
       <ScrollReveal className="mx-auto max-w-[680px] text-center">
-        <h2 className="text-3xl text-ink sm:text-4xl">كيف تعمل المنصة</h2>
-        <p className="mt-4 text-lg text-ink-muted">ثلاث خطوات، وتكون رحلة النشاط جاهزة</p>
+        <h2 className="text-3xl text-ink sm:text-4xl">ابدأ في ثلاث خطوات</h2>
+        <p className="mt-4 text-lg text-ink-muted">سجّل، ارفع أسماء طلابك، وابدأ التشغيل</p>
       </ScrollReveal>
 
       <div className="relative mt-16 grid grid-cols-1 gap-10 sm:grid-cols-3">
@@ -97,7 +97,7 @@ export function HowItWorks() {
     <section id="how-it-works">
       {/* Title sits in normal flow so it scrolls away before the yard is pinned. */}
       <div className="mx-auto max-w-[680px] px-4 pb-16 pt-24 text-center">
-        <h2 className="text-3xl text-ink sm:text-4xl">كيف تعمل المنصة</h2>
+        <h2 className="text-3xl text-ink sm:text-4xl">ابدأ في ثلاث خطوات</h2>
         <p className="mt-4 text-lg text-ink-muted">
           ادخل من بوابة المدرسة، وعند كل عمود تنتظرك خطوة
         </p>

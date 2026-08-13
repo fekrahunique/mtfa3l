@@ -20,6 +20,8 @@ const SmartPlanner = lazy(() => import("./pages/SmartPlanner").then((m) => ({ de
 const ActivityLog = lazy(() => import("./pages/ActivityLog").then((m) => ({ default: m.ActivityLog })));
 const IntroWeekCampaign = lazy(() => import("./pages/IntroWeekCampaign").then((m) => ({ default: m.IntroWeekCampaign })));
 const ObservationForm = lazy(() => import("./pages/ObservationForm").then((m) => ({ default: m.ObservationForm })));
+const StudentCards = lazy(() => import("./pages/StudentCards").then((m) => ({ default: m.StudentCards })));
+const IntroCorners = lazy(() => import("./pages/IntroCorners").then((m) => ({ default: m.IntroCorners })));
 
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
@@ -44,6 +46,8 @@ function App() {
           <Route path="/سجل-النشاط" element={<ActivityLog />} />
           <Route path="/الأسبوع-التمهيدي-١٤٤٨" element={<IntroWeekCampaign />} />
           <Route path="/بطاقة-الملاحظة" element={<ObservationForm />} />
+          <Route path="/بطاقات-التعريف" element={<StudentCards />} />
+          <Route path="/أركان-التمهيدي" element={<IntroCorners />} />
           <Route path="/سياسة-الخصوصية" element={<PrivacyPolicy />} />
           <Route path="/الشروط-والأحكام" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
