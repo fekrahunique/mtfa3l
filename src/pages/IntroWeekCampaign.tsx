@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { CaretLeft, CheckCircle, Clock, FileText, Camera, Confetti } from "@phosphor-icons/react";
+import { BackToSchoolBackdrop } from "../components/BackToSchoolBackdrop";
 import { daysUntilStart, INTRO_PLAN, MANDATE_LINKS } from "../data/introCampaign";
 
 const arN = (n: number | string) => String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
@@ -21,7 +22,9 @@ export function IntroWeekCampaign() {
   const floaties = ["🎒", "📚", "✏️", "🎨", "⭐", "🎈", "🧸", "🎉"];
 
   return (
-    <div className="min-h-screen bg-[#1a1206] text-white">
+    <div className="relative min-h-screen text-white">
+      <BackToSchoolBackdrop />
+      <div className="relative z-10">
       {/* ——— هيرو احتفالي دافئ ——— */}
       <header className="relative overflow-hidden px-4 pt-14 pb-16">
         {/* توهّجات دافئة */}
@@ -145,6 +148,7 @@ export function IntroWeekCampaign() {
           <p className="mt-6 text-xs text-white/45">جاهزة لتنفيذ متطلبات التعميم · «نشاط» أداة تساعد الرائد، ولسنا جهة اعتماد رسمية</p>
         </ScrollReveal>
       </main>
+      </div>
     </div>
   );
 }
