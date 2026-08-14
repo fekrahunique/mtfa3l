@@ -23,6 +23,7 @@ const ObservationForm = lazy(() => import("./pages/ObservationForm").then((m) =>
 const StudentCards = lazy(() => import("./pages/StudentCards").then((m) => ({ default: m.StudentCards })));
 const IntroCorners = lazy(() => import("./pages/IntroCorners").then((m) => ({ default: m.IntroCorners })));
 const ProgramReport = lazy(() => import("./pages/ProgramReport").then((m) => ({ default: m.ProgramReport })));
+const ActivityRatio = lazy(() => import("./pages/ActivityRatio").then((m) => ({ default: m.ActivityRatio })));
 
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/بطاقات-التعريف" element={<StudentCards />} />
           <Route path="/أركان-التمهيدي" element={<IntroCorners />} />
           <Route path="/تقرير-البرنامج" element={<ProgramReport />} />
+          <Route path="/حصص-النشاط" element={<ActivityRatio />} />
           <Route path="/سياسة-الخصوصية" element={<PrivacyPolicy />} />
           <Route path="/الشروط-والأحكام" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
