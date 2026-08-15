@@ -29,7 +29,7 @@ const GAINS = [
 
 export function PaperToDigital() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: false, amount: 0.4 });
+  const inView = useInView(ref, { once: true, amount: 0.2 });
   const reduced = useReducedMotion();
   const on = reduced ? true : inView;
 
