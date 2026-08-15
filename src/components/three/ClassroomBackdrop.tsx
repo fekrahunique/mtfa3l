@@ -74,7 +74,7 @@ function makeChallengeTexture(item: BoardItem): THREE.CanvasTexture {
 }
 
 /** «خطط الاستثمار» — الباقات الثلاث مرسومةً على نفس السبورة. */
-function makePlansTexture(annual: boolean): THREE.CanvasTexture {
+function makePlansTexture(): THREE.CanvasTexture {
   const width = 1400, height = 458;
   const canvas = document.createElement("canvas");
   canvas.width = width; canvas.height = height;
@@ -88,7 +88,7 @@ function makePlansTexture(annual: boolean): THREE.CanvasTexture {
   ctx.textAlign = "right"; ctx.fillStyle = "#4d1c9b"; ctx.font = "800 30px 'Thmanyah Sans', sans-serif";
   ctx.fillText("✦ منصة نشاط", width - 34, 38);
   ctx.textAlign = "left"; ctx.fillStyle = "#b06a00"; ctx.font = "700 26px 'Thmanyah Sans', sans-serif";
-  ctx.fillText(annual ? "للترم" : "شهري", 34, 38);
+  ctx.fillText("للترم", 34, 38);
   ctx.textAlign = "center"; ctx.fillStyle = "#6b4de6"; ctx.font = "800 36px 'Thmanyah Sans', sans-serif";
   ctx.fillText("خطط الاستثمار في فصلك", width / 2, 84);
 
@@ -115,11 +115,10 @@ function makePlansTexture(annual: boolean): THREE.CanvasTexture {
     ctx.fillStyle = "#23203a"; ctx.font = "800 40px 'Thmanyah Sans', sans-serif"; ctx.textAlign = "center";
     ctx.fillText(p.name, cx, y); y += 52;
 
-    const price = annual ? p.monthly * 10 : p.monthly;
     ctx.fillStyle = "#23203a"; ctx.font = "900 66px 'Thmanyah Sans', sans-serif";
-    ctx.fillText(arDigits(price), cx, y); y += 44;
+    ctx.fillText(arDigits(p.term), cx, y); y += 44;
     ctx.fillStyle = "#8a7f6a"; ctx.font = "600 22px 'Thmanyah Sans', sans-serif";
-    ctx.fillText(annual ? "﷼ / سنويًا" : "﷼ / شهريًا", cx, y); y += 40;
+    ctx.fillText("﷼ / الترم", cx, y); y += 40;
 
     (BOARD_SHORT[p.id] ?? []).forEach((f, k) => {
       ctx.fillStyle = "#5b5568"; ctx.font = "500 23px 'Thmanyah Sans', sans-serif";

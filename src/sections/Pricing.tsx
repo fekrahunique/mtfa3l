@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
-import { AnimatePresence, motion, useScroll, useTransform, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Sparkle, RocketLaunch, Crown, Check, Star, CaretLeft, CaretDown } from "@phosphor-icons/react";
 import { noDot } from "../lib/utils";
@@ -34,9 +34,9 @@ function TiltCard({ children }: { children: ReactNode }) {
   );
 }
 
-function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
+function PlanCard({ plan }: { plan: Plan }) {
   const Icon = ICONS[plan.icon];
-  const { amount, period } = planPrice(plan, annual);
+  const { amount, period } = planPrice(plan);
   const featured = plan.featured;
   return (
     <div className={`relative h-full ${featured ? "lg:scale-[1.03]" : ""}`} style={{ perspective: "1000px" }}>
@@ -78,20 +78,11 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
   );
 }
 
-function BillingToggle({ annual, setAnnual }: { annual: boolean; setAnnual: (v: boolean) => void }) {
+/** لافتة الدورة: كل الأسعار لكل ترم دراسي، دفعة واحدة. */
+function TermNote() {
   return (
-    <div className="flex items-center justify-center gap-3">
-      <div className="relative flex items-center rounded-full border border-white/15 bg-black/50 p-1 backdrop-blur-md">
-        {[{ key: false, label: "شهري" }, { key: true, label: "للترم" }].map((opt) => (
-          <button key={String(opt.key)} type="button" onClick={() => setAnnual(opt.key)} className="relative z-10 rounded-full px-5 py-1.5 text-sm font-semibold transition-colors duration-300" style={{ color: annual === opt.key ? "#131209" : undefined }}>
-            {annual === opt.key && <motion.span layoutId="billing-pill" transition={{ duration: 0.4, ease: EASE }} className="absolute inset-0 -z-10 rounded-full bg-sun-400" />}
-            <span className={annual === opt.key ? "" : "text-ink-muted"}>{opt.label}</span>
-          </button>
-        ))}
-      </div>
-      <AnimatePresence>
-        {annual && <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-300">💳 دفعة واحدة كل ترم</motion.span>}
-      </AnimatePresence>
+    <div className="flex items-center justify-center">
+      <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-1.5 text-sm font-bold text-emerald-300">💳 الأسعار لكل ترم دراسي — دفعة واحدة</span>
     </div>
   );
 }
@@ -115,7 +106,7 @@ function DecisionHelper() {
 }
 
 /** نسخة الجوّال/تقليل الحركة — بطاقات جنبًا إلى جنب فوق الفصل. */
-function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: boolean) => void }) {
+function StaticPricing() {
   return (
     <section id="pricing" className="relative overflow-hidden px-4 py-20">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -128,9 +119,9 @@ function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
         <p className="mt-3 text-ink-muted">وفّر ساعات التخطيط والإعداد كل أسبوع، واختر مستوى المساعدة الذي يناسبك</p>
       </div>
       <DecisionHelper />
-      <div id="plans" className="mt-8 scroll-mt-24"><BillingToggle annual={annual} setAnnual={setAnnual} /></div>
+      <div id="plans" className="mt-8 scroll-mt-24"><TermNote /></div>
       <div className="mx-auto mt-8 grid max-w-3xl items-stretch gap-5 sm:grid-cols-2">
-        {PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} annual={annual} />)}
+        {PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} />)}
       </div>
       <p className="mt-8 text-center text-sm text-ink-muted">{noDot(TRIAL_NOTE)}</p>
     </section>
@@ -138,7 +129,6 @@ function StaticPricing({ annual, setAnnual }: { annual: boolean; setAnnual: (v: 
 }
 
 export function Pricing() {
-  const [annual, setAnnual] = useState(false);
   const reduce = useReducedMotion();
   const [wide, setWide] = useState(() => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -161,7 +151,7 @@ export function Pricing() {
   const ctrlPE = useTransform(scrollYProgress, (v) => (v > 0.6 ? "auto" : "none"));
   const titleOpacity = useTransform(scrollYProgress, [0.44, 0.56], [0, 1]);
 
-  if (reduce || !wide) return <StaticPricing annual={annual} setAnnual={setAnnual} />;
+  if (reduce || !wide) return <StaticPricing />;
 
   return (
     <section id="pricing" ref={trackRef} className="relative h-[340vh]">
@@ -171,7 +161,7 @@ export function Pricing() {
         {/* الفصل + الزوم على السبورة (الباقات مرسومة عليها) */}
         <div className="absolute inset-0">
           <Suspense fallback={<div className="h-full w-full bg-[#171019]" />}>
-            <ClassroomBackdrop progress={scrollYProgress} annual={annual} className="h-full w-full" />
+            <ClassroomBackdrop progress={scrollYProgress} className="h-full w-full" />
           </Suspense>
           <motion.div className="absolute inset-0 bg-[#131209]" style={{ opacity: scrimOpacity }} />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#131209] to-transparent" />
@@ -205,10 +195,10 @@ export function Pricing() {
         {/* المرحلة ٣: شريط الاختيار أسفل السبورة */}
         <motion.div style={{ opacity: ctrlOpacity, y: ctrlY, pointerEvents: ctrlPE }} className="absolute inset-x-0 bottom-0 px-4 pb-7 pt-6">
           <div className="mx-auto max-w-3xl">
-            <BillingToggle annual={annual} setAnnual={setAnnual} />
+            <TermNote />
             <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
               {PLANS.map((plan) => {
-                const { amount } = planPrice(plan, annual);
+                const { amount } = planPrice(plan);
                 const featured = plan.featured;
                 return (
                   <Link key={plan.id} to="/تسجيل" state={{ plan: plan.id }}

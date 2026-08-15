@@ -11,7 +11,7 @@ export interface Plan {
   id: PlanId;
   name: string;
   tagline: string;
-  monthly: number; // ﷼ / شهريًا
+  term: number; // ﷼ / الترم (السعر لكل فصل دراسي)
   icon: PlanIcon;
   badge?: string; // شارة فوق البطاقة
   featured?: boolean; // البطاقة المميّزة (الأعلى)
@@ -24,14 +24,12 @@ export interface Plan {
   nudge?: string;
 }
 
-export const TERM_MONTHS = 3; // الترم الدراسي ≈ ٣ أشهر (السنة ثلاثة فصول)
-
 export const PLANS: Plan[] = [
   {
     id: "pro",
     name: "الرائد",
     tagline: "خطّط ونفّذ",
-    monthly: 79,
+    term: 35,
     icon: "rocket",
     who: "أبغى محتوى وخطة جاهزة",
     features: [
@@ -48,7 +46,7 @@ export const PLANS: Plan[] = [
     id: "premium",
     name: "الرائد المتكامل",
     tagline: "خطّط، نفّذ، قِس، وخلّ الطلاب يعيشون التجربة",
-    monthly: 99,
+    term: 50,
     icon: "crown",
     badge: "الأفضل قيمة",
     featured: true,
@@ -62,7 +60,7 @@ export const PLANS: Plan[] = [
       { text: "👑 حزمة النخبة: ١٢ بطولة نوعية حصرية في المستودع" },
     ],
     cta: "احصل على التجربة الكاملة",
-    nudge: "بفرق ٢٠ ريالًا فقط عن الرائد، تأخذ الألعاب والمخطّط والتوثيق وملف الإنجاز",
+    nudge: "بفرق ١٥ ريالًا فقط عن الرائد، تأخذ الألعاب والمخطّط والتوثيق وملف الإنجاز",
   },
 ];
 
@@ -75,9 +73,7 @@ export function arDigits(n: number | string): string {
   return String(n).replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
 }
 
-/** السعر المعروض حسب الدورة (شهري/للترم). المعامل الثاني: true = للترم. */
-export function planPrice(plan: Plan, perTerm: boolean): { amount: number; period: string } {
-  return perTerm
-    ? { amount: plan.monthly * TERM_MONTHS, period: "﷼ / الترم" }
-    : { amount: plan.monthly, period: "﷼ / شهريًا" };
+/** السعر المعروض — لكل ترم دراسي (فصل). */
+export function planPrice(plan: Plan): { amount: number; period: string } {
+  return { amount: plan.term, period: "﷼ / الترم" };
 }

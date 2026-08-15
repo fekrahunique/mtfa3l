@@ -48,7 +48,7 @@ export function StepReview({ data }: { data: RegistrationData }) {
             </div>
           </div>
           <div className="text-left">
-            <p className="font-display text-2xl text-ink">{arDigits(plan.monthly)}<span className="text-sm text-ink-muted"> ﷼/شهر</span></p>
+            <p className="font-display text-2xl text-ink">{arDigits(plan.term)}<span className="text-sm text-ink-muted"> ﷼ / الترم</span></p>
           </div>
         </div>
         <p className="mt-3 rounded-xl bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-ink-muted">

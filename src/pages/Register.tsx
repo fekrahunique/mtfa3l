@@ -87,7 +87,7 @@ export function Register() {
 
           <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-sun-400/30 bg-sun-400/10 px-4 py-2 text-sm">
             <span className="font-semibold text-sun-300">باقتك: {plan.name}</span>
-            <span className="text-ink-muted">· {arDigits(plan.monthly)}﷼ شهريًا</span>
+            <span className="text-ink-muted">· {arDigits(plan.term)}﷼ / الترم</span>
             <Link to="/#plans" className="rounded-full px-2 text-xs font-semibold text-sun-400 hover:underline">غيّر الباقة</Link>
           </div>
         </div>
@@ -148,13 +148,6 @@ export function Register() {
             <CaretLeft weight="bold" className="h-4 w-4" />
           </button>
         </div>
-
-        <p className="mt-8 text-center text-sm text-ink-faint">
-          عندك حساب بالفعل؟{" "}
-          <Link to="/لوحة-التحكم" className="text-sun-400 hover:underline">
-            ادخل للوحة التحكم
-          </Link>
-        </p>
       </main>
     </div>
   );
