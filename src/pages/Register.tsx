@@ -3,7 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { IslandNav } from "../components/IslandNav";
-import { LivelyBackdrop } from "../components/LivelyBackdrop";
+import { RegisterBackdrop } from "../components/RegisterBackdrop";
+import { WelcomeCinematic } from "../components/WelcomeCinematic";
 import { StepProgress } from "../components/StepProgress";
 import { StepSchool } from "./register/StepSchool";
 import { StepTeacher } from "./register/StepTeacher";
@@ -25,6 +26,7 @@ export function Register() {
   const location = useLocation();
   const incomingPlan = (location.state as { plan?: PlanId } | null)?.plan;
   const [step, setStep] = useState(0);
+  const [welcoming, setWelcoming] = useState(false);
   const [data, setData] = useState<RegistrationData>(() => ({
     ...emptyRegistration,
     plan: incomingPlan ?? emptyRegistration.plan,
@@ -63,14 +65,21 @@ export function Register() {
     if (step < STEP_LABELS.length - 1) {
       setStep((s) => s + 1);
     } else {
-      const username = generateUsername(data.schoolName);
-      navigate("/الأسابيع", { state: { ...data, username } });
+      setWelcoming(true);
     }
+  }
+
+  function enterPlatform() {
+    const username = generateUsername(data.schoolName);
+    navigate("/الأسابيع", { state: { ...data, username } });
   }
 
   return (
     <div className="relative min-h-screen overflow-x-clip pb-24">
-      <LivelyBackdrop />
+      <RegisterBackdrop step={step} total={STEP_LABELS.length} />
+      <AnimatePresence>
+        {welcoming && <WelcomeCinematic teacherName={data.teacherName} onEnter={enterPlatform} />}
+      </AnimatePresence>
       <IslandNav />
       <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-40">
         <div className="mb-12 text-center">
