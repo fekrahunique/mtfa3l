@@ -12,6 +12,7 @@ export interface Student {
 export interface RegistrationData {
   teacherName: string;
   email: string;
+  phone?: string;
   schoolName: string;
   schoolType: SchoolType | null;
   stage: Stage | null;
@@ -24,6 +25,7 @@ export interface RegistrationData {
 export const emptyRegistration: RegistrationData = {
   teacherName: "",
   email: "",
+  phone: "",
   schoolName: "",
   schoolType: null,
   stage: null,

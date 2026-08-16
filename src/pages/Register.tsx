@@ -124,6 +124,7 @@ export function Register() {
                 <StepTeacher
                   teacherName={data.teacherName}
                   email={data.email}
+                  phone={data.phone ?? ""}
                   schoolName={data.schoolName}
                   errors={teacherErrors}
                   onChange={patch}

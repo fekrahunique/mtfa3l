@@ -10,15 +10,17 @@ interface Errors {
 export function StepTeacher({
   teacherName,
   email,
+  phone,
   schoolName,
   errors,
   onChange,
 }: {
   teacherName: string;
   email: string;
+  phone: string;
   schoolName: string;
   errors: Errors;
-  onChange: (patch: Partial<{ teacherName: string; email: string; schoolName: string }>) => void;
+  onChange: (patch: Partial<{ teacherName: string; email: string; phone: string; schoolName: string }>) => void;
 }) {
   const fieldClass = (hasError?: string) =>
     cn(
@@ -56,6 +58,23 @@ export function StepTeacher({
           className={fieldClass(errors.email)}
         />
         {errors.email && <p className="mt-1.5 text-sm text-girls-400">{errors.email}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="phone" className="mb-2 block text-sm font-semibold text-ink">
+          رقم الجوال <span className="font-normal text-ink-faint">(اختياري)</span>
+        </label>
+        <input
+          id="phone"
+          type="tel"
+          inputMode="tel"
+          dir="ltr"
+          value={phone}
+          onChange={(e) => onChange({ phone: e.target.value })}
+          placeholder="05xxxxxxxx"
+          className={cn(fieldClass(), "text-right")}
+        />
+        <p className="mt-1.5 text-xs text-ink-muted">نستخدمه لتنبيهك على أكواد الخصم والتحديثات (عبر الرسائل أو واتساب)</p>
       </div>
 
       <div>

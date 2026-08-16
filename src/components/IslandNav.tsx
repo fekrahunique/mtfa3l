@@ -36,6 +36,13 @@ export function IslandNav() {
           </div>
 
           <Link
+            to="/لوحة-التحكم"
+            className="hidden rounded-full px-4 py-2 text-sm font-semibold text-ink-muted transition-colors duration-500 hover:bg-white/10 hover:text-ink sm:block"
+          >
+            تسجيل الدخول
+          </Link>
+
+          <Link
             to="/تسجيل"
             aria-current={location.pathname === "/تسجيل" ? "page" : undefined}
             className="hidden rounded-full bg-sun-400 px-4 py-2 text-sm font-semibold text-bg transition-transform duration-500 hover:scale-105 sm:block"
@@ -97,6 +104,19 @@ export function IslandNav() {
                 className="mt-2 rounded-full bg-sun-400 px-6 py-3 font-semibold text-bg"
               >
                 ابدأ التسجيل
+              </Link>
+            </motion.div>
+            <motion.div
+              initial={{ y: 48, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.14 + links.length * 0.08, ease: EASE }}
+            >
+              <Link
+                to="/لوحة-التحكم"
+                onClick={() => setOpen(false)}
+                className="text-lg font-semibold text-ink-muted"
+              >
+                تسجيل الدخول
               </Link>
             </motion.div>
           </motion.div>
