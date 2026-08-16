@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LockSimple, Play, Sparkle, Crown, CaretLeft, CheckCircle, Timer, MapPin, Wrench, Eye, X, FilmSlate, MagnifyingGlass } from "@phosphor-icons/react";
@@ -431,6 +431,9 @@ export function WeeksJourney() {
   const stageLabel = data.stage === "middle" ? "متوسط" : "ابتدائي";
   const weeks = breakWeeks.filter((w) => w.stage === stageLabel).sort((a, b) => a.week - b.week);
   const [subscribed, setSubscribed] = useState(isSubscribed());
+
+  // افتح الصفحة من أعلاها دائمًا (لا من موضع تمرير سابق).
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   function openWeek(week: BreakWeek, locked: boolean) {
     if (locked) {
