@@ -166,12 +166,12 @@ function Students() {
   return <group>{seats.map((s, i) => <Student key={i} position={s.pos} shirt={s.shirt} phase={s.phase} />)}</group>;
 }
 
-function Scene({ progress, annual }: { progress?: MotionValue<number>; annual: boolean }) {
+function Scene({ progress }: { progress?: MotionValue<number> }) {
   const fontsReady = useFontsReady();
   const screen = useRef<THREE.MeshBasicMaterial>(null);
   const state = useRef<number>(-99);
   const challengeTex = useMemo(() => CHALLENGES.map(makeChallengeTexture), [fontsReady]);
-  const plansTex = useMemo(() => makePlansTexture(annual), [annual, fontsReady]);
+  const plansTex = useMemo(() => makePlansTexture(), [fontsReady]);
 
   useFrame((st) => {
     const t = st.clock.elapsedTime;
@@ -208,7 +208,7 @@ function Scene({ progress, annual }: { progress?: MotionValue<number>; annual: b
   );
 }
 
-export function ClassroomBackdrop({ className, progress, annual = false }: { className?: string; progress?: MotionValue<number>; annual?: boolean }) {
+export function ClassroomBackdrop({ className, progress }: { className?: string; progress?: MotionValue<number> }) {
   const { ref, inView } = useInView<HTMLDivElement>();
   return (
     <div ref={ref} className={className} aria-hidden="true">
@@ -220,7 +220,7 @@ export function ClassroomBackdrop({ className, progress, annual = false }: { cla
         style={{ width: "100%", height: "100%" }}
         resize={{ debounce: 0 }}
       >
-        <Scene progress={progress} annual={annual} />
+        <Scene progress={progress} />
       </Canvas>
     </div>
   );
