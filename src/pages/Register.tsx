@@ -82,6 +82,7 @@ export function Register() {
       </AnimatePresence>
       <IslandNav />
       <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-40">
+        <div className="rounded-3xl border border-white/10 bg-[#14101c]/80 p-6 shadow-2xl backdrop-blur-xl sm:p-9">
         <div className="mb-12 text-center">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
@@ -157,6 +158,7 @@ export function Register() {
             {step === STEP_LABELS.length - 1 ? `ابدأ باقة ${plan.name}` : "التالي"}
             <CaretLeft weight="bold" className="h-4 w-4" />
           </button>
+        </div>
         </div>
       </main>
     </div>
