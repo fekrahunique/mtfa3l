@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
-import { IslandNav } from "../components/IslandNav";
 import { RegisterBackdrop } from "../components/RegisterBackdrop";
 import { WelcomeCinematic } from "../components/WelcomeCinematic";
 import { StepProgress } from "../components/StepProgress";
@@ -80,8 +79,7 @@ export function Register() {
       <AnimatePresence>
         {welcoming && <WelcomeCinematic teacherName={data.teacherName} onEnter={enterPlatform} />}
       </AnimatePresence>
-      <IslandNav />
-      <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-40">
+      <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-28">
         <div className="rounded-3xl border border-white/10 bg-[#14101c]/80 p-6 shadow-2xl backdrop-blur-xl sm:p-9">
         <div className="mb-12 text-center">
           <motion.span
