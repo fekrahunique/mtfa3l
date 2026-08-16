@@ -80,7 +80,7 @@ export function Register() {
         {welcoming && <WelcomeCinematic teacherName={data.teacherName} onEnter={enterPlatform} />}
       </AnimatePresence>
       <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-28">
-        <div className="rounded-3xl border border-white/10 bg-[#14101c]/80 p-6 shadow-2xl backdrop-blur-xl sm:p-9">
+        <div className="rounded-3xl border border-white/10 bg-[#1a1526]/50 p-6 shadow-2xl backdrop-blur-2xl sm:p-9">
         <div className="mb-12 text-center">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
