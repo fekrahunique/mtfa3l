@@ -8,13 +8,14 @@ import { motion } from "framer-motion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function WelcomeCinematic({ teacherName, onEnter }: { teacherName?: string; onEnter: () => void }) {
+export function WelcomeCinematic({ teacherName, gender, onEnter }: { teacherName?: string; gender?: "boys" | "girls" | null; onEnter: () => void }) {
   useEffect(() => {
     const t = setTimeout(onEnter, 5200);
     return () => clearTimeout(t);
   }, [onEnter]);
 
   const name = teacherName?.trim();
+  const title = gender === "boys" ? "مربّي الأجيال" : "مربية الأجيال";
 
   return (
     <motion.div
@@ -56,7 +57,7 @@ export function WelcomeCinematic({ teacherName, onEnter }: { teacherName?: strin
           transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
           className="font-display text-2xl text-white/90 sm:text-3xl"
         >
-          منصة نشاط ترحّب بمربّي الأجيال
+          منصة نشاط ترحّب ب{title}
         </motion.p>
 
         <motion.p
@@ -83,7 +84,7 @@ export function WelcomeCinematic({ teacherName, onEnter }: { teacherName?: strin
             transition={{ duration: 0.6, delay: 1.5 }}
             className="mt-6 text-lg text-white/75"
           >
-            أهلًا بك، {name}
+            أهلًا ب{title} {name}
           </motion.p>
         )}
 

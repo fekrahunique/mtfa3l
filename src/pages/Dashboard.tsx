@@ -88,7 +88,9 @@ export function Dashboard() {
   const [doneIds, setDoneIds] = useState<string[]>([]);
   const [presentingId, setPresentingId] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [entered, setEntered] = useState(false);
+  const [entered, setEntered] = useState(() => {
+    try { return sessionStorage.getItem("motafael:weekEntered") === "1"; } catch { return false; }
+  });
   const [immersive, setImmersive] = useState(immersiveNow);
   const [overrides, setOverrides] = useState<CornerOverrides>(() => loadCornerOverrides());
   const [editMode, setEditMode] = useState(false);
@@ -670,7 +672,7 @@ export function Dashboard() {
             teacherName={data.teacherName}
             theme={scene}
             accentBg={accent.bg}
-            onStart={() => setEntered(true)}
+            onStart={() => { setEntered(true); try { sessionStorage.setItem("motafael:weekEntered", "1"); } catch { /* تجاهل */ } }}
           />
         )}
       </AnimatePresence>

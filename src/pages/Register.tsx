@@ -77,7 +77,7 @@ export function Register() {
     <div className="relative min-h-screen overflow-x-clip pb-24">
       <RegisterBackdrop step={step} total={STEP_LABELS.length} />
       <AnimatePresence>
-        {welcoming && <WelcomeCinematic teacherName={data.teacherName} onEnter={enterPlatform} />}
+        {welcoming && <WelcomeCinematic teacherName={data.teacherName} gender={data.gender} onEnter={enterPlatform} />}
       </AnimatePresence>
       <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-28">
         <div className="rounded-3xl border border-white/10 bg-[#1a1526]/50 p-6 shadow-2xl backdrop-blur-2xl sm:p-9">
