@@ -167,7 +167,7 @@ function Shell({ children, onBack }: { children: ReactNode; onBack: () => void }
       <div className="mx-auto max-w-3xl">
         <button onClick={onBack} className="mb-6 flex items-center gap-2 text-sm text-ink-muted hover:text-ink"><CaretLeft weight="bold" className="h-4 w-4" /> رجوع</button>
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-sm font-semibold text-sun-300"><ChartBar weight="fill" className="h-4 w-4" /> سجل وأثر النشاط</span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-sm font-semibold text-sun-300"><ChartBar weight="fill" className="h-4 w-4" /> سجّل أثرك في النشاط</span>
           <h1 className="mt-4 font-display text-3xl sm:text-4xl">وثّق نشاطك، واقرأ أثرك</h1>
           <p className="mt-2 text-ink-muted">سجّل كل نشاط بعد تنفيذه، وفي نهاية الشهر أنشئ ملف إنجازك PDF</p>
         </div>

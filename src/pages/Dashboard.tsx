@@ -446,7 +446,7 @@ export function Dashboard() {
                 <button type="button" onClick={() => navigate("/سجل-النشاط", { state: data })}
                   className="group flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-right transition-transform hover:scale-[1.01]">
                   <div><span className="inline-flex items-center gap-1.5 rounded-full bg-sun-400/15 px-2.5 py-0.5 text-[11px] font-bold text-sun-300">📊 المتكامل</span>
-                    <h3 className="mt-1.5 font-display text-lg text-ink">سجل وأثر النشاط</h3>
+                    <h3 className="mt-1.5 font-display text-lg text-ink">سجّل أثرك في النشاط</h3>
                     <p className="text-xs text-ink-muted">وثّق كل نشاط، وأنشئ ملف إنجازك PDF</p></div>
                   <CaretLeft weight="bold" className="h-5 w-5 text-ink-faint transition-colors group-hover:text-sun-300" />
                 </button>
