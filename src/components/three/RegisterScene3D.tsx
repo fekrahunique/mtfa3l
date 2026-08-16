@@ -76,8 +76,9 @@ function SchoolBuilding() {
       <mesh position={[0, 9.4, 0]}><boxGeometry args={[36, 1.1, 13]} /><meshStandardMaterial color={ROOF} roughness={0.85} /></mesh>
       {/* المدخل الأوسط */}
       <mesh position={[0, 8.4, 0]}><boxGeometry args={[11, 2.6, 12.4]} /><meshStandardMaterial color={WALL_DARK} roughness={0.9} /></mesh>
-      {/* لافتة العبارة فوق المدخل */}
-      <mesh position={[0, 8.4, 6.25]}><planeGeometry args={[10, 2.5]} /><meshStandardMaterial map={sign} roughness={0.7} /></mesh>
+      {/* لوحة اسم المدرسة — بارزة أمام الواجهة، غير محجوبة بالسقف، بخلفية داكنة وإضاءة للوضوح */}
+      <mesh position={[0, 7.1, 6.7]}><boxGeometry args={[10.8, 3, 0.25]} /><meshStandardMaterial color="#241640" roughness={0.8} /></mesh>
+      <mesh position={[0, 7.1, 6.84]}><planeGeometry args={[10.2, 2.5]} /><meshStandardMaterial map={sign} emissive="#ffffff" emissiveMap={sign} emissiveIntensity={0.28} roughness={0.6} /></mesh>
       {/* أعمدة المدخل */}
       <mesh position={[-4.8, 3.4, 6.2]}><boxGeometry args={[1.2, 6.8, 1.2]} /><meshStandardMaterial color={WALL_DARK} roughness={0.9} /></mesh>
       <mesh position={[4.8, 3.4, 6.2]}><boxGeometry args={[1.2, 6.8, 1.2]} /><meshStandardMaterial color={WALL_DARK} roughness={0.9} /></mesh>
