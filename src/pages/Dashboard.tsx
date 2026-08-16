@@ -82,6 +82,7 @@ export function Dashboard() {
   const data = (location.state as RegistrationData | null) ?? demoData;
   const gender = data.gender ?? "girls";
   const accent = genderAccent[gender];
+  const educatorTitle = gender === "boys" ? "مربّي الأجيال" : "مربية الأجيال";
   const stageLabel = data.stage === "middle" ? "متوسط" : "ابتدائي";
 
   const [doneIds, setDoneIds] = useState<string[]>([]);
@@ -305,7 +306,7 @@ export function Dashboard() {
         {/* ترحيب مختصر أعلى المحتوى بعد الدخول. */}
         <div className="flex min-h-[22vh] flex-col justify-end pb-4">
           <h1 className="text-3xl text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.9)] sm:text-4xl">
-            أهلًا، {data.teacherName || "معلم النشاط"}
+            أهلًا، {educatorTitle} {data.teacherName || "معلم النشاط"}
           </h1>
           <p className="mt-2 text-white/85 [text-shadow:0_1px_12px_rgba(0,0,0,0.85)]">
             هذا أسبوعك في {data.schoolName || "نشاط"}

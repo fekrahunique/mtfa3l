@@ -47,6 +47,7 @@ export function Sidebar({
       <div className="flex items-center gap-3 px-2">
         <FacelessAvatar gender={gender} className="h-11 w-11" />
         <div className="min-w-0">
+          <p className="truncate text-[11px] font-semibold text-sun-300">{gender === "boys" ? "مربّي الأجيال" : "مربية الأجيال"}</p>
           <p className="truncate text-sm font-semibold text-ink">{teacherName || "معلم النشاط"}</p>
           <p className="truncate text-xs text-ink-faint">{schoolName || "نشاط"}</p>
         </div>
