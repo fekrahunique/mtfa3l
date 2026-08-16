@@ -75,6 +75,33 @@ export function AdminHub() {
           <p className="mt-2 text-ink-muted">روابط سريعة لكل الشاشات + مجرِّب مباشر لوكيل الذكاء الاصطناعي</p>
         </header>
 
+        {/* فتح كل الأقسام بضغطة — للمراجعة */}
+        {(() => {
+          const allOpen = subscribed && tier === "premium";
+          return (
+            <div className={`mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-5 ${allOpen ? "border-emerald-400/40 bg-emerald-400/[0.08]" : "border-sun-400/40 bg-sun-400/[0.08]"}`}>
+              <div>
+                <h2 className="font-display text-xl">{allOpen ? "✅ كل الأقسام مفتوحة" : "🔓 افتح كل الأقسام للمراجعة"}</h2>
+                <p className="mt-1 text-sm text-ink-muted">{allOpen ? "الاشتراك والباقة العليا مفعّلان — ادخل أي قسم بلا قفل" : "يفعّل الاشتراك + الباقة العليا محليًا، فتنفتح كل الأسابيع والأدوات"}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setSubscribed(true); setSub(true); setTier("premium"); setTierState("premium"); setStorageTick((x) => x + 1); }}
+                  className="rounded-full bg-sun-400 px-6 py-3 font-bold text-bg transition-transform hover:scale-[1.03] active:scale-95">
+                  {allOpen ? "مفتوح ✓" : "افتح كل الأقسام"}
+                </button>
+                {allOpen && (
+                  <button
+                    onClick={() => { setSubscribed(false); setSub(false); setTier(null); setTierState(null); setStorageTick((x) => x + 1); }}
+                    className="rounded-full border border-white/20 px-5 py-3 text-sm font-semibold text-ink-muted hover:text-ink">
+                    أعِد القفل
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* روابط الشاشات */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ROUTES.map((r) => (
