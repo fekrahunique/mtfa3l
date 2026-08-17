@@ -17,9 +17,10 @@ import {
   ChatsCircle,
   Confetti,
 } from "@phosphor-icons/react";
-import type { BreakCorner } from "../data/breakPeriods";
+import type { BreakCorner, TeachContent } from "../data/breakPeriods";
+import { teachContent } from "../data/teachContent";
 import { SaduPattern } from "./ActivityShell";
-import { toolIcon, stepIcon } from "./presentationVisuals";
+import { stepIcon } from "./presentationVisuals";
 import { cornerScripts } from "./presentationScripts";
 import { noDot } from "../lib/utils";
 
@@ -49,13 +50,11 @@ type Slide =
   | { kind: "explain"; index: number }
   | { kind: "facts" }
   | { kind: "discuss" }
-  | { kind: "tools" }
   | { kind: "step"; index: number }
   | { kind: "fun" }
   | { kind: "launch" };
 
-function buildSlides(corner: BreakCorner, steps: string[]): Slide[] {
-  const t = corner.teach;
+function buildSlides(steps: string[], t: TeachContent | undefined): Slide[] {
   return [
     { kind: "board" },
     { kind: "goal" },
@@ -65,7 +64,6 @@ function buildSlides(corner: BreakCorner, steps: string[]): Slide[] {
     ...(t ? [{ kind: "facts" as const }] : []),
     ...(t ? [{ kind: "discuss" as const }] : []),
     // التنفيذ العملي
-    ...(corner.tools.length ? [{ kind: "tools" as const }] : []),
     ...steps.map((_, index) => ({ kind: "step" as const, index })),
     ...(t?.fun ? [{ kind: "fun" as const }] : []),
     { kind: "launch" },
@@ -115,7 +113,8 @@ export function ActivityPresentation({
     () => (corner.edited ? corner.steps : cornerScripts[corner.id]?.steps ?? corner.steps),
     [corner]
   );
-  const slides = useMemo(() => buildSlides(corner, steps), [corner, steps]);
+  const teach = useMemo(() => corner.teach ?? teachContent[corner.id], [corner]);
+  const slides = useMemo(() => buildSlides(steps, teach), [steps, teach]);
   const [i, setI] = useState(0);
   const [dir, setDir] = useState(1);
 
@@ -228,14 +227,13 @@ export function ActivityPresentation({
                   <BoardSlide corner={corner} slogan={slogan} occasion={occasion} />
                 )}
                 {slide.kind === "goal" && <GoalSlide corner={corner} />}
-                {slide.kind === "hook" && corner.teach && <HookSlide text={corner.teach.hook} />}
-                {slide.kind === "explain" && corner.teach && (
-                  <ExplainSlide text={corner.teach.explain[slide.index]} index={slide.index} total={corner.teach.explain.length} />
+                {slide.kind === "hook" && teach && <HookSlide text={teach.hook} />}
+                {slide.kind === "explain" && teach && (
+                  <ExplainSlide text={teach.explain[slide.index]} index={slide.index} total={teach.explain.length} />
                 )}
-                {slide.kind === "facts" && corner.teach && <FactsSlide facts={corner.teach.facts} />}
-                {slide.kind === "discuss" && corner.teach && <DiscussSlide questions={corner.teach.discuss} />}
-                {slide.kind === "fun" && corner.teach?.fun && <FunSlide fun={corner.teach.fun} />}
-                {slide.kind === "tools" && <ToolsSlide corner={corner} />}
+                {slide.kind === "facts" && teach && <FactsSlide facts={teach.facts} />}
+                {slide.kind === "discuss" && teach && <DiscussSlide questions={teach.discuss} />}
+                {slide.kind === "fun" && teach?.fun && <FunSlide fun={teach.fun} />}
                 {slide.kind === "step" && <StepSlide text={steps[slide.index]} index={slide.index} total={stepCount} />}
                 {slide.kind === "launch" && (
                   <LaunchSlide corner={corner} hasActivity={hasActivity} onLaunch={onLaunch} onClose={onClose} />
@@ -683,44 +681,6 @@ function FunSlide({ fun }: { fun: { title: string; desc: string } }) {
       >
         {noDot(fun.desc)}
       </motion.p>
-    </>
-  );
-}
-
-function ToolsSlide({ corner }: { corner: BreakCorner }) {
-  return (
-    <>
-      <motion.h2
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: EASE }}
-        className="font-display text-2xl sm:text-3xl"
-        style={{ color: ROOM.chalk }}
-      >
-        نجهّز أدواتنا
-      </motion.h2>
-      <div className="mt-8 grid w-full grid-cols-2 gap-4 sm:grid-cols-3">
-        {corner.tools.map((tool, idx) => {
-          const Icon = toolIcon(tool);
-          return (
-            <motion.div
-              key={tool}
-              initial={{ opacity: 0, y: 26, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.15 + idx * 0.12, ease: EASE }}
-              className="flex flex-col items-center gap-3 rounded-2xl border p-5"
-              style={{ borderColor: `${ROOM.chalk}1a`, backgroundColor: `${ROOM.chalk}0a` }}
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl" style={{ backgroundColor: `${ROOM.leaf}1f` }}>
-                <Icon weight="duotone" className="h-7 w-7" style={{ color: ROOM.leaf }} />
-              </div>
-              <span className="text-sm leading-snug" style={{ color: ROOM.chalk }}>
-                {noDot(tool)}
-              </span>
-            </motion.div>
-          );
-        })}
-      </div>
     </>
   );
 }
