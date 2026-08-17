@@ -11,6 +11,11 @@ import {
   PlayCircle,
   PencilSimple,
   Check,
+  Lightbulb,
+  BookOpen,
+  Info,
+  ChatsCircle,
+  Confetti,
 } from "@phosphor-icons/react";
 import type { BreakCorner } from "../data/breakPeriods";
 import { SaduPattern } from "./ActivityShell";
@@ -40,16 +45,29 @@ const ROOM = {
 type Slide =
   | { kind: "board" }
   | { kind: "goal" }
+  | { kind: "hook" }
+  | { kind: "explain"; index: number }
+  | { kind: "facts" }
+  | { kind: "discuss" }
   | { kind: "tools" }
   | { kind: "step"; index: number }
+  | { kind: "fun" }
   | { kind: "launch" };
 
 function buildSlides(corner: BreakCorner, steps: string[]): Slide[] {
+  const t = corner.teach;
   return [
     { kind: "board" },
     { kind: "goal" },
+    // المحتوى التعليمي الكامل: تمهيد ← شرح ← معلومات ← نقاش
+    ...(t ? [{ kind: "hook" as const }] : []),
+    ...(t ? t.explain.map((_, index) => ({ kind: "explain" as const, index })) : []),
+    ...(t ? [{ kind: "facts" as const }] : []),
+    ...(t ? [{ kind: "discuss" as const }] : []),
+    // التنفيذ العملي
     ...(corner.tools.length ? [{ kind: "tools" as const }] : []),
     ...steps.map((_, index) => ({ kind: "step" as const, index })),
+    ...(t?.fun ? [{ kind: "fun" as const }] : []),
     { kind: "launch" },
   ];
 }
@@ -210,6 +228,13 @@ export function ActivityPresentation({
                   <BoardSlide corner={corner} slogan={slogan} occasion={occasion} />
                 )}
                 {slide.kind === "goal" && <GoalSlide corner={corner} />}
+                {slide.kind === "hook" && corner.teach && <HookSlide text={corner.teach.hook} />}
+                {slide.kind === "explain" && corner.teach && (
+                  <ExplainSlide text={corner.teach.explain[slide.index]} index={slide.index} total={corner.teach.explain.length} />
+                )}
+                {slide.kind === "facts" && corner.teach && <FactsSlide facts={corner.teach.facts} />}
+                {slide.kind === "discuss" && corner.teach && <DiscussSlide questions={corner.teach.discuss} />}
+                {slide.kind === "fun" && corner.teach?.fun && <FunSlide fun={corner.teach.fun} />}
                 {slide.kind === "tools" && <ToolsSlide corner={corner} />}
                 {slide.kind === "step" && <StepSlide text={steps[slide.index]} index={slide.index} total={stepCount} />}
                 {slide.kind === "launch" && (
@@ -493,6 +518,171 @@ function GoalSlide({ corner }: { corner: BreakCorner }) {
           </motion.div>
         ))}
       </div>
+    </>
+  );
+}
+
+/** تمهيد تشويقي يخاطب الطلاب. */
+function HookSlide({ text }: { text: string }) {
+  return (
+    <>
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0, rotate: -8 }}
+        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="flex h-20 w-20 items-center justify-center rounded-3xl"
+        style={{ backgroundColor: `${ROOM.gold}22` }}
+      >
+        <Lightbulb weight="duotone" className="h-10 w-10" style={{ color: ROOM.gold }} />
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, delay: 0.2, ease: EASE }}
+        className="mt-7 max-w-2xl text-xl leading-relaxed sm:text-2xl"
+        style={{ color: ROOM.chalk }}
+      >
+        {noDot(text)}
+      </motion.p>
+    </>
+  );
+}
+
+/** شريحة شرح: فقرة كاملة من المحتوى التعليمي يقرؤها المعلم أو يعرضها. */
+function ExplainSlide({ text, index, total }: { text: string; index: number; total: number }) {
+  return (
+    <>
+      <motion.div
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, ease: EASE }}
+        className="flex items-center gap-3"
+      >
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl" style={{ backgroundColor: `${ROOM.leaf}1f` }}>
+          <BookOpen weight="duotone" className="h-8 w-8" style={{ color: ROOM.leaf }} />
+        </div>
+        <span className="text-sm font-semibold" style={{ color: ROOM.leaf }}>
+          الشرح {index + 1} من {total}
+        </span>
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+        className="mt-6 max-w-2xl text-lg leading-loose sm:text-2xl"
+        style={{ color: ROOM.chalk }}
+      >
+        {noDot(text)}
+      </motion.p>
+    </>
+  );
+}
+
+/** معلومات وحقائق سريعة. */
+function FactsSlide({ facts }: { facts: string[] }) {
+  return (
+    <>
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: EASE }}
+        className="flex items-center gap-3 font-display text-2xl sm:text-3xl"
+        style={{ color: ROOM.chalk }}
+      >
+        <Info weight="duotone" className="h-8 w-8" style={{ color: ROOM.gold }} /> معلومات تهمّك
+      </motion.h2>
+      <div className="mt-6 flex w-full flex-col gap-3">
+        {facts.map((f, idx) => (
+          <motion.div
+            key={f}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 + idx * 0.15, ease: EASE }}
+            className="flex items-center gap-3 rounded-2xl border px-5 py-3.5 text-right"
+            style={{ borderColor: `${ROOM.gold}33`, backgroundColor: `${ROOM.chalk}0a` }}
+          >
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold" style={{ backgroundColor: ROOM.gold, color: ROOM.deep }}>{idx + 1}</span>
+            <p className="text-base leading-relaxed sm:text-lg" style={{ color: ROOM.chalk }}>{noDot(f)}</p>
+          </motion.div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/** أسئلة نقاش تفاعلية مع الطلاب. */
+function DiscussSlide({ questions }: { questions: string[] }) {
+  return (
+    <>
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: EASE }}
+        className="flex items-center gap-3 font-display text-2xl sm:text-3xl"
+        style={{ color: ROOM.chalk }}
+      >
+        <ChatsCircle weight="duotone" className="h-8 w-8" style={{ color: ROOM.leaf }} /> نتناقش معًا
+      </motion.h2>
+      <p className="mt-2 text-sm" style={{ color: ROOM.chalkSoft }}>اطرح الأسئلة على طلابك واسمع إجاباتهم</p>
+      <div className="mt-6 flex w-full flex-col gap-3">
+        {questions.map((q, idx) => (
+          <motion.div
+            key={q}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 + idx * 0.18, ease: EASE }}
+            className="flex items-start gap-3 rounded-2xl border px-5 py-4 text-right"
+            style={{ borderColor: `${ROOM.leaf}33`, backgroundColor: `${ROOM.chalk}0a` }}
+          >
+            <ChatsCircle weight="fill" className="mt-0.5 h-6 w-6 shrink-0" style={{ color: ROOM.leaf }} />
+            <p className="text-base leading-relaxed sm:text-lg" style={{ color: ROOM.chalk }}>{noDot(q)}</p>
+          </motion.div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/** نشاط تعليمي/ترفيهي مساعد جاهز. */
+function FunSlide({ fun }: { fun: { title: string; desc: string } }) {
+  return (
+    <>
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0, rotate: 8 }}
+        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="flex h-20 w-20 items-center justify-center rounded-3xl"
+        style={{ backgroundColor: `${ROOM.leaf}22` }}
+      >
+        <Confetti weight="duotone" className="h-10 w-10" style={{ color: ROOM.leaf }} />
+      </motion.div>
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+        className="mt-6 text-sm font-semibold"
+        style={{ color: ROOM.leaf }}
+      >
+        نشاط مساعد ممتع
+      </motion.span>
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3, ease: EASE }}
+        className="mt-2 font-display text-2xl sm:text-4xl"
+        style={{ color: ROOM.chalk }}
+      >
+        {noDot(fun.title)}
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, delay: 0.45, ease: EASE }}
+        className="mt-4 max-w-2xl text-lg leading-relaxed sm:text-xl"
+        style={{ color: ROOM.chalkSoft }}
+      >
+        {noDot(fun.desc)}
+      </motion.p>
     </>
   );
 }
