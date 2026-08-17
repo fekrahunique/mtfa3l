@@ -7,6 +7,7 @@ import { ChallengePlayer, type ChallengeType, type ChallengeContent } from "../a
 import { AiGamePlayer } from "../activities/AiGamePlayer";
 import { loadGames, saveGames, makeGameId, type SavedGame } from "../lib/agentStore";
 import { isSubscribed, setSubscribed, getTier, setTier } from "../lib/subscriptionStore";
+import { emptyRegistration } from "../lib/theme";
 import { PLANS, type PlanId } from "../data/plans";
 import type { BuiltChallenge } from "../lib/agentBuilder";
 
@@ -102,10 +103,10 @@ export function AdminHub() {
           );
         })()}
 
-        {/* روابط الشاشات */}
+        {/* روابط الشاشات — تُفتح بحالة الباقة العليا حتى لا تظهر أقفال للمراجعة */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ROUTES.map((r) => (
-            <Link key={r.to} to={r.to} className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/25 hover:bg-white/[0.06]">
+            <Link key={r.to} to={r.to} state={{ ...emptyRegistration, plan: "premium" }} className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/25 hover:bg-white/[0.06]">
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-lg">{r.label}</h3>
                 <ArrowSquareOut weight="bold" className="h-5 w-5 text-ink-faint transition-colors group-hover:text-sun-300" />

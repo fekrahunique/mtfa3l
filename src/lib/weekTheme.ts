@@ -129,19 +129,19 @@ const GENERIC: WeekTheme = {
   bannerInk: "#f5f2ea",
 };
 
-/** يستنتج التيمة من موضوع الأسبوع. */
-export function weekTheme(week: BreakWeek | null): WeekTheme {
-  if (!week) return GENERIC;
-
-  const occasion = week.occasion ?? null;
-  const slogan = week.slogan ?? null;
+/** يستنتج التيمة من نصّ المناسبة والشعار. */
+export function resolveTheme(occasion: string | null, slogan: string | null): WeekTheme {
   const text = `${occasion ?? ""} ${slogan ?? ""}`;
-
   let base = GENERIC;
   if (/سيبراني|أمن رقمي|اختراق/.test(text)) base = CYBER;
   else if (/إعلام|صحاف|أخبار/.test(text)) base = MEDIA;
   else if (/فضاء|كواكب|نجوم|رواد الفضاء|فلك/.test(text)) base = SPACE;
   else if (/وطني|اليوم الوطني|السعودي|عزّنا|عزنا|تأسيس|العلم|الوعي المستنير|هوية|مواطنة|انتماء|حياكم|قيمنا/.test(text)) base = NATIONAL;
-
   return { ...base, occasion, slogan };
+}
+
+/** يستنتج التيمة من موضوع الأسبوع. */
+export function weekTheme(week: BreakWeek | null): WeekTheme {
+  if (!week) return GENERIC;
+  return resolveTheme(week.occasion ?? null, week.slogan ?? null);
 }

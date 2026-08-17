@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   X,
@@ -22,26 +22,56 @@ import { teachContent } from "../data/teachContent";
 import { SaduPattern } from "./ActivityShell";
 import { stepIcon } from "./presentationVisuals";
 import { cornerScripts } from "./presentationScripts";
+import { resolveTheme, type WeekTheme, type WeekDecor } from "../lib/weekTheme";
 import { noDot } from "../lib/utils";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
-/** ألوان الفصل والسبورة — الثيم حول السبورة، والسبورة نفسها تبقى واضحة. */
-const ROOM = {
-  wallTop: "#d8c7a2",
-  wallBottom: "#c2ad82",
-  floor: "#9c8154",
-  board: "#123a2c",
-  boardEdge: "#0c2b20",
-  frame: "#7a5230",
-  frameDark: "#5e3d22",
-  chalk: "#f3efe4",
-  chalkSoft: "#cfe6da",
-  leaf: "#2FBF78",
-  gold: "#E8C05A",
-  green: "#1E9E63",
-  deep: "#0B3B2E",
+type Room = {
+  decor: WeekDecor;
+  wallTop: string; wallBottom: string; floor: string;
+  board: string; boardEdge: string;
+  frame: string; frameDark: string;
+  chalk: string; chalkSoft: string;
+  leaf: string; gold: string; green: string; deep: string;
 };
+
+/** يخفّت لونًا سداسيًا بنسبة amt (0..1). */
+function darken(hex: string, amt: number): string {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const r = Math.max(0, Math.round(((n >> 16) & 255) * (1 - amt)));
+  const g = Math.max(0, Math.round(((n >> 8) & 255) * (1 - amt)));
+  const b = Math.max(0, Math.round((n & 255) * (1 - amt)));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
+/** لوح السبورة الداكن بحسب موضوع النشاط (يبقى مقروءًا كطباشير على داكن). */
+const BOARD_BY_DECOR: Record<WeekDecor, [string, string]> = {
+  national: ["#123a2c", "#0c2b20"],
+  media: ["#2a1740", "#1c0f2c"],
+  cyber: ["#0d2f38", "#082026"],
+  space: ["#161636", "#0c0c22"],
+  generic: ["#1c3a33", "#12281f"],
+};
+
+/** يبني لوحة ألوان الفصل من تيمة الموضوع. */
+function makeRoom(t: WeekTheme): Room {
+  const [board, boardEdge] = BOARD_BY_DECOR[t.decor];
+  return {
+    decor: t.decor,
+    wallTop: t.wall,
+    wallBottom: darken(t.wall, 0.14),
+    floor: t.ground,
+    board, boardEdge,
+    frame: "#7a5230", frameDark: "#5e3d22",
+    chalk: "#f3efe4", chalkSoft: "#cfe6da",
+    leaf: t.accentSoft, gold: "#E8C05A", green: t.accent, deep: t.roof,
+  };
+}
+
+const DEFAULT_ROOM = makeRoom(resolveTheme("اليوم الوطني السعودي", null));
+const PaletteContext = createContext<Room>(DEFAULT_ROOM);
+const usePalette = () => useContext(PaletteContext);
 
 type Slide =
   | { kind: "board" }
@@ -114,6 +144,7 @@ export function ActivityPresentation({
     [corner]
   );
   const teach = useMemo(() => corner.teach ?? teachContent[corner.id], [corner]);
+  const ROOM = useMemo(() => makeRoom(resolveTheme(occasion, slogan)), [occasion, slogan]);
   const slides = useMemo(() => buildSlides(steps, teach), [steps, teach]);
   const [i, setI] = useState(0);
   const [dir, setDir] = useState(1);
@@ -159,6 +190,7 @@ export function ActivityPresentation({
   const currentStepNumber = slide.kind === "step" ? slide.index + 1 : null;
 
   return (
+    <PaletteContext.Provider value={ROOM}>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -288,30 +320,60 @@ export function ActivityPresentation({
         )}
       </footer>
     </motion.div>
+    </PaletteContext.Provider>
   );
 }
 
 /* ————————————————————— الفصل والسبورة ————————————————————— */
 
-/** زينة المناسبة على جدران الفصل قرب السبورة فقط — لا تغطّي وسطه. */
+/** رموز الزينة لكل موضوع (لغير الوطني). */
+const DECOR_MOTIFS: Record<Exclude<WeekDecor, "national">, string[]> = {
+  space: ["🚀", "🪐", "⭐", "🌙"],
+  cyber: ["🛡️", "🔒", "💻", "🧩"],
+  media: ["🎬", "🎙️", "📺", "📰"],
+  generic: ["📚", "✏️", "🔬", "🎨"],
+};
+
+/** زينة الفصل حول السبورة — تتغيّر بحسب موضوع النشاط. */
 function ClassroomDecor() {
+  const ROOM = usePalette();
+
+  // الوطني يحتفظ بالسدو والأعلام والنخيل
+  if (ROOM.decor === "national") {
+    return (
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <div className="absolute inset-x-0 top-0 h-6 opacity-60">
+          <SaduPattern className="h-full w-full" opacity={0.5} />
+        </div>
+        <MiniFlag className="absolute left-6 top-16 hidden sm:block" />
+        <MiniFlag className="absolute right-6 top-16 hidden sm:block" />
+        <PalmHint className="absolute bottom-2 left-2 opacity-70 sm:left-6" />
+        <PalmHint className="absolute bottom-2 right-2 -scale-x-100 opacity-70 sm:right-6" />
+      </div>
+    );
+  }
+
+  const icons = DECOR_MOTIFS[ROOM.decor] ?? DECOR_MOTIFS.generic;
   return (
     <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-      {/* شريط سدو أعلى الجدار */}
-      <div className="absolute inset-x-0 top-0 h-6 opacity-60">
-        <SaduPattern className="h-full w-full" opacity={0.5} />
-      </div>
-      {/* علمان صغيران عند الزاويتين العلويتين */}
-      <MiniFlag className="absolute left-6 top-16 hidden sm:block" />
-      <MiniFlag className="absolute right-6 top-16 hidden sm:block" />
-      {/* لمحة نخيل عند أسفل الزوايا */}
-      <PalmHint className="absolute bottom-2 left-2 opacity-70 sm:left-6" />
-      <PalmHint className="absolute bottom-2 right-2 -scale-x-100 opacity-70 sm:right-6" />
+      {/* شريط لوني علوي بلون الموضوع */}
+      <div className="absolute inset-x-0 top-0 h-1.5" style={{ background: `linear-gradient(90deg, transparent, ${ROOM.green}, ${ROOM.leaf}, transparent)`, opacity: 0.6 }} />
+      {/* نجوم خافتة لموضوع الفضاء */}
+      {ROOM.decor === "space" &&
+        [...Array(10)].map((_, i) => (
+          <span key={i} className="absolute rounded-full bg-white" style={{ width: 3, height: 3, left: `${(i * 47) % 100}%`, top: `${8 + (i * 31) % 40}%`, opacity: 0.5 }} />
+        ))}
+      {/* رموز الموضوع عند الزوايا */}
+      <span className="absolute left-5 top-14 hidden text-4xl opacity-45 sm:block">{icons[0]}</span>
+      <span className="absolute right-5 top-14 hidden text-4xl opacity-45 sm:block">{icons[1]}</span>
+      <span className="absolute bottom-4 left-4 text-4xl opacity-35 sm:left-8">{icons[2]}</span>
+      <span className="absolute bottom-4 right-4 text-4xl opacity-35 sm:right-8">{icons[3]}</span>
     </div>
   );
 }
 
 function MiniFlag({ className }: { className?: string }) {
+  const ROOM = usePalette();
   return (
     <svg className={className} width="52" height="60" viewBox="0 0 52 60" fill="none">
       <rect x="6" y="2" width="2.6" height="56" rx="1.3" fill={ROOM.frameDark} />
@@ -322,6 +384,7 @@ function MiniFlag({ className }: { className?: string }) {
 }
 
 function PalmHint({ className }: { className?: string }) {
+  const ROOM = usePalette();
   return (
     <svg className={className} width="90" height="120" viewBox="0 0 90 120" fill="none">
       <path d="M44 120 C44 80 42 60 40 44" stroke={ROOM.frameDark} strokeWidth="5" strokeLinecap="round" />
@@ -343,6 +406,7 @@ function PalmHint({ className }: { className?: string }) {
 
 /** السبورة: تدخل بحركة «اقتراب» مرة واحدة، ثم تبقى إطارًا ثابتًا للشرائح. */
 function Blackboard({ children }: { children: React.ReactNode }) {
+  const ROOM = usePalette();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.82, rotateX: 14, y: 46 }}
@@ -378,6 +442,7 @@ function Blackboard({ children }: { children: React.ReactNode }) {
 /* ————————————————————— الشرائح ————————————————————— */
 
 function EditableDate() {
+  const ROOM = usePalette();
   const [iso, setIso] = useState(() => new Date().toISOString().slice(0, 10));
   const [editing, setEditing] = useState(false);
   const date = useMemo(() => new Date(`${iso}T00:00:00`), [iso]);
@@ -424,6 +489,7 @@ function BoardSlide({
   slogan: string | null;
   occasion: string | null;
 }) {
+  const ROOM = usePalette();
   return (
     <div className="flex w-full flex-col items-center gap-4">
       <motion.div
@@ -479,6 +545,7 @@ function BoardSlide({
 }
 
 function GoalSlide({ corner }: { corner: BreakCorner }) {
+  const ROOM = usePalette();
   return (
     <>
       <motion.div
@@ -522,6 +589,7 @@ function GoalSlide({ corner }: { corner: BreakCorner }) {
 
 /** تمهيد تشويقي يخاطب الطلاب. */
 function HookSlide({ text }: { text: string }) {
+  const ROOM = usePalette();
   return (
     <>
       <motion.div
@@ -548,6 +616,7 @@ function HookSlide({ text }: { text: string }) {
 
 /** شريحة شرح: فقرة كاملة من المحتوى التعليمي يقرؤها المعلم أو يعرضها. */
 function ExplainSlide({ text, index, total }: { text: string; index: number; total: number }) {
+  const ROOM = usePalette();
   return (
     <>
       <motion.div
@@ -578,6 +647,7 @@ function ExplainSlide({ text, index, total }: { text: string; index: number; tot
 
 /** معلومات وحقائق سريعة. */
 function FactsSlide({ facts }: { facts: string[] }) {
+  const ROOM = usePalette();
   return (
     <>
       <motion.h2
@@ -610,6 +680,7 @@ function FactsSlide({ facts }: { facts: string[] }) {
 
 /** أسئلة نقاش تفاعلية مع الطلاب. */
 function DiscussSlide({ questions }: { questions: string[] }) {
+  const ROOM = usePalette();
   return (
     <>
       <motion.h2
@@ -643,6 +714,7 @@ function DiscussSlide({ questions }: { questions: string[] }) {
 
 /** نشاط تعليمي/ترفيهي مساعد جاهز. */
 function FunSlide({ fun }: { fun: { title: string; desc: string } }) {
+  const ROOM = usePalette();
   return (
     <>
       <motion.div
@@ -686,6 +758,7 @@ function FunSlide({ fun }: { fun: { title: string; desc: string } }) {
 }
 
 function StepSlide({ text, index, total }: { text: string; index: number; total: number }) {
+  const ROOM = usePalette();
   const Icon = stepIcon(text);
   return (
     <>
@@ -739,6 +812,7 @@ function LaunchSlide({
   onLaunch: () => void;
   onClose: () => void;
 }) {
+  const ROOM = usePalette();
   if (!hasActivity) {
     return (
       <>
