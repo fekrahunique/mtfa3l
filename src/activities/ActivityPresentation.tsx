@@ -143,7 +143,7 @@ export function ActivityPresentation({
     () => (corner.edited ? corner.steps : cornerScripts[corner.id]?.steps ?? corner.steps),
     [corner]
   );
-  const teach = useMemo(() => corner.teach ?? teachContent[corner.id], [corner]);
+  const teach = useMemo(() => teachContent[corner.id] ?? corner.teach, [corner]);
   const ROOM = useMemo(() => makeRoom(resolveTheme(occasion, slogan)), [occasion, slogan]);
   const slides = useMemo(() => buildSlides(steps, teach), [steps, teach]);
   const [i, setI] = useState(0);
