@@ -1,7 +1,8 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Landing } from "./pages/Landing";
 import { RouteSplash } from "./components/RouteSplash";
+import { startAutoSync } from "./lib/cloudSync";
 
 const Register = lazy(() => import("./pages/Register").then((m) => ({ default: m.Register })));
 const Dashboard = lazy(() => import("./pages/Dashboard").then((m) => ({ default: m.Dashboard })));
@@ -28,6 +29,11 @@ const ActivityRatio = lazy(() => import("./pages/ActivityRatio").then((m) => ({ 
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
 function App() {
+  useEffect(() => {
+    // يلتقط كل كتابة محلية ويرفعها للسحابة عند تسجيل الدخول.
+    startAutoSync();
+  }, []);
+
   return (
     <BrowserRouter basename={BASENAME}>
       <RouteSplash />

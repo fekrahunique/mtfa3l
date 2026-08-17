@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthModal, type SyncResult } from "./AuthModal";
+import { useAuth } from "../lib/authStore";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
@@ -13,7 +15,17 @@ const links = [
 
 export function IslandNav() {
   const [open, setOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { session } = useAuth();
+
+  function onAuthDone(result: SyncResult) {
+    setAuthOpen(false);
+    const dashUrl = `${import.meta.env.BASE_URL}لوحة-التحكم`;
+    if (result === "pulled") window.location.assign(dashUrl);
+    else navigate("/لوحة-التحكم");
+  }
 
   return (
     <>
@@ -35,12 +47,22 @@ export function IslandNav() {
             ))}
           </div>
 
-          <Link
-            to="/لوحة-التحكم"
-            className="hidden rounded-full px-4 py-2 text-sm font-semibold text-ink-muted transition-colors duration-500 hover:bg-white/10 hover:text-ink sm:block"
-          >
-            تسجيل الدخول
-          </Link>
+          {session ? (
+            <Link
+              to="/لوحة-التحكم"
+              className="hidden rounded-full px-4 py-2 text-sm font-semibold text-ink-muted transition-colors duration-500 hover:bg-white/10 hover:text-ink sm:block"
+            >
+              لوحتي
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAuthOpen(true)}
+              className="hidden rounded-full px-4 py-2 text-sm font-semibold text-ink-muted transition-colors duration-500 hover:bg-white/10 hover:text-ink sm:block"
+            >
+              تسجيل الدخول
+            </button>
+          )}
 
           <Link
             to="/تسجيل"
@@ -111,17 +133,32 @@ export function IslandNav() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.14 + links.length * 0.08, ease: EASE }}
             >
-              <Link
-                to="/لوحة-التحكم"
-                onClick={() => setOpen(false)}
-                className="text-lg font-semibold text-ink-muted"
-              >
-                تسجيل الدخول
-              </Link>
+              {session ? (
+                <Link
+                  to="/لوحة-التحكم"
+                  onClick={() => setOpen(false)}
+                  className="text-lg font-semibold text-ink-muted"
+                >
+                  لوحتي
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    setAuthOpen(true);
+                  }}
+                  className="text-lg font-semibold text-ink-muted"
+                >
+                  تسجيل الدخول
+                </button>
+              )}
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onDone={onAuthDone} />
     </>
   );
 }

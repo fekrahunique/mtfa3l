@@ -12,6 +12,7 @@ import { emptyRegistration, genderAccent, type RegistrationData } from "../lib/t
 import { generateUsername } from "../lib/studentFile";
 import { getPlan, arDigits, type PlanId } from "../data/plans";
 import { cn } from "../lib/utils";
+import { AuthModal } from "../components/AuthModal";
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 const STEP_LABELS = ["المدرسة", "بياناتك", "المراجعة"];
@@ -26,6 +27,7 @@ export function Register() {
   const incomingPlan = (location.state as { plan?: PlanId } | null)?.plan;
   const [step, setStep] = useState(0);
   const [welcoming, setWelcoming] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [data, setData] = useState<RegistrationData>(() => ({
     ...emptyRegistration,
     plan: incomingPlan ?? emptyRegistration.plan,
@@ -64,8 +66,19 @@ export function Register() {
     if (step < STEP_LABELS.length - 1) {
       setStep((s) => s + 1);
     } else {
-      setWelcoming(true);
+      // نحفظ ملف الرائد محليًا (يُزامَن تلقائيًا عند الدخول) ثم نطلب تأكيد البريد.
+      const username = generateUsername(data.schoolName);
+      try {
+        localStorage.setItem("motafael:registration:v1", JSON.stringify({ ...data, username }));
+      } catch { /* تجاهل */ }
+      setVerifying(true);
     }
+  }
+
+  // بعد التحقق (أو تخطّيه) نُشغّل الترحيب السينمائي ثم ندخل المنصة.
+  function afterAuth() {
+    setVerifying(false);
+    setWelcoming(true);
   }
 
   function enterPlatform() {
@@ -79,6 +92,14 @@ export function Register() {
       <AnimatePresence>
         {welcoming && <WelcomeCinematic teacherName={data.teacherName} gender={data.gender} onEnter={enterPlatform} />}
       </AnimatePresence>
+      <AuthModal
+        open={verifying}
+        prefillEmail={data.email}
+        title="فعّل حسابك"
+        subtitle="نرسل رمزًا إلى بريدك لتأكيد الحساب وحفظ بياناتك سحابيًا — أو أغلق للمتابعة بلا حساب"
+        onClose={afterAuth}
+        onDone={afterAuth}
+      />
       <main id="main-content" className="relative z-10 mx-auto max-w-2xl px-4 pt-28">
         <div className="rounded-3xl border border-white/10 bg-[#1a1526]/50 p-6 shadow-2xl backdrop-blur-2xl sm:p-9">
         <div className="mb-12 text-center">
