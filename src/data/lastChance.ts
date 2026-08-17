@@ -146,7 +146,7 @@ export const TYPE_META: Record<LCChallenge["type"], { emoji: string; label: stri
 
 export const CHALLENGES: LCChallenge[] = [
   { id: "c-mem", type: "memory", title: "سلسلة الذاكرة", instruction: "يقرأ الرائد ٥ أرقام مرّة واحدة، ويعيدها الفريق بالترتيب نفسه", values: ["think"] },
-  { id: "c-spd", type: "speed", title: "أسرع من الوقت", instruction: "٣٠ ثانية لترتيب ٦ عناصر بالترتيب الصحيح", values: ["time", "decision"] },
+  { id: "c-spd", type: "speed", title: "أسرع من الوقت", instruction: "اكتب على السبورة ٦ عناصر مبعثرة (مثال: مراحل نمو النبات — بذرة، جذر، ساق، ورقة، زهرة، ثمرة)، والفريق يرتّبها بالترتيب الصحيح خلال ٣٠ ثانية", values: ["time", "decision"] },
   { id: "c-puz", type: "puzzle", title: "لغز المنطق", instruction: "ثلاثة في صفّ: سالم ليس الأول وفهد خلف سالم، من الأول؟ (الجواب: أحمد)", values: ["think", "decision"] },
   { id: "c-team", type: "team", title: "رسالة صامتة", instruction: "يوصل الفريق كلمة من أوّله لآخره بالإشارة فقط دون كلام", values: ["cooperate"] },
   { id: "c-phy", type: "physical", title: "التماثيل", instruction: "عند «قف» يتجمّد الجميع، من يتحرّك يخسر، آخر الثابتين يكسب لفريقه", values: ["persevere"] },
