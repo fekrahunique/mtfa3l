@@ -1,0 +1,21 @@
+<!--
+  قالب بريد رمز الدخول لمنصّة «نشاط».
+  الصقه في: Supabase → Authentication → Emails → قالب «Magic Link» → زر Source → استبدل المحتوى كاملًا.
+  المتغيّر {{ .Token }} يعرض رمز الـ٦ أرقام، و{{ .ConfirmationURL }} رابط احتياطي.
+-->
+<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#f4f4f7;padding:32px;text-align:center;color:#1a1526">
+  <div style="max-width:440px;margin:0 auto;background:#ffffff;border-radius:20px;padding:36px 28px;box-shadow:0 8px 30px rgba(0,0,0,0.06)">
+    <h1 style="margin:0 0 8px;font-size:22px;color:#1a1526">منصّة نشاط</h1>
+    <p style="margin:0 0 24px;color:#6b6b7b;font-size:15px">رمز الدخول الخاص بك — أدخله في الصفحة لتسجيل الدخول</p>
+
+    <div style="font-size:38px;font-weight:bold;letter-spacing:10px;color:#111;background:#f4f4f7;border-radius:14px;padding:18px 0;direction:ltr">
+      {{ .Token }}
+    </div>
+
+    <p style="margin:24px 0 0;color:#9a9aa8;font-size:13px">الرمز صالح لدقائق معدودة، ولا تُشاركه مع أحد</p>
+
+    <p style="margin:20px 0 0;color:#9a9aa8;font-size:12px">
+      أو <a href="{{ .ConfirmationURL }}" style="color:#e0a500">اضغط هنا للدخول مباشرة</a>
+    </p>
+  </div>
+</div>
