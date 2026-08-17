@@ -145,12 +145,12 @@ export const TYPE_META: Record<LCChallenge["type"], { emoji: string; label: stri
 };
 
 export const CHALLENGES: LCChallenge[] = [
-  { id: "c-mem", type: "memory", title: "سلسلة الذاكرة", instruction: "يقرأ الرائد ٥ أرقام مرّة واحدة، ويعيدها الفريق بالترتيب نفسه", values: ["think"] },
-  { id: "c-spd", type: "speed", title: "أسرع من الوقت", instruction: "اكتب على السبورة ٦ عناصر مبعثرة (مثال: مراحل نمو النبات — بذرة، جذر، ساق، ورقة، زهرة، ثمرة)، والفريق يرتّبها بالترتيب الصحيح خلال ٣٠ ثانية", values: ["time", "decision"] },
+  { id: "c-mem", type: "memory", title: "سلسلة الذاكرة", instruction: "يقرأ الرائد هذه الأرقام مرّة واحدة ثم يخفيها، ويعيدها الفريق بالترتيب نفسه على ورقتهم: ٧ - ٣ - ٩ - ٢ - ٦", values: ["think"] },
+  { id: "c-spd", type: "speed", title: "أسرع من الوقت", instruction: "رتّبوا مراحل نمو النبات بالترتيب الصحيح في ورقتكم خلال ٣٠ ثانية. العناصر مبعثرة: ورقة - بذرة - ثمرة - جذر - زهرة - ساق", values: ["time", "decision"] },
   { id: "c-puz", type: "puzzle", title: "لغز المنطق", instruction: "ثلاثة في صفّ: سالم ليس الأول وفهد خلف سالم، من الأول؟ (الجواب: أحمد)", values: ["think", "decision"] },
-  { id: "c-team", type: "team", title: "رسالة صامتة", instruction: "يوصل الفريق كلمة من أوّله لآخره بالإشارة فقط دون كلام", values: ["cooperate"] },
+  { id: "c-team", type: "team", title: "رسالة صامتة", instruction: "يوصل الفريق كلمة «المكتبة» من أوّله لآخره بالإشارة فقط دون كلام", values: ["cooperate"] },
   { id: "c-phy", type: "physical", title: "التماثيل", instruction: "عند «قف» يتجمّد الجميع، من يتحرّك يخسر، آخر الثابتين يكسب لفريقه", values: ["persevere"] },
-  { id: "c-cre", type: "creative", title: "فكرة في دقيقة", instruction: "ابتكروا حلًّا سريعًا لمشكلة يطرحها الرائد خلال دقيقة", values: ["initiative"] },
+  { id: "c-cre", type: "creative", title: "فكرة في دقيقة", instruction: "ابتكروا خلال دقيقة حلًّا عمليًّا لهذه المشكلة واكتبوه: كيف نقلّل هدر الطعام في مقصف المدرسة؟", values: ["initiative"] },
 ];
 
 export const CHALLENGE_WIN = 400;
@@ -158,7 +158,7 @@ export const CHALLENGE_WIN = 400;
 /** تحدّي العودة — أصعب، ولا يُمنح مجانًا. */
 export const COMEBACK: LCChallenge = {
   id: "c-comeback", type: "puzzle", title: "فرصة العودة",
-  instruction: "تحدٍّ صعب خلال ٤٥ ثانية، النجاح يعيد لكم حياة، والفشل يبقيكم في السباق بموارد أقل",
+  instruction: "خلال ٤٥ ثانية رتّبوا كواكب المجموعة الشمسية من الأقرب للشمس في ورقتكم. مبعثرة: زحل - عطارد - الأرض - المشتري - الزهرة - المريخ - أورانوس - نبتون",
   values: ["persevere"],
 };
 export const COMEBACK_WIN_POINTS = 1500;
