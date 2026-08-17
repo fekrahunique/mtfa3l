@@ -28,12 +28,12 @@ export interface BigChallenge {
 }
 
 export const CHALLENGES: BigChallenge[] = [
-  { id: "c-mem-1", type: "memory", title: "سلسلة الأرقام", instruction: "يقرأ الرائد ٥ أرقام مرّة واحدة، ويعيدها الفريق بالترتيب نفسه", difficulty: 1 },
-  { id: "c-mem-2", type: "memory", title: "ماذا تغيّر؟", instruction: "يعرض الرائد ٦ أشياء ١٠ ثوانٍ، يخفي واحدًا، ويخمّن الفريق المفقود", difficulty: 2 },
-  { id: "c-mem-3", type: "memory", title: "خريطة الذاكرة", instruction: "احفظوا ترتيب ٨ كلمات في ١٥ ثانية، ثم رتّبوها من الذاكرة", difficulty: 3 },
-  { id: "c-spd-1", type: "speed", title: "أسرع من يقف", instruction: "يذكر الرائد صفة، وأول فريق يجد بينه مَن تنطبق عليه ويقف يكسب", difficulty: 1 },
+  { id: "c-mem-1", type: "memory", title: "سلسلة الأرقام", instruction: "يقرأ الرائد هذه الأرقام مرّة واحدة ثم يخفيها، ويعيدها الفريق بالترتيب نفسه: ٥ - ٢ - ٨ - ١ - ٩", difficulty: 1 },
+  { id: "c-mem-2", type: "memory", title: "ماذا تغيّر؟", instruction: "تُعرض هذه الأشياء ١٠ ثوانٍ ثم يُخفى واحد ويخمّن الفريق المفقود: 📕 ✏️ 🍏 🔑 ⚽ 🕶️", difficulty: 2 },
+  { id: "c-mem-3", type: "memory", title: "خريطة الذاكرة", instruction: "احفظوا ترتيب هذه الكلمات في ١٥ ثانية ثم رتّبوها من الذاكرة: شمس، بحر، جبل، نهر، غابة، صحراء، قمر، نجم", difficulty: 3 },
+  { id: "c-spd-1", type: "speed", title: "أسرع من يقف", instruction: "أول فريق يجد بينه مَن تنطبق عليه الصفة ويقف يكسب — الصفة: مَن لديه أخٌ أو أختٌ أصغر منه", difficulty: 1 },
   { id: "c-spd-2", type: "speed", title: "عدّ تنازلي بالمقلوب", instruction: "عدّوا من ٣٠ إلى ٠ نزولًا بالأرقام الزوجية فقط، بأسرع وقت وبلا خطأ", difficulty: 2 },
-  { id: "c-team-1", type: "team", title: "الجسر البشري", instruction: "يصطفّ الفريق ويوصل رسالة بالإشارة فقط من أوّله لآخره دون كلام", difficulty: 2 },
+  { id: "c-team-1", type: "team", title: "الجسر البشري", instruction: "يصطفّ الفريق ويوصل كلمة «الوطن» بالإشارة فقط من أوّله لآخره دون كلام", difficulty: 2 },
   { id: "c-team-2", type: "team", title: "برج الأيدي", instruction: "يبني الفريق أطول تسلسل أيدٍ متشابكة يقف ثابتًا ١٠ ثوانٍ", difficulty: 1 },
   { id: "c-puz-1", type: "puzzle", title: "لغز المنطق", instruction: "ثلاثة في صفّ: أحمد ليس الأول وسالم خلف أحمد، من الأول؟ الجواب: فهد", difficulty: 2 },
   { id: "c-puz-2", type: "puzzle", title: "الكلمة المخفيّة", instruction: "رتّبوا حروف «ط ا ش ن» لتكوين كلمة، الجواب: نشاط", difficulty: 1 },
@@ -45,7 +45,7 @@ export const CHALLENGES: BigChallenge[] = [
   { id: "c-phy-2", type: "physical", title: "المرآة", instruction: "قائد يؤدّي حركات والفريق يقلّدها كالمرآة دون تأخير", difficulty: 2 },
   { id: "c-dec-1", type: "decision", title: "الميزانية الذكية", instruction: "لديكم ٥٠٠ لرحلة: باص ٢٠٠، وجبات ١٥٠، ألعاب ١٠٠، تذكارات ١٠٠، ماذا تُلغون ولماذا؟", difficulty: 2 },
   { id: "c-obs-1", type: "observation", title: "عين الصقر", instruction: "كم نافذة في هذه القاعة؟ يتّفق الفريق على رقم واحد ثم نعدّ معًا", difficulty: 1 },
-  { id: "c-obs-2", type: "observation", title: "الفرق الدقيق", instruction: "يصف الرائد مشهدين متشابهين، ويكتشف الفريق الفرق الوحيد بينهما", difficulty: 2 },
+  { id: "c-obs-2", type: "observation", title: "الفرق الدقيق", instruction: "يقرأ الرائد المشهدين: (١) قطّةٌ سوداء تجلس على كرسيٍّ أحمر. (٢) قطّةٌ سوداء تجلس على كرسيٍّ أزرق. ما الفرق؟ (الجواب: لون الكرسي)", difficulty: 2 },
 ];
 
 export interface BigEvent {
