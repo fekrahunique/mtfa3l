@@ -471,7 +471,7 @@ function BoardSlide({
         className="max-w-xl text-base leading-relaxed sm:text-lg"
         style={{ color: ROOM.chalkSoft }}
       >
-        {occasion ? `اليوم نحتفل بـ${noDot(occasion)}` : "اليوم عندنا نشاط ممتع"}
+        {occasion ? noDot(occasion) : "اليوم عندنا نشاط ممتع"}
         {slogan ? ` تحت شعار «${noDot(slogan)}»` : ""}، ونعيش قيم: {corner.values.join("، ")}
       </motion.p>
     </div>
