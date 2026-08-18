@@ -1,0 +1,1 @@
+var e={teacherName:``,email:``,phone:``,schoolName:``,schoolType:null,stage:null,gender:null,students:[],username:``,plan:`pro`},t={boys:{text:`text-boys-400`,bg:`bg-boys-500`,bgSoft:`bg-boys-500/15`,border:`border-boys-400/40`},girls:{text:`text-girls-400`,bg:`bg-girls-500`,bgSoft:`bg-girls-500/15`,border:`border-girls-400/40`}};export{t as n,e as t};
