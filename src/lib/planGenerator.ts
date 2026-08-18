@@ -5,6 +5,7 @@
  */
 
 import { vaultCategories, type VaultStage } from "../data/ideaVault";
+import { TRIAL_MODE } from "./subscriptionStore";
 
 export type PlanStage = "ابتدائي" | "متوسط";
 
@@ -32,9 +33,12 @@ function shuffle<T>(a: T[]): T[] {
   return b;
 }
 
-/** المجالات المتاحة للاختيار (تُستثنى المناسبات وحزمة النخبة). */
+/**
+ * المجالات المتاحة للاختيار (تُستثنى المناسبات، لأن لها مفتاحًا مستقلًا في PlanOptions).
+ * في وضع التجربة (TRIAL_MODE) تُدرَج حزمة النخبة أيضًا بلا قفل.
+ */
 export const PLAN_DOMAINS = vaultCategories
-  .filter((c) => !c.premium && c.id !== "occasions")
+  .filter((c) => (TRIAL_MODE || !c.premium) && c.id !== "occasions")
   .map((c) => ({ id: c.id, title: c.title, emoji: c.emoji }));
 
 export interface PlanOptions {
