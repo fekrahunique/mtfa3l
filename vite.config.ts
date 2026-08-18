@@ -38,8 +38,9 @@ function apiDevServer(env: Record<string, string>): PluginOption {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    // مسار فرعي عند النشر على GitHub Pages (fekrahunique.github.io/mtfa3l/)، والجذر محليًا
-    base: mode === 'production' ? '/mtfa3l/' : '/',
+    // الجذر افتراضيًا (Cloudflare Pages / نطاق مخصّص). يمكن تجاوزه بـ VITE_BASE
+    // (مثلاً '/mtfa3l/' لو رجعنا لصفحة مشروع على GitHub Pages).
+    base: env.VITE_BASE || '/',
     plugins: [react(), tailwindcss(), apiDevServer(env)],
     server: {
       watch: {
