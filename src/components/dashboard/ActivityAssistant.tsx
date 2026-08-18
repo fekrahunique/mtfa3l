@@ -42,6 +42,7 @@ export function ActivityAssistant({
   const [drag, setDrag] = useState(false);
   const [aiTry, setAiTry] = useState(false); // جارٍ محاولة الوكيل الذكي (الخادم)
   const [aiNote, setAiNote] = useState<string | null>(null); // سبب الرجوع للمولّد المحلي
+  const [aiNoteWarn, setAiNoteWarn] = useState(false); // خطأ حقيقي (تحذير) لا مجرّد ميزة غير مفعّلة
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export function ActivityAssistant({
     setSaved(false);
     setLogShown(0);
     setAiNote(null);
+    setAiNoteWarn(false);
     setPhase("building");
 
     // ١) الوكيل الذكي الحقيقي (Claude خلف الخادم) يبني أي لعبة
@@ -101,8 +103,10 @@ export function ActivityAssistant({
       } catch (e) {
         setAiTry(false);
         if (e instanceof AiUnavailableError) {
-          setAiNote("الوكيل الذكي غير مفعّل بعد (يحتاج خادمًا ومفتاح Claude) — استخدمت المولّد المحلي");
+          setAiNoteWarn(false);
+          setAiNote("الوكيل الذكي قيد التفعيل — جهّزتُ لك اللعبة بالمولّد المحلي");
         } else {
+          setAiNoteWarn(true);
           setAiNote((e as Error).message || "تعذّر الوكيل الذكي — استخدمت المولّد المحلي");
         }
       }
@@ -218,8 +222,13 @@ export function ActivityAssistant({
           {phase === "result" && result && (
             <motion.div key="result" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-6 space-y-5">
               {aiNote && (
-                <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-xs leading-relaxed text-amber-200">
-                  ⚠️ {aiNote}
+                <div className={cn(
+                  "rounded-xl border px-4 py-2.5 text-xs leading-relaxed",
+                  aiNoteWarn
+                    ? "border-amber-400/30 bg-amber-400/10 text-amber-200"
+                    : "border-white/10 bg-white/[0.04] text-ink-muted",
+                )}>
+                  {aiNoteWarn ? "⚠️" : "✨"} {aiNote}
                 </div>
               )}
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
