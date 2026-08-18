@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { RegisterBackdrop } from "../components/RegisterBackdrop";
 import { WelcomeCinematic } from "../components/WelcomeCinematic";
@@ -10,7 +10,7 @@ import { StepTeacher } from "./register/StepTeacher";
 import { StepReview } from "./register/StepReview";
 import { emptyRegistration, genderAccent, type RegistrationData } from "../lib/theme";
 import { generateUsername } from "../lib/studentFile";
-import { getPlan, arDigits, type PlanId } from "../data/plans";
+import { type PlanId } from "../data/plans";
 import { cn } from "../lib/utils";
 import { AuthModal } from "../components/AuthModal";
 
@@ -32,7 +32,6 @@ export function Register() {
     ...emptyRegistration,
     plan: incomingPlan ?? emptyRegistration.plan,
   }));
-  const plan = getPlan(data.plan);
 
   const accent = data.gender ? genderAccent[data.gender] : null;
   const accentBg = accent?.bg ?? "bg-sun-400";
@@ -114,10 +113,10 @@ export function Register() {
           <h1 className="text-3xl text-ink sm:text-4xl">سجّل كمعلم أو معلمة نشاط</h1>
           <p className="mt-3 text-ink-muted">ثلاث خطوات بسيطة، وتوصل للوحة التحكم، وتضيف فصولك وطلابك من داخل اللوحة</p>
 
+          {/* شارة الباقة والسعر مخفيّة في وضع التجربة (TRIAL_MODE) */}
           <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-sun-400/30 bg-sun-400/10 px-4 py-2 text-sm">
-            <span className="font-semibold text-sun-300">باقتك: {plan.name}</span>
-            <span className="text-ink-muted">· {arDigits(plan.term)}﷼ / الترم</span>
-            <Link to="/#plans" className="rounded-full px-2 text-xs font-semibold text-sun-400 hover:underline">غيّر الباقة</Link>
+            <span className="font-semibold text-sun-300">نسخة تجريبية</span>
+            <span className="text-ink-muted">· كل الأدوات مفتوحة بلا اشتراك</span>
           </div>
         </div>
 
@@ -174,7 +173,7 @@ export function Register() {
               canProceed ? cn(accentBg, "hover:scale-105 active:scale-95") : "cursor-not-allowed bg-white/10 text-ink-faint"
             )}
           >
-            {step === STEP_LABELS.length - 1 ? `ابدأ باقة ${plan.name}` : "التالي"}
+            {step === STEP_LABELS.length - 1 ? "ابدأ الآن" : "التالي"}
             <CaretLeft weight="bold" className="h-4 w-4" />
           </button>
         </div>

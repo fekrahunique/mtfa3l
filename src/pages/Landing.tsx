@@ -7,7 +7,6 @@ import { OperatingLoop } from "../sections/OperatingLoop";
 import { Benefits } from "../sections/Benefits";
 import { HowItWorks } from "../sections/HowItWorks";
 import { JourneyPreview } from "../sections/JourneyPreview";
-import { Pricing } from "../sections/Pricing";
 import { FAQ } from "../sections/FAQ";
 import { FinalCTA } from "../sections/FinalCTA";
 
@@ -23,7 +22,7 @@ export function Landing() {
         <Benefits />
         <HowItWorks />
         <JourneyPreview />
-        <Pricing />
+        {/* <Pricing /> — مخفيّ في وضع التجربة (انظر TRIAL_MODE في src/lib/subscriptionStore.ts) */}
         <FAQ />
         <FinalCTA />
       </main>

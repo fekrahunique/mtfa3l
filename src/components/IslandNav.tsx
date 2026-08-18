@@ -9,7 +9,7 @@ const EASE = [0.32, 0.72, 0, 1] as const;
 const links = [
   { label: "المزايا", href: "/#benefits" },
   { label: "كيف تعمل", href: "/#how-it-works" },
-  { label: "الباقات", href: "/#plans" },
+  // { label: "الباقات", href: "/#plans" }, — مخفيّ في وضع التجربة (TRIAL_MODE)
   { label: "الأسئلة الشائعة", href: "/#faq" },
 ];
 
@@ -33,6 +33,9 @@ export function IslandNav() {
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]">
           <Link to="/" className="flex items-center gap-2 rounded-full px-3 py-1.5">
             <span className="font-display text-lg text-ink">نشاط</span>
+            <span className="rounded-full border border-sun-400/40 bg-sun-400/15 px-2 py-0.5 text-[10px] font-bold leading-none text-sun-300">
+              تجريبي
+            </span>
           </Link>
 
           <div className="hidden items-center gap-1 sm:flex">

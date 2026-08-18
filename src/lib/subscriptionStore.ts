@@ -9,7 +9,15 @@ import type { PlanId } from "../data/plans";
 const KEY = "motafael:subscribed:v1";
 const TIER_KEY = "motafael:tier:v1";
 
+/**
+ * وضع التجربة — المنصة مفتوحة بالكامل بلا اشتراك ولا باقات.
+ * لإعادة تفعيل الاشتراكات: غيّر هذا السطر إلى false، وأعد `<Pricing />`
+ * إلى `src/pages/Landing.tsx` ورابط «الباقات» إلى `src/components/IslandNav.tsx`.
+ */
+export const TRIAL_MODE = true;
+
 export function isSubscribed(): boolean {
+  if (TRIAL_MODE) return true;
   try {
     return localStorage.getItem(KEY) === "1";
   } catch {
@@ -46,6 +54,7 @@ export function setTier(t: PlanId | null) {
 
 /** هل يملك المستخدم الباقة العليا؟ يعتمد الفئة المحفوظة أو فئة قادمة من التسجيل. */
 export function isPremium(incoming?: PlanId | null): boolean {
+  if (TRIAL_MODE) return true;
   return getTier() === "premium" || incoming === "premium";
 }
 
