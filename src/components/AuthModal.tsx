@@ -76,7 +76,7 @@ export function AuthModal({ open, onClose, onDone, prefillEmail, title, subtitle
 
   async function confirmCode() {
     if (code.trim().length < 6) {
-      setError("الرمز مكوّن من ٦ أرقام");
+      setError("أدخل الرمز كاملًا كما وصلك في البريد");
       return;
     }
     setBusy(true);
@@ -138,18 +138,17 @@ export function AuthModal({ open, onClose, onDone, prefillEmail, title, subtitle
               </h2>
               <p className="mt-2 text-sm text-ink-muted">
                 {phase === "email"
-                  ? subtitle ?? "بريدك فقط — نرسل لك رمزًا من ٦ أرقام، بلا كلمة مرور"
+                  ? subtitle ?? "بريدك فقط — نرسل لك رمزًا إلى بريدك، بلا كلمة مرور"
                   : `أرسلنا رمزًا إلى ${email}`}
               </p>
             </div>
 
-            <AnimatePresence mode="wait">
+            <div>
               {phase === "email" ? (
                 <motion.div
                   key="email"
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 16 }}
                   transition={{ duration: 0.35, ease: EASE }}
                   className="space-y-4"
                 >
@@ -183,7 +182,6 @@ export function AuthModal({ open, onClose, onDone, prefillEmail, title, subtitle
                   key="otp"
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 16 }}
                   transition={{ duration: 0.35, ease: EASE }}
                   className="space-y-4"
                 >
@@ -193,10 +191,10 @@ export function AuthModal({ open, onClose, onDone, prefillEmail, title, subtitle
                     dir="ltr"
                     inputMode="numeric"
                     autoComplete="one-time-code"
-                    maxLength={6}
+                    maxLength={8}
                     placeholder="••••••"
                     value={code}
-                    onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
                     onKeyDown={(e) => e.key === "Enter" && confirmCode()}
                     className="w-full rounded-2xl border border-white/15 bg-white/[0.04] px-4 py-3 text-center text-2xl font-bold tracking-[0.5em] text-ink outline-none transition-colors focus:border-sun-400/60"
                   />
@@ -233,7 +231,7 @@ export function AuthModal({ open, onClose, onDone, prefillEmail, title, subtitle
                   </div>
                 </motion.div>
               )}
-            </AnimatePresence>
+            </div>
           </motion.div>
         </motion.div>
       )}
