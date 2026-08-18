@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mtfa3l",
+  "name": "nashat",
   "main": "worker/index.ts",
   "compatibility_date": "2026-08-01",
   // مطلوب لحزمة @anthropic-ai/sdk داخل بيئة Workers

@@ -60,7 +60,7 @@
 Supabase → **Authentication** → **URL Configuration**:
 
 - **Site URL:** النطاق النهائي
-- **Redirect URLs:** `https://mtfa3l.<subdomain>.workers.dev/**` و`https://<نطاقك-المخصّص>/**`
+- **Redirect URLs:** `https://nashat.<subdomain>.workers.dev/**` و`https://<نطاقك-المخصّص>/**`
 
 ## ٤. النطاق المخصّص
 
