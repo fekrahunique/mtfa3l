@@ -2,6 +2,8 @@
 
 مرجع سريع لمراجعة الأكواد، والاستضافة، وبوابات الدفع. (Handoff notes for a reviewing developer.)
 
+> آخر تحديث: ١٨ أغسطس ٢٠٢٦ — بعد الانتقال إلى Cloudflare Workers وتفعيل المصادقة والمزامنة السحابية.
+
 ---
 
 ## ١. نظرة عامة والتقنيات (Stack)
@@ -10,57 +12,83 @@
 - **Tailwind CSS v4** للتصميم، **framer-motion** للحركة.
 - **@react-three/fiber + three.js** للمشاهد ثلاثية الأبعاد (بوابة المدرسة، خلفية التسجيل، مشهد القيادة...).
 - **react-router-dom v7** للتوجيه (مسارات بالعربية، مثل `/تسجيل`, `/الأسابيع`, `/لوحة-التحكم`).
-- **لا يوجد backend حاليًا** — كل الحالة تُحفظ في `localStorage` (مفاتيح مُصدَّرة `motafael:*:v1` مع `try/catch`).
+- **الخلفية:** Cloudflare Worker خفيف (`worker/index.ts`) + **Supabase** (Postgres + Auth).
+- **الحالة:** المصدر الأساسي ما زال `localStorage` (مفاتيح مُصدَّرة `motafael:*:v1` مع `try/catch`)، وتُزامَن سحابيًا كوثيقة واحدة عبر `src/lib/cloudSync.ts` عند تسجيل الدخول.
 
 ## ٢. التشغيل والبناء محليًا
 
 ```bash
 npm install
-npm run dev      # خادم التطوير على http://localhost:5173
-npm run build    # tsc -b && vite build  → dist/
-npm run deploy   # vite build && node scripts/deploy.mjs
+npm run dev        # خادم التطوير على http://localhost:5173
+npm run build      # tsc -b && vite build  → dist/
+npm run deploy:cf  # بناء + نشر يدوي إلى Cloudflare (يتطلّب wrangler login)
+npx wrangler dev   # تشغيل بيئة Workers الحقيقية محليًا (بعد npm run build)
 ```
 
-> **⚠️ فخّ مهم:** أمر البناء هو `tsc -b && vite build`. إذا فشل `tsc -b` (خطأ أنواع)، **يُجهض البناء بصمت** وقد يُنشَر `dist` قديم. شغّل `npm run build` كاملًا وتأكد من `✓ built` قبل النشر. لاحظ أن `tsc --noEmit` قد يمرّ بسبب الـ incremental cache بينما `tsc -b` يفشل.
+> **⚠️ فخّ مهم:** أمر البناء هو `tsc -b && vite build`. إذا فشل `tsc -b` (خطأ أنواع)، **يُجهض البناء** وقد يُنشَر `dist` قديم. تأكّد من `✓ built` قبل النشر. لاحظ أن `tsc --noEmit` قد يمرّ بسبب الـ incremental cache بينما `tsc -b` يفشل.
 
-## ٣. الاستضافة (Hosting) — الوضع الحالي والمقترح
+`npm run dev` يشغّل `/api/generate-game` عبر وسيط داخل `vite.config.ts` (لا علاقة له بالـ Worker) — نفس المنطق في `server/generateGame.ts`.
 
-- **الحالي:** **GitHub Pages** (استضافة ثابتة static فقط). المستودع: `github.com/fekrahunique/mtfa3l` (عام). الفرع `gh-pages` يُدفع إليه `dist` مباشرة عبر `scripts/deploy.mjs` (force-push، بلا Actions لأن التوكن يفتقد صلاحية `workflow`).
-- إعدادات SPA: `vite.config` فيه `base: mode==='production' ? '/mtfa3l/' : '/'`؛ التوجيه `basename={BASE_URL}`؛ و`public/404.html` يعيد التوجيه لدعم الروابط العميقة بالعربية.
-- **القيد الجوهري:** GitHub Pages **ثابت** — لا يشغّل كود خادم. أي ميزة تحتاج خادمًا (تسجيل دخول حقيقي، رمز تحقق، دفع، تخزين سحابي) **لا تعمل هنا**.
-- **المقترح للمبرمج:** الانتقال إلى استضافة تدعم دوال serverless مع نفس الواجهة:
-  - **Vercel** أو **Netlify** أو **Cloudflare Pages** (تدعم React SPA + serverless functions + نطاق مخصّص + HTTPS). الأنسب للانتقال السلس.
-  - أو الإبقاء على الواجهة على Pages وإضافة **Supabase** (Postgres + Auth + Storage + Edge Functions) للخلفية.
+## ٣. الاستضافة (Hosting)
 
-## ٤. تسجيل الدخول ورمز التحقق (Auth) — مؤجّل
+**Cloudflare Workers** — مشروع باسم `nashat`.
 
-- **الحالي:** لا مصادقة حقيقية. التسجيل (`src/pages/Register.tsx`) يجمع البيانات في `localStorage` فقط. زر «تسجيل الدخول» في الشريط العلوي يفتح لوحة التحكم من البيانات المحلية. **رمز التحقق غير مبني** (اتُّفق على تأجيله).
-- **المقترح:** **Supabase Auth** يعطي جاهزًا:
-  - تسجيل دخول بالبريد + **رمز تحقق OTP بالبريد** (رخيص وسهل).
-  - **OTP بالجوال (SMS)** عبر مزوّد (Twilio ونحوه) — له تكلفة شهرية.
-  - حقل الجوال موجود بالفعل في التسجيل (`RegistrationData.phone` اختياري) بغرض تنبيهات الخصم/التحديثات.
-- بديل: **Firebase Auth** (مشابه).
+- **الرابط:** https://nashat.fekrahunique.workers.dev
+- **النشر تلقائي** عند كل `git push` إلى `master` (Workers Builds مربوط بمستودع `github.com/fekrahunique/mtfa3l`).
+- إعدادات البناء في اللوحة: `Build command: npm run build` · `Deploy command: npx wrangler deploy`.
+- `vite.config.ts`: `base` افتراضيه `'/'` (قابل للتجاوز بـ `VITE_BASE`).
 
-## ٥. بوابات الدفع (Payments) — مؤجّل، يحتاج خادمًا
+`wrangler.jsonc` — سطران دقيقان لا تعبث بهما:
 
-- **الحالي:** لا دفع. التسعير **٣٥ ريال (الرائد) و٥٠ ريال (المتكامل) لكل ترم دراسي** (`src/data/plans.ts`، الحقل `term`، ودالة `planPrice`). زر «ابدأ باقة» ينقل مباشرة إلى المنصة بلا تحصيل.
-- **لماذا يحتاج خادمًا؟** بوابات الدفع تتطلب إنشاء عملية الدفع والتحقق من الـ webhook **من جهة الخادم** (لا يجوز وضع المفاتيح السرية في الواجهة). لذا يلزم serverless function أو Supabase Edge Function.
-- **بوابات مناسبة للسوق السعودي** (تدعم مدى/Apple Pay/بطاقات):
-  - **Moyasar** (ميسّر) — سعودية، تكامل بسيط، تدعم مدى وApple Pay.
-  - **Tap Payments** (تاب) — خليجية شائعة.
-  - **HyperPay** / **PayTabs** — خيارات مؤسسية.
-  - **Stripe** — للمدفوعات الدولية (دعم مدى محدود).
-- نموذج مقترح: اشتراك لكل ترم (دفعة واحدة) — يناسب `planPrice` الحالي. يمكن لاحقًا ربطه بحالة الاشتراك في `src/lib/subscriptionStore.ts` (حاليًا `localStorage`).
+- `not_found_handling: "single-page-application"` — أي مسار غير موجود يعيد `index.html`، وهو ما يجعل الروابط العربية العميقة (`/الأسابيع`) تعمل عند فتحها مباشرة. أغنى عن ملف `public/_redirects` (حُذف).
+- `run_worker_first: ["/api/*"]` — **ضروري**: بدونه يبتلع توجيه الـ SPA مسار `/api/generate-game` ويعيد له `index.html` بدل تشغيل الدالة.
 
-## ٦. التخزين السحابي والمزامنة — مؤجّل
+تفاصيل النشر كاملة في **`DEPLOY-CLOUDFLARE.md`**.
 
-- **الحالي:** كل شيء محلي (`localStorage`): بيانات المعلم، الفصول، الطلاب، سجل الأثر، حالة الاشتراك. لا مزامنة عبر الأجهزة، ولا رفع صور.
-- **المقترح:** **Supabase** (Postgres + Storage) — حسابات، صور توثيق الأنشطة، مزامنة، ونسخ احتياطي. المستخدم بصدد الاشتراك فيه.
+> تاريخيًا كان المشروع على **GitHub Pages** (فرع `gh-pages` عبر `scripts/deploy.mjs`). السكربت ما زال موجودًا لكنه **لم يعد صالحًا** بعد تحويل `base` إلى `/`؛ لو احتجته شغّله بـ `VITE_BASE=/mtfa3l/`.
 
-## ٧. خريطة الملفات المهمة
+## ٤. تسجيل الدخول ورمز التحقق (Auth) — **مبني ويعمل**
+
+- **Supabase Auth** بالبريد + **رمز تحقق OTP من ٨ أرقام**. تم التحقّق من الدورة كاملة: SMTP → إرسال → تحقّق → دخول → كتابة `profiles` مع RLS.
+- `src/lib/authStore.ts` (الجلسة والدخول) · `src/components/AuthModal.tsx` (النافذة) · `src/lib/supabase.ts` (العميل).
+- `supabase/schema.sql`: جدول `profiles` + سياسات RLS.
+- `supabase/email-otp-template.html`: قالب بريد الرمز (عربي RTL) — يُلصق في لوحة Supabase.
+- **مهم عند تغيير النطاق:** لوحة Supabase → Authentication → URL Configuration → حدّث **Site URL** و**Redirect URLs** (`https://<النطاق>/**`). بدونها لا يعمل رمز الدخول في الإنتاج.
+
+> **ملاحظة تستحق التنظيف:** `src/lib/supabase.ts` فيه قيم احتياطية للـ URL والمفتاح العام مكتوبة داخل الكود (من أيام GitHub Pages حيث لا توجد متغيّرات بناء). المفتاح `anon` عام وآمن بحكم RLS، لكن الأنظف نقلها إلى متغيّرات بناء `VITE_SUPABASE_*` في لوحة Cloudflare وحذف القيم المكتوبة.
+
+- **الجوال (SMS OTP):** غير مبني. حقل الجوال موجود في التسجيل (`RegistrationData.phone` اختياري) بغرض التنبيهات. يحتاج مزوّدًا (Twilio ونحوه) بتكلفة شهرية.
+
+## ٥. بوابات الدفع (Payments) — لم تُبنَ بعد
+
+- **الحالي:** لا تحصيل. التسعير **٣٥ ريال (الرائد) و٥٠ ريال (المتكامل) لكل ترم دراسي** (`src/data/plans.ts`، الحقل `term`، ودالة `planPrice`). زر «ابدأ باقة» ينقل مباشرة إلى المنصة بلا دفع.
+- **العائق التقني ارتفع:** بوابات الدفع تتطلّب إنشاء عملية الدفع والتحقق من الـ webhook من جهة الخادم — وصار عندك خادم (`worker/index.ts`) ومكان آمن للأسرار (Cloudflare Secrets). التنفيذ: مسار جديد مثل `/api/checkout` و`/api/webhook` داخل الـ Worker.
+- **بوابات مناسبة للسوق السعودي** (تدعم مدى/Apple Pay/بطاقات): **Moyasar** (سعودية، تكامل بسيط) · **Tap Payments** · **HyperPay** / **PayTabs** (مؤسسية) · **Stripe** (دولي، دعم مدى محدود).
+- نموذج مقترح: اشتراك لكل ترم (دفعة واحدة) — يناسب `planPrice` الحالي، ويُربط بـ `src/lib/subscriptionStore.ts`.
+
+## ٦. التخزين السحابي والمزامنة — **مبني جزئيًا**
+
+- `src/lib/cloudSync.ts` يزامن كل حالة `motafael:*` كوثيقة واحدة في Supabase، مع التقاط تلقائي للكتابات. صندوق الحساب/المزامنة/الخروج في الشريط الجانبي للوحة.
+- **الناقص:** رفع الصور (توثيق الأنشطة) عبر Supabase Storage، وحلّ تعارضات المزامنة بين جهازين (الحالي: آخر كتابة تفوز).
+
+## ٧. وكيل الذكاء (بناء الألعاب) — **مبني، معطّل بانتظار مفتاح**
+
+- `server/generateGame.ts` يطلب من Claude بناء لعبة HTML مكتفية ذاتيًا من وصف الرائد، وتُشغَّل في إطار معزول.
+- يُستدعى عبر `POST /api/generate-game` من `src/lib/aiGame.ts`.
+- **معطّل حاليًا:** سرّ `ANTHROPIC_API_KEY` غير مضبوط في Cloudflare (ولا في `.env` محليًا)، فالمسار يرجّع `503 NO_API_KEY` والزر يعطي خطأ للمستخدم.
+- للتفعيل: مفتاح من console.anthropic.com → لوحة الـ Worker → Settings → Variables and Secrets → نوع **Secret**.
+- تنبيه تكلفة: كل بناء لعبة حتى ١٦ ألف توكن مخرَج من `claude-opus-5`. متغيّر `ANTHROPIC_MODEL` يسمح بنموذج أرخص.
+
+## ٨. خريطة الملفات المهمة
 
 | المجال | المسار |
 |---|---|
+| نقطة دخول الخادم (Worker) | `worker/index.ts` |
+| إعدادات النشر | `wrangler.jsonc`, `DEPLOY-CLOUDFLARE.md`, `vite.config.ts` |
+| المصادقة | `src/lib/authStore.ts`, `src/lib/supabase.ts`, `src/components/AuthModal.tsx` |
+| المزامنة السحابية | `src/lib/cloudSync.ts` |
+| قاعدة البيانات | `supabase/schema.sql`, `supabase/email-otp-template.html` |
+| وكيل الذكاء | `server/generateGame.ts`, `src/lib/aiGame.ts` |
 | الباقات والتسعير | `src/data/plans.ts` |
 | حالة الاشتراك (محلي) | `src/lib/subscriptionStore.ts` |
 | التسجيل + الترحيب السينمائي | `src/pages/Register.tsx`, `src/components/WelcomeCinematic.tsx` |
@@ -69,10 +97,10 @@ npm run deploy   # vite build && node scripts/deploy.mjs
 | برامج الأنشطة (بيانات) | `src/data/activityPrograms.ts` (٥ مجالات، برامج ابتدائي/متوسط) |
 | رحلة الأسابيع | `src/pages/WeeksJourney.tsx` |
 | الأدوات (تقرير برنامج، موزّع حصص ١٠٪، سجل الأثر...) | `src/pages/ProgramReport.tsx`, `ActivityRatio.tsx`, `ActivityLog.tsx` |
-| النشر | `scripts/deploy.mjs`, `vite.config.ts` |
 
-## ٨. ملاحظات متفرقة
+## ٩. ملاحظات متفرقة
 
+- `api/generate-game.ts` بصيغة Vercel، متروك للتوافق ولا يُستخدم في Cloudflare.
 - الروابط بالعربية مُرمّزة في الإنتاج؛ التحقق يكون عبر النافذة الخفية لتجاوز الكاش.
 - تحذيرات LF/CRLF على ويندوز طبيعية (لا تؤثر).
 - بعض الحزم كبيرة (three.js، pdf، mammoth) — قابلة لتحسين التقسيم (code-splitting) لاحقًا.
