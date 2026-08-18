@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mtfa3l",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-01",
+  // مطلوب لحزمة @anthropic-ai/sdk داخل بيئة Workers
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // أي مسار غير موجود يعيد index.html — يدعم الروابط العربية العميقة (/الأسابيع)
+    "not_found_handling": "single-page-application",
+    // بدون هذا السطر كان توجيه الـ SPA سيبتلع /api/* ويعيد index.html
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true }
+}
